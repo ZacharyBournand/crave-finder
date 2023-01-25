@@ -1,14 +1,19 @@
 # Project name
-Local Resto
+Local Resto / FeedMe / MenuMate / MeHungie
 
-# Project description
-It would be a web application that allows users to search for local restaurants.
+## Project description
+Our web applicaton seeks to make finding new flavors a local restaurants a piece of cake!
 
-The user can search for local restaurants and look up individual items on their menus. 
-The user can also rate a restaurant on its cleanliness, customer service, wait times, individual menu items, and possibly more as we build the application. 
-A user's ratings can be stored on their profile, so that if another person finds their tastes to be particularly similar to that of the user, this person can try foods/places that user has rated highly.
+    On our web app, the user would be able to search for local restaurants that have a particular menu item they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
+    Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. A restaurant will have ratings for cleanliness, customer service, wait times, an overall rating, and most importantly: a restaurant's menu will have each item rated individually.
+    User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
 
-# Members
+## Main Takeaways:
+- Search for restaurants by menu items
+- Rate menu items individually or the restaurant as a whole
+- Store food ratings on user profile
+
+## Members
 Front-end (Angular/Typescript)
 - Jon Dela Cruz
 - Renee Kaynor
