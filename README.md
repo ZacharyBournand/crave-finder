@@ -2,7 +2,7 @@
 Local Resto
 
 # Project description
-It would be a web application to search for local restaurants.
+It would be a web application that allows users to search for local restaurants.
 
 The user can search for local restaurants and look up individual items on their menus. 
 The user can also rate a restaurant on its cleanliness, customer service, wait times, etc. & rate individual menu items as well. 
