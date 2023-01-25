@@ -2,7 +2,11 @@
 Local Resto
 
 # Project description
-The user search through them by looking up individual items on the menu. In addition to rating a restaurant on its cleanliness, customer service, wait times, etc. they could also rate menu items individually. Maybe we can store these ratings on a profile, so that if you find your tastes are particularly similar to someone else’s you can try foods/places they’ve rated highly.
+It would be a web application to search for local restaurant. 
+
+The user can search for local restaurants and look up individual items on their menus. 
+The user can also rate a restaurant on its cleanliness, customer service, wait times, etc. & rate individual menu items as well. 
+A user's ratings can be stored on their profile, so that if another person finds their tastes to be particularly similar to that of the user, that person can try foods/places this user has rated highly.
 
 # Members
 Front-end
