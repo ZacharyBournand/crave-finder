@@ -9,10 +9,10 @@ The user can also rate a restaurant on its cleanliness, customer service, wait t
 A user's ratings can be stored on their profile, so that if another person finds their tastes to be particularly similar to that of the user, this person can try foods/places that user has rated highly.
 
 # Members
-Front-end
+Front-end (Angular/Typescript)
 - Jon Dela Cruz
 - Renee Kaynor
 
-Back-end
+Back-end (Golang)
 - Zachary Bournand
 - Dylan Bickram
