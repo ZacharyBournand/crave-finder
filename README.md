@@ -14,5 +14,5 @@ Front-end
 - Renee Kaynor
 
 Back-end
-- Dylan Bickram
 - Zachary Bournand
+- Dylan Bickram
