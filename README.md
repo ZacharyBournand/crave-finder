@@ -1,5 +1,5 @@
 # Project name
-Local Resto / FeedMe / MenuMate / MeHungie
+MeHungie
 
 ## Project description
 Our web applicaton seeks to make finding new flavors at local restaurants a piece of cake!
