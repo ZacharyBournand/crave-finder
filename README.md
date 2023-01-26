@@ -1,5 +1,5 @@
 # Project name
-MeHungie
+Crave Finder
 
 ## Project description
 Our web applicaton seeks to make finding new flavors at local restaurants a piece of cake!
