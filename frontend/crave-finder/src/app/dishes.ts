@@ -11,7 +11,7 @@ export interface Dish {
       id: 1,
       name: 'Chicken Alfredo',
       price: 10.99,
-      description: 'Fettucini pasta served with creamy alfredo sauce and grilled chicken. An Italian classic.'
+      description: 'Fettuccine pasta served with creamy alfredo sauce and grilled chicken. An Italian classic.'
     },
     {
       id: 2,
