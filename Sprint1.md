@@ -1,4 +1,5 @@
 **User Stories**
+
 The following user stories our team attempted to complete before Sprint 1 include:
  “As a user, I want to create an account, so that I can rate restaurants and food items.” 
 
@@ -12,6 +13,7 @@ The following user stories our team attempted to complete before Sprint 1 includ
 
 
 **Plan to address**
+
 Backend issues we planned to address:
 Create MYSQL database
 Connect Golang to database
@@ -27,6 +29,7 @@ Create a login page for users to gain access to account features. (Partially com
 
 
 **Successes**
+
 Backend successes:
 Creating the MySQL database with a table containing users’ information
 Connecting Golang to the database
@@ -39,6 +42,7 @@ In addition to creating UX for rating dishes, formatting and display for all the
 
 
 **Difficulties**
+
 Frontend difficulties:
 The current star rating library ended up being a mess of dependencies and spaghetti code; the stars do display correctly after clicking your desired rating, but not exactly accurately. (1,2)
 Storage of rating has not yet been implemented, with no connection to the backend with which to store the ratings. (1,2)
