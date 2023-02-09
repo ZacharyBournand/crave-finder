@@ -2,10 +2,10 @@
 Crave Finder
 
 ## Project description
-**Frontend code (in 'frontend' branch)**
+**Frontend code (in 'frontend' branch):**
 https://github.com/ZacharyBournand/crave-finder/tree/frontend
 
-**Backend code (in 'backend' branch)**
+**Backend code (in 'backend' branch):**
 https://github.com/ZacharyBournand/crave-finder/tree/backend
 
 
