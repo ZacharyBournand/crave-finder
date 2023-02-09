@@ -1,8 +1,10 @@
+<img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
 <div>
+    <button mat-raised-button color="accent" [routerLink]="['login']">Sign In</button>
 <form>
     <mat-form-field>
-        <input matInput placeholder="What are you craving?">
+        <input matInput [(ngModel)]="search" name="search" placeholder="What are you craving?">
     </mat-form-field>
 </form>
-<a [routerLink]="['login']">Sign In</a>
+<button mat-raised-button color="accent" [routerLink]="['']" (click)="getSearch()">Search</button>
 </div>

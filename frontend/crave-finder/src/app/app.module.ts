@@ -37,7 +37,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserAnimationsModule,
     MatButtonModule,
     MatInputModule,
+<<<<<<< HEAD
     NgbModule
+=======
+    FormsModule
+>>>>>>> ac0987dd2b72022988b47f8c43c36a107e88688e
   ],
   providers: [],
   bootstrap: [AppComponent]

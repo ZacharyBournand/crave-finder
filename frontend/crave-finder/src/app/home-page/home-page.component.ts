@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent {
-
+  search : any;
+  getSearch() {
+    console.log(this.search); // For testing/demonstration purpose
+    return this.search;
+  }
 }
