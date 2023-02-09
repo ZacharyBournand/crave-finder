@@ -7,10 +7,10 @@ The following user stories our team attempted to complete before Sprint 1 includ
 
 - “As a user, I want to be able to rate a restaurant & individual food items as well as write a review.”
 
- - “As a user, I want to be able to quickly and easily access the website features and my account page.” &nbsp;
+ - “As a user, I want to be able to quickly and easily access the website features and my account page.”
 
 
-
+&nbsp;
 **Plan to address**
 
 <ins>Backend issues we planned to address:</ins>
