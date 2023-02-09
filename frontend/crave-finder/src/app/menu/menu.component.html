@@ -12,13 +12,13 @@
                     {{dish.price}}
                 </h3>
             </div>
-            
-            <h3 class="dish-rating">
-                Placeholder
-            </h3>
+
+        <ngb-rating [max]="5" [(rate)]="dish.rating" [readonly]="false"></ngb-rating>
         </div>
+
         <h3 class="dish-description">
             {{dish.description}}
         </h3>
     </div>
+    
 </div>
