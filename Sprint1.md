@@ -58,3 +58,10 @@ When Dylan tried to connect Go to the MySQL database, he was not able to do so. 
 The login functionality was not developed before the Sprint 1 due date. The login functionality was pushed back because Dylan, who was assigned the task, could not create a connection between Go and MySQL. When the issue was addressed, Dylan did not have enough time to develop the login functionality.
 
 Majority of our difficulties arose from the initial start of collaboration, where we only started backend development with less than a week before the due date. When we started developing the backend we did not have enough time to face the issues we found with our code, preventing us from completing our Sprint 1 milestone of developing a user login functionality.
+
+
+**Frontend code (in 'frontend' branch):**
+https://github.com/ZacharyBournand/crave-finder/tree/frontend
+
+**Backend code (in 'backend' branch):**
+https://github.com/ZacharyBournand/crave-finder/tree/backend
