@@ -15,29 +15,29 @@ The following user stories our team attempted to complete before Sprint 1 includ
 **Plan to address**
 
 <ins>Backend issues we planned to address:</ins>
-Create MYSQL database
-Connect Golang to database
-Develop User registration functionality
-Develop User Login functionality
+1. Create MYSQL database
+- Connect Golang to database
+- Develop User registration functionality
+- Develop User Login functionality
 
 <ins>Frontend issues we planned to address:</ins>
-Create a system for rating dishes and restaurants out of 5-stars.
-Create the UX that shows the number of stars for a given dish.
-Create a homepage and navigation system to direct users to their accounts and other pages. (Mostly completed)
-Create a login page for users to gain access to account features. (Partially completed)
+- Create a system for rating dishes and restaurants out of 5-stars.
+- Create the UX that shows the number of stars for a given dish.
+- Create a homepage and navigation system to direct users to their accounts and other pages. (Mostly completed)
+- Create a login page for users to gain access to account features. (Partially completed)
 
 
 
 **Successes**
 
 <ins>Backend successes:</ins>
-Creating the MySQL database with a table containing users’ information
-Connecting Golang to the database
+- Creating the MySQL database with a table containing users’ information
+- Connecting Golang to the database
 
 
 <ins>Frontend successes:</ins>
-Component routing to various parts of the web-app had no issues.
-In addition to creating UX for rating dishes, formatting and display for all the items on a given restaurant’s menu was created, with each item containing all the necessary information.
+- Component routing to various parts of the web-app had no issues.
+- In addition to creating UX for rating dishes, formatting and display for all the items on a given restaurant’s menu was created, with each item containing all the necessary information.
 
 
 
