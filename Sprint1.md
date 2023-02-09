@@ -1,13 +1,13 @@
 **User Stories**
 
 The following user stories our team attempted to complete before Sprint 1 include:
- “As a user, I want to create an account, so that I can rate restaurants and food items.” 
+ - “As a user, I want to create an account, so that I can rate restaurants and food items.” 
 
- “As a user, I want to log in, so that I can access my account easily.” 
+- “As a user, I want to log in, so that I can access my account easily.” 
 
-“As a user, I want to be able to rate a restaurant & individual food items as well as write a review.”
+- “As a user, I want to be able to rate a restaurant & individual food items as well as write a review.”
 
- “As a user, I want to be able to quickly and easily access the website features and my account page.”
+ - “As a user, I want to be able to quickly and easily access the website features and my account page.”
 
 
 
