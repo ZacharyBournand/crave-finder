@@ -2,6 +2,13 @@
 Crave Finder
 
 ## Project description
+**Frontend code (in 'frontend' branch):**
+https://github.com/ZacharyBournand/crave-finder/tree/frontend
+
+**Backend code (in 'backend' branch):**
+https://github.com/ZacharyBournand/crave-finder/tree/backend
+
+
 Our web applicaton seeks to make finding new flavors at local restaurants a piece of cake!
 
 On our web app, the user would be able to search for local restaurants that have a particular menu item they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
