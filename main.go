@@ -119,9 +119,6 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Display the hash string in the console
-	f.Println("string(hash):", string(hash))
-
 	var insertStatement *sql.Stmt
 	insertStatement, err = db.Prepare("INSERT INTO users (username, hash) VALUES (?, ?);")
 
