@@ -19,7 +19,7 @@ var db *sql.DB
 func main() {
 	tpl, _ = template.ParseGlob("templates/*.html")
 	var err error
-	db, err = sql.Open("mysql", "root:Exploring here 55!@tcp(127.0.0.1:3306)/public")
+	db, err = sql.Open("mysql", "root:Exploring here 55!@tcp(localhost:3306)/public")
 
 	if err != nil {
 		panic(err.Error())
@@ -50,7 +50,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// Go through the username characters
 	for _, char := range username {
 		// Check if the character is a letter or a number
-		if unicode.IsLetter(char) == false && unicode.IsNumber(char) == false {
+		if !unicode.IsLetter(char) && !unicode.IsNumber(char) {
 			alphanumericName = false
 		}
 	}
@@ -64,7 +64,6 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check the password
 	password := r.FormValue("password")
-	
 	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
 	passwordNoSpaces = true
 
@@ -90,7 +89,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("alphanumericName: ", alphanumericName, "\nnameLength: ", nameLength, "\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
 	if !alphanumericName || !nameLength || !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
 		tpl.ExecuteTemplate(w, "index.html", "Invalid password")
-		return 
+		return
 	}
 
 	// Check if the username already exists
@@ -106,7 +105,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		f.Println("Error: ", err)
 
 		tpl.ExecuteTemplate(w, "index.html", "The username has already been taken")
-		return 
+		return
 	}
 
 	// Create a hash form of the password
@@ -127,16 +126,17 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	insertStatement, err = db.Prepare("INSERT INTO users (username, hash) VALUES (?, ?);")
 
 	if err != nil {
-		f.Println("Error preparing the statement: " , err)
+		f.Println("Error preparing the statement: ", err)
 		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
-		return 
+		return
 	}
 	defer insertStatement.Close()
 
 	var result sql.Result
+
 	result, err = insertStatement.Exec(username, hash)
-	rowsAffected, _ := result.RowsAffected()
-	f.Println("Rows affected: " , rowsAffected)
+
+	f.Println("Result: ", result)
 
 	if err != nil {
 		f.Println("Error inserting a new user")
