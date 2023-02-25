@@ -37,6 +37,45 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
+// Serve the form for users to log in
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("loginHandler is running")
+	tpl.ExecuteTemplate(w, "login.html", nil)
+}
+
+func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("loginAuthHandler is running")
+	// Parse the form
+	r.ParseForm()
+	// Get the form values
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
+	var hash string
+	statement := "SELECT hash FROM users WHERE username = ?"
+	row := db.QueryRow(statement, username)
+	err := row.Scan(&hash)
+
+	// If an error occurs scanning the hash, display the error
+	if err != nil {
+		f.Println("error selecting hash in db by username")
+		tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+		return
+	}
+
+	// Compare the hash with the password
+	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	// Display a successful message if there are no errors
+	if err == nil {
+		f.Fprint(w, "You have successfully logged in")
+		return
+	}
+	f.Println("Incorrect password")
+	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+}
+
 // Create new user in database
 func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("registerAuthHandler is running")
@@ -64,7 +103,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check the password
 	password := r.FormValue("password")
-	
+
 	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
 	passwordNoSpaces = true
 
@@ -90,7 +129,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("alphanumericName: ", alphanumericName, "\nnameLength: ", nameLength, "\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
 	if !alphanumericName || !nameLength || !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
 		tpl.ExecuteTemplate(w, "index.html", "Invalid password")
-		return 
+		return
 	}
 
 	// Check if the username already exists
@@ -106,7 +145,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		f.Println("Error: ", err)
 
 		tpl.ExecuteTemplate(w, "index.html", "The username has already been taken")
-		return 
+		return
 	}
 
 	// Create a hash form of the password
@@ -127,16 +166,16 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	insertStatement, err = db.Prepare("INSERT INTO users (username, hash) VALUES (?, ?);")
 
 	if err != nil {
-		f.Println("Error preparing the statement: " , err)
+		f.Println("Error preparing the statement: ", err)
 		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
-		return 
+		return
 	}
 	defer insertStatement.Close()
 
 	var result sql.Result
 	result, err = insertStatement.Exec(username, hash)
 	rowsAffected, _ := result.RowsAffected()
-	f.Println("Rows affected: " , rowsAffected)
+	f.Println("Rows affected: ", rowsAffected)
 
 	if err != nil {
 		f.Println("Error inserting a new user")
