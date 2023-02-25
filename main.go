@@ -26,6 +26,8 @@ func main() {
 	}
 	defer db.Close()
 
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	http.ListenAndServe("localhost:8080", nil)
