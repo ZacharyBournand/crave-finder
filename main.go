@@ -47,11 +47,34 @@ func main() {
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
-	http.HandleFunc("/about", aboutHandler)
-	http.HandleFunc("/", homeHandler)
+	// The 'Authentication' middleware runs before the handler function
+	http.HandleFunc("/about", Authentication(aboutHandler))
+	http.HandleFunc("/", Authentication(homeHandler))
 	http.ListenAndServe("localhost:8080", nil)
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe("localhost:8080", context.ClearHandler(http.DefaultServeMux))
+}
+
+// Middleware that authenticates the
+// The HandlerFunc parameter is the handler function that will run after this middleware
+func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
+	// Return a type http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Return a session
+		session, _ := store.Get(r, "session")
+		// If it looks for a key that does not exist, it returns false
+		// Otherwise, it returns true
+		_, ok := session.Values["id"]
+		f.Println("ok:", ok)
+
+		// If it returns false, redirect the user to the login page
+		if !ok {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		// 'ServeHTTP' handles the HTTP request and writes out the HTTP response
+		HandlerFunc.ServeHTTP(w, r)
+	}
 }
 
 // Serve the form for registering new users
@@ -234,35 +257,13 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 // Otherwise, send them back to the login page
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("homeHandler running")
-	// Return a session
-	session, _ := store.Get(r, "session")
-	// If it looks for a key that does not exist, it returns false
-	// Otherwise, it returns true
-	_, ok := session.Values["id"]
-	f.Println("ok:", ok)
-
-	// If it returns false, redirect the user to the login page
-	if !ok {
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
+	// Execute the template 'home.html'
 	tpl.ExecuteTemplate(w, "home.html", "Logged in")
 }
 
 // Also check if the user is logged in, just for the page "about.html"
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("aboutHandler running")
-	// Return a session
-	session, _ := store.Get(r, "session")
-	// If it looks for a key that does not exist, it returns false
-	// Otherwise, it returns true
-	_, ok := session.Values["id"]
-	f.Println("ok:", ok)
-
-	// If it returns false, redirect the user to the login page
-	if !ok {
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
+	// Execute the template 'about.html'
 	tpl.ExecuteTemplate(w, "about.html", "Logged in")
 }
