@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"unicode"
 
+	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -15,6 +17,9 @@ import (
 
 var tpl *template.Template
 var db *sql.DB
+
+// Pass the key in via an environment variable to avoid accidentally commi
+var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 	tpl, _ = template.ParseGlob("templates/*.html")
@@ -39,46 +44,11 @@ func main() {
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
+	http.HandleFunc("/about", aboutHandler)
+	http.HandleFunc("/", homeHandler)
 	http.ListenAndServe("localhost:8080", nil)
-}
-
-// Serve the form for users to log in
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("loginHandler is running")
-	tpl.ExecuteTemplate(w, "login.html", nil)
-}
-
-func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("loginAuthHandler is running")
-	// Parse the form
-	r.ParseForm()
-	// Get the form values
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-
-	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
-	var hash string
-	statement := "SELECT hash FROM users WHERE username = ?"
-	row := db.QueryRow(statement, username)
-	err := row.Scan(&hash)
-
-	// If an error occurs scanning the hash, display the error
-	if err != nil {
-		f.Println("error selecting hash in db by username")
-		tpl.ExecuteTemplate(w, "login.html", "Check username and password")
-		return
-	}
-
-	// Compare the hash with the password
-	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-
-	// Display a successful message if there are no errors
-	if err == nil {
-		f.Fprint(w, "You have successfully logged in")
-		return
-	}
-	f.Println("Incorrect password")
-	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
+	http.ListenAndServe("localhost:8080", context.ClearHandler(http.DefaultServeMux))
 }
 
 // Serve the form for registering new users
@@ -147,9 +117,9 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	statement := "SELECT id FROM users WHERE username = ?"
 	row := db.QueryRow(statement, username)
 
-	var userID string
+	var id string
 
-	err := row.Scan(&userID)
+	err := row.Scan(&id)
 
 	if err != sql.ErrNoRows {
 		f.Println("The username already exists.")
@@ -194,4 +164,84 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f.Fprint(w, "Account successfully created")
+}
+
+// Serve the form for users to log in
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("loginHandler is running")
+	tpl.ExecuteTemplate(w, "login.html", nil)
+}
+
+func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("loginAuthHandler is running")
+	// Parse the form
+	r.ParseForm()
+	// Get the form values
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
+	var id, hash string
+	statement := "SELECT id, hash FROM users WHERE username = ?"
+	row := db.QueryRow(statement, username)
+	err := row.Scan(&id, &hash)
+
+	// If an error occurs scanning the hash, display the error
+	if err != nil {
+		f.Println("error selecting hash in db by username")
+		tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+		return
+	}
+
+	// Compare the hash with the password
+	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	// Display a successful message if there are no errors
+	if err == nil {
+		// Create a session
+		session, _ := store.Get(r, "session")
+		session.Values["id"] = id
+		// Save before the execution
+		session.Save(r, w)
+		// Execute the template
+		tpl.ExecuteTemplate(w, "home.html", "Logged in")
+		return
+	}
+	f.Println("Incorrect password")
+	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+}
+
+// Check if the user is logged in
+// Otherwise, send them back to the login page
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("homeHandler running")
+	// Return a session
+	session, _ := store.Get(r, "session")
+	// If it looks for a key that does not exist, it returns false
+	// Otherwise, it returns true
+	_, ok := session.Values["id"]
+	f.Println("ok:", ok)
+
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	tpl.ExecuteTemplate(w, "home.html", "Logged in")
+}
+
+// Also check if the user is logged in, just for the page "about.html"
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("aboutHandler running")
+	// Return a session
+	session, _ := store.Get(r, "session")
+	// If it looks for a key that does not exist, it returns false
+	// Otherwise, it returns true
+	_, ok := session.Values["id"]
+	f.Println("ok:", ok)
+
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	tpl.ExecuteTemplate(w, "about.html", "Logged in")
 }
