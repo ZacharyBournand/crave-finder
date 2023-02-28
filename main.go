@@ -24,6 +24,7 @@ var store = sessions.NewCookieStore([]byte("super-secret"))
 func main() {
 	tpl, _ = template.ParseGlob("templates/*.html")
 	var err error
+	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
 
 	if err != nil {
@@ -40,8 +41,10 @@ func main() {
 
 	f.Println("Successful connection to the database")
 
+	// Call a given function to handle a request to the server
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/loginauth", loginAuthHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	http.HandleFunc("/about", aboutHandler)
@@ -143,9 +146,11 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// Display the hash string in the console
 	f.Println("string(hash):", string(hash))
 
+	// Allow a SQL statement to be used repeatedly with a custom username and hashed password
 	var insertStatement *sql.Stmt
 	insertStatement, err = db.Prepare("INSERT INTO users (username, hash) VALUES (?, ?);")
 
+	// If an error occurred, display an error message
 	if err != nil {
 		f.Println("Error preparing the statement: ", err)
 		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
@@ -153,16 +158,18 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer insertStatement.Close()
 
+	// Insert the new username and its password hashed into the database
 	var result sql.Result
 	result, err = insertStatement.Exec(username, hash)
-	rowsAffected, _ := result.RowsAffected()
-	f.Println("Rows affected: ", rowsAffected)
+	f.Println("Result:", result)
 
+	// If an error occurred, let the user know
 	if err != nil {
 		f.Println("Error inserting a new user")
 		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
 		return
 	}
+	// If no error occurred, display a successful message
 	f.Fprint(w, "Account successfully created")
 }
 
@@ -211,6 +218,18 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
 }
 
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("logoutHandler running")
+	// Look for a cookie named 'session'
+	session, _ := store.Get(r, "session")
+	// Delete the value with the key 'id'
+	delete(session.Values, "id")
+	// Save the changes made
+	session.Save(r, w)
+	// Execute the template 'logout.html'
+	tpl.ExecuteTemplate(w, "login.html", "Logged out")
+}
+
 // Check if the user is logged in
 // Otherwise, send them back to the login page
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -222,6 +241,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	_, ok := session.Values["id"]
 	f.Println("ok:", ok)
 
+	// If it returns false, redirect the user to the login page
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
@@ -239,6 +259,7 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	_, ok := session.Values["id"]
 	f.Println("ok:", ok)
 
+	// If it returns false, redirect the user to the login page
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
