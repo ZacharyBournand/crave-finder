@@ -19,24 +19,27 @@ var db *sql.DB
 func main() {
 	tpl, _ = template.ParseGlob("templates/*.html")
 	var err error
-	db, err = sql.Open("mysql", "root:Exploring here 55!@tcp(127.0.0.1:3306)/public")
+	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
 
 	if err != nil {
+		f.Println("error validating sql.Open arguments")
 		panic(err.Error())
 	}
 	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		f.Println("error verifying connection with db.Ping")
+		panic(err.Error())
+	}
+
+	f.Println("Successful connection to the database")
 
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	http.ListenAndServe("localhost:8080", nil)
-}
-
-// Serve the form for registering new users
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("registerHandler is running")
-	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 // Serve the form for users to log in
@@ -76,6 +79,12 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	f.Println("Incorrect password")
 	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+}
+
+// Serve the form for registering new users
+func registerHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("registerHandler is running")
+	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 // Create new user in database
