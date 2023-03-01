@@ -1,0 +1,9 @@
+<button mat-raised-button color="accent" [matMenuTriggerFor]="navMenu">Account</button>
+
+<mat-menu #navMenu="matMenu" yPosition="below">
+    <a [routerLink]="['/']" mat-menu-item>Favorites</a>
+    <a [routerLink]="['CraveEats']" mat-menu-item>Reviews</a>
+    <a [routerLink]="['/']" mat-menu-item>Quick Search</a>
+    <a [routerLink]="['/']" mat-menu-item>Settings</a>
+    <a [routerLink]="['/']" mat-menu-item>Logout</a>
+</mat-menu>
