@@ -21,6 +21,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchResultComponent } from './search-result/search-result.component';
+import { UserRegistrationComponent } from './user-registration/user-registration.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
     HomePageComponent,
     LoginPageComponent,
     SearchResultComponent,
+    UserRegistrationComponent,
   ],
   imports: [
     BrowserModule,

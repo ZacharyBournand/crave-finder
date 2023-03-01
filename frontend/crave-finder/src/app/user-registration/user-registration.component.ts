@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-login-page',
-  templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.css']
+  selector: 'app-user-registration',
+  templateUrl: './user-registration.component.html',
+  styleUrls: ['./user-registration.component.css'],
 })
 
-export class LoginPageComponent{
+export class UserRegistrationComponent {
   responseMessage: string = '';
 
   user = {
@@ -19,7 +19,7 @@ export class LoginPageComponent{
   constructor(private http: HttpClient) {}
 
   onSubmit(form: NgForm) {
-    this.http.post('http://localhost:8080/loginauth', this.user).subscribe((response: any) => {
+    this.http.post('http://localhost:8080/registerauth', this.user).subscribe((response: any) => {
       console.log(response),
       this.responseMessage = response.message
     });

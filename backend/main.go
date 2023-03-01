@@ -3,8 +3,8 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	f "fmt"
-	"html/template"
 	"net/http"
 	"unicode"
 
@@ -15,14 +15,22 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var tpl *template.Template
 var db *sql.DB
+
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type RegisterResponse struct {
+	Message string `json:"message"`
+}
 
 // Pass the key in via an environment variable to avoid accidentally commi
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
-	tpl, _ = template.ParseGlob("templates/*.html")
+	//tpl, _ = template.ParseGlob("../frontend/crave-finder/src/app/register/*.component.html")
 	var err error
 	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
@@ -42,13 +50,12 @@ func main() {
 	f.Println("Successful connection to the database")
 
 	// Call a given function to handle a request to the server
-	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/logout", logoutHandler)
-	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	// The 'Authentication' middleware runs before the handler function
-	http.HandleFunc("/about", Authentication(aboutHandler))
+	//http.HandleFunc("/about", Authentication(aboutHandler))
+
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
 		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
@@ -58,9 +65,9 @@ func main() {
 	)(http.DefaultServeMux))
 }
 
-// Middleware that authenticates the
+// Middleware that authenticates the user
 // The HandlerFunc parameter is the handler function that will run after this middleware
-func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
+/*func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
 	// Return a type http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Return a session
@@ -78,20 +85,27 @@ func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
 		// 'ServeHTTP' handles the HTTP request and writes out the HTTP response
 		HandlerFunc.ServeHTTP(w, r)
 	}
-}
-
-// Serve the form for registering new users
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("registerHandler is running")
-	tpl.ExecuteTemplate(w, "index.html", nil)
-}
+}*/
 
 // Create new user in database
 func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("registerAuthHandler is running")
-	// Parse the form
-	r.ParseForm()
-	username := r.FormValue("username")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	username := user.Username
 	// Check username for only alphanumeric characters
 	var alphanumericName = true
 
@@ -111,7 +125,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check the password
-	password := r.FormValue("password")
+	password := user.Password
 
 	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
 	passwordNoSpaces = true
@@ -137,7 +151,8 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	f.Println("alphanumericName: ", alphanumericName, "\nnameLength: ", nameLength, "\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
 	if !alphanumericName || !nameLength || !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
-		tpl.ExecuteTemplate(w, "index.html", "Invalid password")
+		response := RegisterResponse{Message: "Invalid password"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -147,13 +162,14 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	var id string
 
-	err := row.Scan(&id)
+	err = row.Scan(&id)
 
 	if err != sql.ErrNoRows {
 		f.Println("The username already exists.")
 		f.Println("Error: ", err)
 
-		tpl.ExecuteTemplate(w, "index.html", "The username has already been taken")
+		response := RegisterResponse{Message: "The username has already been taken"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -164,12 +180,11 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		f.Println("bcrypt error: ", err)
-		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
-
-	// Display the hash string in the console
-	f.Println("string(hash):", string(hash))
 
 	// Allow a SQL statement to be used repeatedly with a custom username and hashed password
 	var insertStatement *sql.Stmt
@@ -178,7 +193,9 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// If an error occurred, display an error message
 	if err != nil {
 		f.Println("Error preparing the statement: ", err)
-		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 	defer insertStatement.Close()
@@ -191,37 +208,49 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// If an error occurred, let the user know
 	if err != nil {
 		f.Println("Error inserting a new user")
-		tpl.ExecuteTemplate(w, "index.html", "An issue was encountered during the account registration")
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
-	// If no error occurred, display a successful message
-	f.Fprint(w, "Account successfully created")
-}
 
-// Serve the form for users to log in
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("loginHandler is running")
-	tpl.ExecuteTemplate(w, "login.html", nil)
+	response := RegisterResponse{Message: "Account successfully created"}
+	json.NewEncoder(w).Encode(response)
 }
 
 func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("loginAuthHandler is running")
-	// Parse the form
-	r.ParseForm()
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Get the form values
-	username := r.FormValue("username")
-	password := r.FormValue("password")
+	username := user.Username
+	password := user.Password
 
 	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
 	var id, hash string
 	statement := "SELECT id, hash FROM users WHERE username = ?"
 	row := db.QueryRow(statement, username)
-	err := row.Scan(&id, &hash)
+	err = row.Scan(&id, &hash)
 
 	// If an error occurs scanning the hash, display the error
 	if err != nil {
 		f.Println("error selecting hash in db by username")
-		tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+
+		response := RegisterResponse{Message: "Check username and password"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -235,32 +264,35 @@ func loginAuthHandler(w http.ResponseWriter, r *http.Request) {
 		session.Values["id"] = id
 		// Save before the execution
 		session.Save(r, w)
-		// Execute the template
-		tpl.ExecuteTemplate(w, "home.html", "Logged in")
+
+		response := RegisterResponse{Message: "Logged in"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 	f.Println("Incorrect password")
-	tpl.ExecuteTemplate(w, "login.html", "Check username and password")
+
+	response := RegisterResponse{Message: "Check username and password"}
+	json.NewEncoder(w).Encode(response)
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("logoutHandler running")
+
 	// Look for a cookie named 'session'
 	session, _ := store.Get(r, "session")
 	// Delete the value with the key 'id'
 	delete(session.Values, "id")
 	// Save the changes made
 	session.Save(r, w)
-	// Execute the template 'logout.html'
-	tpl.ExecuteTemplate(w, "login.html", "Logged out")
-}
 
-// Check if the user is logged in
-// Otherwise, send them back to the login page
+	response := RegisterResponse{Message: "Logged out"}
+	json.NewEncoder(w).Encode(response)
+}
 
 // Also check if the user is logged in, just for the page "about.html"
-func aboutHandler(w http.ResponseWriter, r *http.Request) {
+/*func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("aboutHandler running")
-	// Execute the template 'about.html'
-	tpl.ExecuteTemplate(w, "about.html", "Logged in")
-}
+
+	response := RegisterResponse{Message: "Logged in"}
+	json.NewEncoder(w).Encode(response)
+}*/
