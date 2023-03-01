@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 @Component({
@@ -10,9 +11,16 @@ export class LoginPageComponent{
   username : any;
   password : any;
 
-  getID() {
-    let id = [this.username, this.password];
-    console.log(this.username + " " + this.password); // For testing/demonstration purpose
-    return id;
+
+  constructor(private httpClient: HttpClient) {}
+
+  sendID() {
+    const body = {
+      username: this.username,
+      password: this.password
+    };
+    console.log(this.username);
+    console.log(this.password)
+    this.httpClient.post('http://localhost:8080/registerauth', body, {responseType: 'text'}).subscribe(response => {console.log(response)});
   }
 }

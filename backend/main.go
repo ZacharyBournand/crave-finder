@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"unicode"
 
-	"github.com/gorilla/context"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 
@@ -49,10 +49,13 @@ func main() {
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	// The 'Authentication' middleware runs before the handler function
 	http.HandleFunc("/about", Authentication(aboutHandler))
-	http.HandleFunc("/", Authentication(homeHandler))
-	http.ListenAndServe("localhost:8080", nil)
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
-	http.ListenAndServe("localhost:8080", context.ClearHandler(http.DefaultServeMux))
+	http.ListenAndServe(":8080", handlers.CORS(
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"http://localhost:4200"}),
+		handlers.AllowCredentials(),
+	)(http.DefaultServeMux))
 }
 
 // Middleware that authenticates the
@@ -89,7 +92,6 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the form
 	r.ParseForm()
 	username := r.FormValue("username")
-
 	// Check username for only alphanumeric characters
 	var alphanumericName = true
 
@@ -255,11 +257,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 // Check if the user is logged in
 // Otherwise, send them back to the login page
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("homeHandler running")
-	// Execute the template 'home.html'
-	tpl.ExecuteTemplate(w, "home.html", "Logged in")
-}
 
 // Also check if the user is logged in, just for the page "about.html"
 func aboutHandler(w http.ResponseWriter, r *http.Request) {

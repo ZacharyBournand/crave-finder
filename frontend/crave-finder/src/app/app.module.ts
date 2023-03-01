@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
 
 // Angular Materials
 import { MatButtonModule } from '@angular/material/button';
@@ -42,7 +43,8 @@ import { SearchResultComponent } from './search-result/search-result.component';
     MatInputModule,
     NgbModule,
     FormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
