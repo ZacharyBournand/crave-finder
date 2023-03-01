@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppService } from '../app.service';
 
 @Component({
   selector: 'app-home-page',
@@ -6,9 +7,21 @@ import { Component } from '@angular/core';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent {
+
+  constructor(private appService:AppService) {}
+
   search : any;
+  criteria : any;
+
   getSearch() {
     console.log(this.search); // For testing/demonstration purpose
-    return this.search;
+    this.appService.setSearch(this.search);
   }
+  getCriteria(type: string) {
+    this.criteria = type;
+    this.appService.setCriteria(this.criteria);
+  }
+
+  ngOnInit() {}    
+  
 }
