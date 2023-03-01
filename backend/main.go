@@ -92,14 +92,13 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the form
 	r.ParseForm()
 	username := r.FormValue("username")
-
 	// Check username for only alphanumeric characters
 	var alphanumericName = true
 
 	// Go through the username characters
 	for _, char := range username {
 		// Check if the character is a letter or a number
-		if unicode.IsLetter(char) == false && unicode.IsNumber(char) == false {
+		if !unicode.IsLetter(char) && !unicode.IsNumber(char) {
 			alphanumericName = false
 		}
 	}
@@ -255,6 +254,9 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	// Execute the template 'logout.html'
 	tpl.ExecuteTemplate(w, "login.html", "Logged out")
 }
+
+// Check if the user is logged in
+// Otherwise, send them back to the login page
 
 // Also check if the user is logged in, just for the page "about.html"
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
