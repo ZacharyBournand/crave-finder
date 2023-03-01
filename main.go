@@ -48,18 +48,17 @@ func main() {
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	// The 'Authentication' middleware runs before the handler function
-	http.HandleFunc("/about", Authentication(aboutHandler))
-	http.HandleFunc("/", Authentication(homeHandler))
-	http.ListenAndServe("localhost:8080", nil)
+	http.HandleFunc("/about", aboutHandler)
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe("localhost:8080", context.ClearHandler(http.DefaultServeMux))
 }
 
-// Middleware that authenticates the
-// The HandlerFunc parameter is the handler function that will run after this middleware
+// Middleware that authenticates the user
+// The 'HandlerFunc' parameter is the handler function that will run after this middleware
 func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
 	// Return a type http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
+		f.Println("RED")
 		// Return a session
 		session, _ := store.Get(r, "session")
 		// If it looks for a key that does not exist, it returns false
@@ -255,13 +254,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 // Check if the user is logged in
 // Otherwise, send them back to the login page
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("homeHandler running")
-	// Execute the template 'home.html'
-	tpl.ExecuteTemplate(w, "home.html", "Logged in")
-}
-
-// Also check if the user is logged in, just for the page "about.html"
 func aboutHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("aboutHandler running")
 	// Execute the template 'about.html'
