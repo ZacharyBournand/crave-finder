@@ -48,3 +48,6 @@ Logout Test:
 Created a mock test that runs the logout functionality to see if the function can run with a given mock input
 Login Test: 
 Created a mock test that runs the login functionality to see if the function can run with a given mock input
+
+Functionality and Tests:
+https://youtu.be/AJUr_epecns
