@@ -30,7 +30,6 @@ type RegisterResponse struct {
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
-	//tpl, _ = template.ParseGlob("../frontend/crave-finder/src/app/register/*.component.html")
 	var err error
 	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
@@ -53,8 +52,6 @@ func main() {
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/registerauth", registerAuthHandler)
-	// The 'Authentication' middleware runs before the handler function
-	//http.HandleFunc("/about", Authentication(aboutHandler))
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -64,28 +61,6 @@ func main() {
 		handlers.AllowCredentials(),
 	)(http.DefaultServeMux))
 }
-
-// Middleware that authenticates the user
-// The HandlerFunc parameter is the handler function that will run after this middleware
-/*func Authentication(HandlerFunc http.HandlerFunc) http.HandlerFunc {
-	// Return a type http.HandlerFunc
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Return a session
-		session, _ := store.Get(r, "session")
-		// If it looks for a key that does not exist, it returns false
-		// Otherwise, it returns true
-		_, ok := session.Values["id"]
-		f.Println("ok:", ok)
-
-		// If it returns false, redirect the user to the login page
-		if !ok {
-			http.Redirect(w, r, "/login", http.StatusFound)
-			return
-		}
-		// 'ServeHTTP' handles the HTTP request and writes out the HTTP response
-		HandlerFunc.ServeHTTP(w, r)
-	}
-}*/
 
 // Create new user in database
 func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -288,11 +263,3 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	response := RegisterResponse{Message: "Logged out"}
 	json.NewEncoder(w).Encode(response)
 }
-
-// Also check if the user is logged in, just for the page "about.html"
-/*func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("aboutHandler running")
-
-	response := RegisterResponse{Message: "Logged in"}
-	json.NewEncoder(w).Encode(response)
-}*/
