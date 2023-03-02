@@ -5,5 +5,6 @@
     <a [routerLink]="['CraveEats']" mat-menu-item>Reviews</a>
     <a [routerLink]="['/']" mat-menu-item>Quick Search</a>
     <a [routerLink]="['/']" mat-menu-item>Settings</a>
-    <a [routerLink]="['/']" mat-menu-item>Logout</a>
+    <!--a #refLogoutLink [routerLink]="['/']" mat-menu-item class="logout">Logout</a-->
+    <a #refLogoutLink (click)="logout()" mat-menu-item class="logout">Logout</a>
 </mat-menu>
