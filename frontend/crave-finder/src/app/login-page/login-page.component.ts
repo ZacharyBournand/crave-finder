@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-login-page',
@@ -16,12 +17,13 @@ export class LoginPageComponent{
     password: ''
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http:HttpClient, private UserService:UserService) {}
 
   onSubmit(form: NgForm) {
     this.http.post('http://localhost:8080/loginauth', this.user).subscribe((response: any) => {
       console.log(response),
-      this.responseMessage = response.message
+      this.responseMessage = response.message;
+      this.UserService.setUser(this.user);
     });
   }
 }
