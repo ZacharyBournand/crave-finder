@@ -124,7 +124,6 @@ func TestLogoutHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	rr := httptest.NewRecorder()
 
 	logoutHandler(rr, req)
