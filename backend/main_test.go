@@ -34,7 +34,7 @@ func TestRegisterAuthHandler(t *testing.T) {
 		panic(err.Error())
 	}
 
-	reqBody := []byte(`{"username": "testUser142", "password": "testPass64!"}`)
+	reqBody := []byte(`{"username": "testUser143", "password": "testPass65!"}`)
 	req, err := http.NewRequest("POST", "/registerauth", bytes.NewBuffer(reqBody))
 	if err != nil {
 		t.Fatal(err)
