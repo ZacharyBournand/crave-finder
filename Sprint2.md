@@ -29,6 +29,7 @@ Back End:
 **Testing**
 
 Front End: (All tests done in Cypress)
+
 Home-page component: 
 - Tests if the homepage component (specifically the search bar and buttons) render properly.
 - Tests if the search bar takes an input properly.
