@@ -59,6 +59,7 @@ https://youtu.be/AJUr_epecns
 
 
 **Golang API Documentation**
+
 Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information.
 
 Dependencies
