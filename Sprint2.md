@@ -1,4 +1,4 @@
-**Work Done**
+**WORK DONE**
 
 Front End:
 - Reformatting of the menu page.
@@ -26,7 +26,7 @@ Back End:
 
 
 
-**Testing**
+**TESTING**
 
 Front End: (All tests done in Cypress)
 
@@ -58,7 +58,7 @@ https://youtu.be/AJUr_epecns
 
 
 
-**Golang API Documentation**
+**GOLANG API DOCUMENTATION**
 
 Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information.
 
