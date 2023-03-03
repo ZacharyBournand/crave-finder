@@ -46,10 +46,54 @@ User-registration component:
 
 
 Back End: 
-Logout Test:
-- Created a mock test that runs the logout functionality to see if the function can run with a given mock input
+Registration:
+- Created a mock test that runs the user registration functionality to see if the function can run correctly.
 Login Test: 
-- Created a mock test that runs the login functionality to see if the function can run with a given mock input
+- Created a mock test that runs the login functionality to see if the function can run correctly.
+Logout Test:
+- Created a mock test that runs the logout functionality to see if the function can run correctly.
 
 Functionality and Tests:
 https://youtu.be/AJUr_epecns
+
+
+
+**Golang API Documentation**
+Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information.
+
+Dependencies
+- gorilla/handlers
+- gorilla/sessions
+- go-sql-driver/mysql
+
+
+Variables
+- db: It holds the connection to the MySQL database.
+- store: It holds and handles a session created using gorilla/sessions.
+
+
+Structs
+- User: It contains the username and password of a user that are JSON-encoded and stored as strings.
+- RegisterResponse: It contains a JSON-encoded message field that stores a success message or an error message depending on the outcome of the task.
+
+
+Functions
+- main(): It starts the server and sets up the routes for the API.
+
+- registerAuthHandler(): It handles a new user registration by accepting a POST request with a User object; it then checks if the user already exists in the database. If the user does not exist, it creates a new account with a hashed password and stores it in the database. Otherwise, it outputs an error message.
+
+- loginAuthHandler(): It handles authentication for existing users by accepting a POST request with a User object; it then checks if the given username and password match an account in the database.
+
+- logoutHandler(): It ends the current user session by logging the user out.
+
+
+Endpoints
+- POST /registerauth: It handles user registration by receiving a User object (JSON-encoded) in the request body and responding with a RegisterResponse object (JSON-encoded) containing a success or error message depending on the task's outcome.
+
+- POST /loginauth: It handles user login by receiving a User object (JSON-encoded) in the request body and responding with a session cookie if the user is successfully authenticated.
+
+- POST /logout: It handles user logout by getting a valid session cookie in the request; it then ends the current user session.
+
+Running the API
+To run the API, open a terminal and navigate to the project directory ending in "crave-finder\backend", then type the command "go run main.go". Once the terminal displays "Successful connection to the database", it is now available at http://localhost:8080.
+If you use instead connect via the front-end to http://localhost:4200, you can run the Golang API by having the front-end communicate with it to create an account, log in, or log out.
