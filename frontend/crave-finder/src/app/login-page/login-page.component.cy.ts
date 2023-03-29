@@ -1,7 +1,13 @@
 import { LoginPageComponent } from "./login-page.component";
-
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginPageComponent', () => {
+    beforeEach(() => TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule], 
+        providers: [LoginPageComponent]
+    }))
+
     it('Can be mounted?', () => {
         cy.mount(LoginPageComponent)
     })

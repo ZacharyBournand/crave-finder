@@ -4,6 +4,7 @@ import { MenuComponent } from './menu/menu.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { SearchResultComponent } from './search-result/search-result.component';
+import { UserRegistrationComponent } from './user-registration/user-registration.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -11,7 +12,8 @@ const routes: Routes = [
   {path: 'login', component: LoginPageComponent},
   {path: 'search-results/:name', component: MenuComponent},
   {path: 'login', component: LoginPageComponent},
-  {path: 'search-results', component: SearchResultComponent}
+  {path: 'search-results', component: SearchResultComponent},
+  {path: 'register', component: UserRegistrationComponent} 
 ];
 
 @NgModule({

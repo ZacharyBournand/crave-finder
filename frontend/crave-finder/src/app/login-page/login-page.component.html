@@ -1,15 +1,15 @@
-<div>
-    <h1>Username</h1>
-    <form>
-        <mat-form-field>
-            <input matInput type="text" [(ngModel)]="username" name="username">
-        </mat-form-field>
-    </form>
-    <h1>Password</h1>
-    <form>
-        <mat-form-field>
-            <input matInput type="text" [(ngModel)]="password" name="password">
-        </mat-form-field>
-    </form>
-    <button mat-raised-button color="accent" (click)="getID()" [routerLink]="['']">Confirm</button>
-</div>
+<form (ngSubmit)="onSubmit($event)">
+    <label>
+      Username:
+      <input type="username" name="username" [(ngModel)]="user.username" required>
+    </label>
+  
+    <label>
+      Password:
+      <input type="password" name="password" [(ngModel)]="user.password" required>
+    </label>
+  
+    <button type="submit">Log In</button>
+</form>
+
+<p>{{ responseMessage }}</p>
