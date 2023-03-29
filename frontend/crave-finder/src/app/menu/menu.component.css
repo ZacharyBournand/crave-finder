@@ -29,6 +29,23 @@
     font-size: 30px;
 }
 
+.category-name
+{
+    height: auto;
+    margin-left: 55px;
+    /* Nothing right now... */
+}
+
+.scroll-button
+{
+    height: 120px;
+    background-color: #D3D3D3;    
+    color: black;
+    border-style: solid;
+    border-radius: 8px;
+    border-width: 1px;
+}
+
 #custom-container
 {
     display: flex;
@@ -36,7 +53,6 @@
 
 #menu-box
 {
-    height: auto;
     display: block;
     width: 300px;
     height: 120px;

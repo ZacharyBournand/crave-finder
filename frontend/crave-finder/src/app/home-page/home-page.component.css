@@ -4,17 +4,20 @@ div {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    overflow:hidden;
+    overflow: hidden;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 .slider-ltr {
-    top: 15%;
-    text-align: center;
+    top: 11%;
     overflow: hidden;
-    position: absolute;
+    position: fixed;
     animation: linear scroll 20s infinite;
     height: 700px;
-    width: 9982px;
+    width: auto;
     transform: translate3d(-25%, 0, 0);
 }
 
@@ -22,4 +25,34 @@ div {
     100% {
         transform: translateX(-92%)
     }
+}
+
+#search-area
+{
+    height: 200px;
+    width: 1083.86px;
+    display: flex;
+}
+
+#search-bar
+{
+    text-align: start;
+    margin-top: 12px;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+}
+
+#search-button
+{
+    transform: translateX(458.07px) translateY(-23px);
+    margin-right: 40px;
+    text-align: end;
+    z-index: 1;
+}
+
+.mat-mdc-raised-button
+{
+    width: 83.86px;
+    height: 47px;
 }

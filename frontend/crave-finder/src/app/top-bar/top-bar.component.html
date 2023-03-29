@@ -1,7 +1,13 @@
 <a [routerLink]="['/']">
   <h1>Crave Finder</h1>
 </a>
-<app-nav-menu></app-nav-menu>
-  
-  <!-- <a class="button fancy-button"><i class="material-icons"></i>Checkout</a> -->
+<ng-container *ngIf="isLoggedIn; else showLoginButton">
+  <app-nav-menu></app-nav-menu>
+</ng-container>
+<ng-template #showLoginButton>
+  <div>
+    <button mat-raised-button color="accent" [routerLink]="['register']">Sign Up</button>
+    <button mat-raised-button color="accent" [routerLink]="['login']">Log In</button>
+  </div>
+</ng-template>
   
