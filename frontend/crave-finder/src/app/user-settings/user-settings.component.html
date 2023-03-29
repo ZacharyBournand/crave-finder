@@ -1,0 +1,16 @@
+<h1>Change Passwords for {{user.username}}</h1>
+<form (ngSubmit)="onSubmit($event)">
+    <label>
+      Old Password:
+      <input type="oldPassword" name="oldPassword" [(ngModel)]="passChange.oldPassword" required>
+    </label>
+  
+    <label>
+      New Password:
+      <input type="newPassword" name="newPassword" [(ngModel)]="passChange.newPassword" required>
+    </label>
+  
+    <button type="submit">Register</button>
+</form>
+
+<p>{{ responseMessage }}</p>

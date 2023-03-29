@@ -24,6 +24,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { UserRatingComponent } from './user-rating/user-rating.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { UserRatingComponent } from './user-rating/user-rating.component';
     UserRegistrationComponent,
     ReviewsPageComponent,
     UserRatingComponent,
+    UserSettingsComponent,
   ],
   imports: [
     BrowserModule,

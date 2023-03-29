@@ -7,6 +7,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { UserRatingComponent } from './user-rating/user-rating.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
@@ -17,7 +18,8 @@ const routes: Routes = [
   {path: 'search-results', component: SearchResultComponent},
   {path: 'register', component: UserRegistrationComponent},
   {path: 'reviews', component: ReviewsPageComponent},
-  {path: 'reviews/:name', component: UserRatingComponent} 
+  {path: 'reviews/:name', component: UserRatingComponent} ,
+  {path: 'settings', component: UserSettingsComponent}
 ];
 
 @NgModule({
