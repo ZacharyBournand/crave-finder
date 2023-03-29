@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { restaurants, Restaurant } from '../restaurants';
+import { ratings, Restaurant } from '../userrating';
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css'],
+  selector: 'app-user-rating',
+  templateUrl: './user-rating.component.html',
+  styleUrls: ['./user-rating.component.css']
 })
-export class MenuComponent implements OnInit{
+export class UserRatingComponent {
   restaurant !: Restaurant;
   
   constructor(private route: ActivatedRoute) { }
@@ -15,7 +15,7 @@ export class MenuComponent implements OnInit{
   ngOnInit(): void {
 
     const name = this.route.snapshot.paramMap.get('name');
-    let restaurant_check = restaurants.find(r => r.name === name);
+    let restaurant_check = ratings.find(r => r.name === name);
     if (restaurant_check)
     {
       this.restaurant = restaurant_check as Restaurant;

@@ -1,3 +1,5 @@
+<h1>{{user.username}}'s Reviews</h1>
+
 <div class="search" *ngFor="let Restaurant of restaurantList; index as i">
     <ul>
         <li class="results"> <a [routerLink]="[Restaurant.name]">{{Restaurant.name}}</a> </li>
