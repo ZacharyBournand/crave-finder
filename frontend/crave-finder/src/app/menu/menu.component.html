@@ -18,8 +18,12 @@
 <div *ngFor="let category of restaurant.categories; index as i">
     <h1 class="category-name">{{restaurant.categories[i].name}}</h1>
     <div style="display: flex;">
-        <div *ngFor="let dish of restaurant.categories[i].dishes">
-            <div id="menu-box">
+        <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] - 1) >= 0 ? '1' : '0.5'}" 
+        [disabled]="(dishIndex[i] - 1) < 0"
+        (click)="lessDishes(i)">
+        &lt;</button>
+        <div *ngFor="let dish of restaurant.categories[i].dishes.slice(dishIndex[i], dishIndex[i] + 4); index as j">
+            <div id="menu-box" *ngIf="j<4">
                 <div id="menu-box-box">
                     <div class="header">
                         <div class="left=side">
@@ -42,9 +46,14 @@
                             <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="true"></ngb-rating>
                         </div>
                     </div>
+
                 </div>
             </div>
-            
         </div>
+        <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] + 4) < restaurant.categories[i].dishes.length ? '1' : '0.5'}" 
+        (click)="moreDishes(i)"
+        [disabled]="(dishIndex[i] + 4) >= restaurant.categories[i].dishes.length">
+        &gt;</button>
+
     </div>
 </div>

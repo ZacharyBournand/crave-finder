@@ -1,0 +1,16 @@
+<img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
+<div>
+    <button mat-raised-button color="accent" [routerLink]="['register']">Sign Up</button>
+    <button mat-raised-button color="accent" [routerLink]="['login']">Log In</button>
+<form autocomplete="off">
+    <mat-form-field>
+        <input matInput [(ngModel)]="search" name="search" placeholder="What are you craving?">
+    </mat-form-field>
+</form>
+<button mat-raised-button color="accent" (click)="getSearch()" [matMenuTriggerFor]="searchType">Search</button>
+
+<mat-menu #searchType="matMenu" yPosition="below">
+    <button mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getCriteria('name')" [matMenuTriggerFor]="criteria">Restaurant</button>
+    <button mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getCriteria('dish')" [matMenuTriggerFor]="criteria">Dish</button>
+</mat-menu>
+</div>

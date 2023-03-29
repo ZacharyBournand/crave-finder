@@ -1,0 +1,50 @@
+<h2 class="restaurant-name">{{restaurant.name}}</h2>
+
+<h1 id="restaurant-reviews">
+    <div class="restaurant-rating-overall">
+        Cleanliness: 
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating1" [readonly]="false"></ngb-rating>
+    </div>
+    <div class="restaurant-rating-overall">
+        Service: 
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating2" [readonly]="false"></ngb-rating>
+    </div>
+    <div class="restaurant-rating-overall">
+        Food: 
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating3" [readonly]="false"></ngb-rating>
+    </div>
+</h1>
+
+<div *ngFor="let category of restaurant.categories; index as i">
+    <h1 class="category-name">{{restaurant.categories[i].name}}</h1>
+    <div style="display: flex;">
+        <div *ngFor="let dish of restaurant.categories[i].dishes">
+            <div id="menu-box">
+                <div id="menu-box-box">
+                    <div class="header">
+                        <div class="left=side">
+                            <a class="dish-name" [title] = "dish.name + ' details'">
+                                {{dish.name}}
+                            </a>
+    
+                            <h3 class="dish-price">
+                                {{dish.price}}
+                            </h3>
+                        </div>
+                    </div>
+    
+                    <h3 class="dish-description">
+                        {{dish.description}}
+                    </h3>
+                    
+                    <div style="height: 100%">
+                        <div id="dish-rating">
+                            <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="false"></ngb-rating>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

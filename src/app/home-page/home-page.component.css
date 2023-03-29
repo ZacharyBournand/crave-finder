@@ -1,0 +1,25 @@
+div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    overflow:hidden;
+}
+
+.slider-ltr {
+    top: 15%;
+    text-align: center;
+    overflow: hidden;
+    position: absolute;
+    animation: linear scroll 20s infinite;
+    height: 700px;
+    width: 9982px;
+    transform: translate3d(-25%, 0, 0);
+}
+
+@keyframes scroll {
+    100% {
+        transform: translateX(-92%)
+    }
+}

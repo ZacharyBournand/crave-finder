@@ -12,6 +12,7 @@ export class NavMenuComponent {
 
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 //import { AuthService } from '../auth.service';
 
 @Component({
@@ -23,6 +24,8 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 export class NavMenuComponent /*implements AfterViewInit*/ {
   responseMessage: string = '';
 
+  isLoggedIn: boolean;
+
   user = {
     username: '',
     password: ''
@@ -30,7 +33,10 @@ export class NavMenuComponent /*implements AfterViewInit*/ {
 
   @ViewChild('refLogoutLink', { static: false, read: ElementRef }) logoutLink!: ElementRef;
 
-  constructor(private http: HttpClient/*, private renderer: Renderer2, private el: ElementRef*/) {}
+  constructor(private http: HttpClient, private router: Router/*, private renderer: Renderer2, private el: ElementRef*/) 
+  {
+    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  }
 
   ngAfterViewInit() {
     const logoutLink = document.querySelector('a.logout') as HTMLElement;
@@ -54,6 +60,9 @@ export class NavMenuComponent /*implements AfterViewInit*/ {
     this.http.post('http://localhost:8080/logout', {}).subscribe((response: any) => {
       console.log(response);
       this.responseMessage = response.message;
+      this.isLoggedIn = false;
+      localStorage.setItem('isLoggedIn', 'false');
+      window.location.reload();
     });
   }
 }
