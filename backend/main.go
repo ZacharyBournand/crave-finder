@@ -1,4 +1,3 @@
-// This is a Go file
 package main
 
 import (
@@ -26,11 +25,42 @@ type RegisterResponse struct {
 	Message string `json:"message"`
 }
 
+const (
+	// Client ID: jkrOVBPJM5ogNZ2Qi8Teow
+	apiKey = "HUxlll0htBVSD5FPuV4fkOK7Ss8pZHpy7nv-mJ4rEsZIW2AcGi6Q8As3FAy21qvLnItAXhrrEsfqxoW_tcXq5SVEgxJUKDQdyBy7cmlVtRje6qwt6qZisTITHzUjZHYx"
+)
+
+type Dish struct {
+	Name        string `json:"name"`
+	Price       string `json:"price"`
+	Description string `json:"description"`
+}
+
+type Location struct {
+	Address1 string `json:"address1"`
+	Address2 string `json:"address2"`
+	City     string `json:"city"`
+	State    string `json:"state"`
+	ZipCode  string `json:"zip_code"`
+}
+
+type Restaurant struct {
+	ID       int        `json:"id"`
+	Name     string     `json:"name"`
+	Location []Location `json:"location"`
+	Rating   float32    `json:"rating"`
+	Price    string     `json:"price"`
+	Service  string     `json:"service"`
+	Food     string     `json:"food"`
+	Dishes   []Dish     `json:"dishes"`
+}
+
 // Pass the key in via an environment variable to avoid accidentally commi
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 	var err error
+
 	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
 
@@ -48,6 +78,8 @@ func main() {
 
 	f.Println("Successful connection to the database")
 
+	// Handle restaurant search requests
+	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
 	// Call a given function to handle a request to the server
 	http.HandleFunc("/loginauth", loginAuthHandler)
 	http.HandleFunc("/logout", logoutHandler)
@@ -60,6 +92,120 @@ func main() {
 		handlers.AllowedOrigins([]string{"http://localhost:4200"}),
 		handlers.AllowCredentials(),
 	)(http.DefaultServeMux))
+}
+
+func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the search query parameters from the request URL
+	queryParams := r.URL.Query()
+
+	// Extract the search query parameters
+	location := queryParams.Get("location")
+	term := queryParams.Get("term")
+
+	// Build the Yelp Fusion API search endpoint URL
+	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
+	print("URL: ", url)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		f.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		f.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	var data struct {
+		Businesses []struct {
+			Name    string  `json:"name"`
+			Rating  float32 `json:"rating"`
+			Price   string  `json:"price"`
+			Service string  `json:"service"`
+			Food    string  `json:"food"`
+
+			Location []struct {
+				Address1 string `json:"address1"`
+				Address2 string `json:"address2"`
+				City     string `json:"city"`
+				State    string `json:"state"`
+				ZipCode  string `json:"zip_code"`
+			} `json:"locations"`
+
+			Dishes []struct {
+				Name        string `json:"name"`
+				Price       string `json:"price"`
+				Description string `json:"description"`
+			} `json:"dishes"`
+		} `json:"businesses"`
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		f.Println(err)
+		return
+	}
+
+	restaurants := []Restaurant{}
+
+	for _, business := range data.Businesses {
+		dishes := []Dish{}
+		locations := []Location{}
+
+		for _, dish := range business.Dishes {
+			dishes = append(dishes, Dish{
+				Name:        dish.Name,
+				Price:       dish.Price,
+				Description: dish.Description,
+			})
+		}
+
+		for _, loc := range business.Location {
+			locations = append(locations, Location{
+				Address1: loc.Address1,
+				Address2: loc.Address2,
+				City:     loc.City,
+				State:    loc.State,
+				ZipCode:  loc.ZipCode,
+			})
+		}
+
+		restaurants = append(restaurants, Restaurant{
+			Name:     business.Name,
+			Location: locations,
+			Rating:   business.Rating,
+			Price:    business.Price,
+			Service:  business.Service,
+			Food:     business.Food,
+			Dishes:   dishes,
+		})
+	}
+
+	// Set the response header
+	w.Header().Set("Content-Type", "application/json")
+
+	// Convert the restaurants variable to JSON
+	responseJSON, err := json.Marshal(restaurants)
+	if err != nil {
+		f.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Write the response body
+	w.Write(responseJSON)
+
+	f.Println(restaurants)
+	f.Println(responseJSON)
 }
 
 // Create new user in database
