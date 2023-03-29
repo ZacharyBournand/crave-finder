@@ -3,15 +3,15 @@
 <h1 id="restaurant-reviews">
     <div class="restaurant-rating-overall">
         Cleanliness: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating1" [readonly]="false"></ngb-rating>
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating1" [readonly]="true"></ngb-rating>
     </div>
     <div class="restaurant-rating-overall">
         Service: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating2" [readonly]="false"></ngb-rating>
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating2" [readonly]="true"></ngb-rating>
     </div>
     <div class="restaurant-rating-overall">
         Food: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating3" [readonly]="false"></ngb-rating>
+        <ngb-rating [max]="5" [(rate)]="restaurant.rating3" [readonly]="true"></ngb-rating>
     </div>
 </h1>
 
@@ -43,7 +43,7 @@
                     
                     <div style="height: 100%">
                         <div id="dish-rating">
-                            <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="false"></ngb-rating>
+                            <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="true"></ngb-rating>
                         </div>
                     </div>
 
