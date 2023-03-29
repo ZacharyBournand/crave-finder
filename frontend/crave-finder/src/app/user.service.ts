@@ -12,8 +12,10 @@ export class UserService {
 
   constructor() { }
 
+
   setUser(newUser: any) {
     this.user.next(newUser);
+
   }
 
 }

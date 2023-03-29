@@ -22,6 +22,8 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
+import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
+import { UserRatingComponent } from './user-rating/user-rating.component';
 
 
 @NgModule({
@@ -34,6 +36,8 @@ import { UserRegistrationComponent } from './user-registration/user-registration
     LoginPageComponent,
     SearchResultComponent,
     UserRegistrationComponent,
+    ReviewsPageComponent,
+    UserRatingComponent,
   ],
   imports: [
     BrowserModule,

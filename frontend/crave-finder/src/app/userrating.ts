@@ -21,14 +21,15 @@ export interface Restaurant {
     rating3: number;
     categories: Array<Category>;
 }
-  
-  export const restaurants = [
+
+
+  export const ratings = [
     {
         id: 1,
         name: 'CraveEats',
-        rating1: 1,
-        rating2: 2,
-        rating3: 3,
+        rating1: 0,
+        rating2: 5,
+        rating3: 0,
         categories: 
         [
             {
