@@ -80,10 +80,14 @@ func main() {
 
 	// Handle restaurant search requests
 	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
-	// Call a given function to handle a request to the server
+	// Handle login requests
 	http.HandleFunc("/loginauth", loginAuthHandler)
+	// Handle logout requests
 	http.HandleFunc("/logout", logoutHandler)
+	// Handle account registration requests
 	http.HandleFunc("/registerauth", registerAuthHandler)
+	// Handle password change requests
+	http.HandleFunc("/passwordauth", passwordAuthHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -104,7 +108,6 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Build the Yelp Fusion API search endpoint URL
 	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
-	print("URL: ", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -205,7 +208,6 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(responseJSON)
 
 	f.Println(restaurants)
-	f.Println(responseJSON)
 }
 
 // Create new user in database
@@ -407,5 +409,57 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	response := RegisterResponse{Message: "Logged out"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("passwordAuthHandler is running")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Get the first 2 form values
+	username := user.Username
+	password := user.Password
+
+	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
+	var id, hash string
+	statement := "SELECT id, hash FROM users WHERE username = ?"
+	row := db.QueryRow(statement, username)
+	err = row.Scan(&id, &hash)
+
+	// If an error occurs scanning the hash, display the error
+	if err != nil {
+		f.Println("error selecting hash in db by username")
+
+		response := RegisterResponse{Message: "Check username and password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Compare the hash with the password
+	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	// Display a successful message if there are no errors
+	if err == nil {
+		response := RegisterResponse{Message: "Account credentials confirmed! Please click on the button below to change your password."}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	f.Println("Incorrect password")
+
+	response := RegisterResponse{Message: "Check password"}
 	json.NewEncoder(w).Encode(response)
 }

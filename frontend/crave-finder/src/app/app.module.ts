@@ -23,6 +23,8 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { NewPasswordComponent } from './new-password/new-password.component';
 
 
 @NgModule({
@@ -35,6 +37,8 @@ import { UserRegistrationComponent } from './user-registration/user-registration
     LoginPageComponent,
     SearchResultComponent,
     UserRegistrationComponent,
+    UserSettingsComponent,
+    NewPasswordComponent,
   ],
   imports: [
     BrowserModule,

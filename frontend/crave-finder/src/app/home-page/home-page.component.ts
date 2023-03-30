@@ -13,7 +13,7 @@ export class HomePageComponent {
   search : any;
 
   getSearch() {
-    console.log(this.search); // For testing/demonstration purpose
+    console.log(this.search);
     this.appService.setSearch(this.search);
   }
 
