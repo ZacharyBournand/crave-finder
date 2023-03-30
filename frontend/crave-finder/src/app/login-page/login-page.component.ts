@@ -34,6 +34,7 @@ export class LoginPageComponent{
         this.UserService.setUser(this.user);
         this.isLoggedIn = true;
         localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userinfo', this.user.username);
         console.log(this.isLoggedIn);
         this.router.navigate(['/']);
         // TODO: Make sure top bar is updated when ever a login is successful!

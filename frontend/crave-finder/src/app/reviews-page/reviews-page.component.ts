@@ -9,10 +9,11 @@ import { Restaurant, ratings } from '../userrating';
 })
 export class ReviewsPageComponent implements OnInit{
 
-  user: any;
+  username: any;
   restaurantList : Array<any> = [];
   constructor(private UserService:UserService) {
-    this.UserService.getUser.subscribe(usr => this.user = usr);
+    // this.UserService.getUser.subscribe(usr => this.user = usr);
+    this.username = localStorage.getItem('userinfo');
     for (let index = 0; index<ratings.length; index++)
     {
         this.restaurantList.push(ratings[index]);
