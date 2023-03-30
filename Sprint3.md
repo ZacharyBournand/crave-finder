@@ -36,23 +36,23 @@ Home-page component (Cypress tests):
 
 Back End:
 
-Registration:
+Registration
 
 - Created a mock test that runs the user registration functionality to see if the function can run correctly. 
 
-Login Test:
+Login Test
 
 - Created a mock test that runs the login functionality to see if the function can run correctly. 
 
-Logout Test:
+Logout Test
 
 - Created a mock test that runs the logout functionality to see if the function can run correctly.
 
-Search Test:
+Search Test
 
 - Created a mock test that runs the search functionality to see if the function can run correctly.
 
-Rating Test:
+Rating Test
 
 - Created a mock test that runs the rating functionality to see if the function can run correctly.
 
