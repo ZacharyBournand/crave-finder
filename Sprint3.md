@@ -68,6 +68,10 @@ Variables
 - store: It holds and handles a session created using gorilla/sessions.
 
 
+Consts
+- apiKey: It holds the key that is used to athenticate and identify the client when interacting with the Yelp Fusion API.
+
+
 Structs
 - User: It contains the username and password of a user that are JSON-encoded and stored as strings.
 - RegisterResponse: It contains a JSON-encoded message field that stores a success message or an error message depending on the outcome of the task.
