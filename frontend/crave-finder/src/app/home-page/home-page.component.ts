@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AppService } from '../app.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-home-page',
@@ -8,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent {
+  searchControl = new FormControl('');
 
   constructor(private appService:AppService) {}
 
