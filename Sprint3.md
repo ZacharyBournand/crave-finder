@@ -23,7 +23,7 @@ Back End:
 
 Front End:
 
-Home-page component (Cypress tests):
+Home-page component (Cypress tests)
 - Tests if the homepage component (specifically the search bar and buttons) render properly.
 - Tests if the search bar takes an input properly. Nav-menu component:
 - Tests if the button renders properly.
