@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ratings, Restaurant } from '../userrating';
+import { HttpClient } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-user-rating',
@@ -9,8 +12,13 @@ import { ratings, Restaurant } from '../userrating';
 })
 export class UserRatingComponent {
   restaurant !: Restaurant;
+  username: any
+  password: any
+
   
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  responseMessage: string = '';
+
 
   ngOnInit(): void {
 
@@ -20,5 +28,15 @@ export class UserRatingComponent {
     {
       this.restaurant = restaurant_check as Restaurant;
     }
+  }
+
+  getClick() {
+    this.username = localStorage.getItem('userinfo');
+    this.password = localStorage.getItem('userinfo2');
+    
+    this.http.post('http://localhost:8080/rating', [this.username, this.password]).subscribe((response: any) => {
+      console.log(response),
+      this.responseMessage = response.message
+    });
   }
 }
