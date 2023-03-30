@@ -12,7 +12,7 @@ export class NavMenuComponent {
 
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 //import { AuthService } from '../auth.service';
 
 @Component({
@@ -53,6 +53,11 @@ export class NavMenuComponent /*implements AfterViewInit*/ {
   /*getStatus(): boolean {
     return this.authService.isLoggedIn();
   }*/
+
+  openMenu(): void
+  {
+    console.log('Menu opened');
+  }
 
   logout(): void {
     // Log the user out

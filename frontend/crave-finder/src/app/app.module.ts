@@ -1,10 +1,11 @@
 // Core Angular
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 // Angular Materials
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +26,6 @@ import { UserRegistrationComponent } from './user-registration/user-registration
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { UserRatingComponent } from './user-rating/user-rating.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
-import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -43,9 +43,10 @@ import { RouterModule } from '@angular/router';
     UserSettingsComponent,
   ],
   imports: [
+    RouterModule,
+    AppRoutingModule,
     BrowserModule,
     FormsModule,
-    AppRoutingModule,
     MatMenuModule,
     BrowserAnimationsModule,
     MatButtonModule,
@@ -53,9 +54,9 @@ import { RouterModule } from '@angular/router';
     NgbModule,
     FormsModule,
     MatCheckboxModule,
-    HttpClientModule,
-    RouterModule
+    HttpClientModule
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,6 @@
-<button mat-raised-button color="accent" [matMenuTriggerFor]="navMenu">Account</button>
+<button mat-raised-button (click)="openMenu()" color="accent" [matMenuTriggerFor]="navMenu">Account</button>
 
-<mat-menu #navMenu="matMenu" yPosition="below" >
+<mat-menu #navMenu="matMenu" yPosition="below"  >
     <a [routerLink]="['/']" mat-menu-item>Favorites</a>
     <a [routerLink]="['reviews']" mat-menu-item>Reviews</a>
     <a [routerLink]="['settings']" mat-menu-item>Settings</a>
