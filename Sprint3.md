@@ -24,15 +24,20 @@ Back End:
 Front End:
 
 Home-page component
-- Tests if the homepage component (specifically the search bar and buttons) render properly.
-- Tests if the search bar takes an input properly. Nav-menu component:
+- Tests if the search bar renders properly.
+- Tests if search filter buttons render properly after clicking "search".
+Nav-menu component:
 - Tests if the button renders properly.
-- Tests to see if the drop-down menu becomes visible after clicking on the nav-menu. Login-page component:
-- (Cypress - From Sprint 2)
-  - Tests if the username box takes an input properly.
-  - Tests if the password box takes an input properly. User-registration component:
-  - Tests if the username box takes an input properly.
-  - Tests if the password box takes an input properly.
+- Tests to see if the drop-down menu becomes visible after clicking on the nav-menu. 
+Top-Bar component:
+- Tests to see if clicking on the logo routes back to the homepage.
+(Cypress - From Sprint 2)
+Login-page component:
+- Tests if the username box takes an input properly.
+- Tests if the password box takes an input properly. 
+- User-registration component:
+- Tests if the username box takes an input properly.
+- Tests if the password box takes an input properly.
 
 
 Back End:
