@@ -17,7 +17,6 @@ export class UserSettingsComponent {
     username: '',
     password: '',
   };
-  //user: any
 
   constructor(private http: HttpClient, private UserService: UserService) {}
 
