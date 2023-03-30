@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	f "fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"unicode"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -76,7 +79,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	f.Println("Successful connection to the database")
+	f.Println("Successful connection to the user database")
 
 	// Handle restaurant search requests
 	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
@@ -88,6 +91,8 @@ func main() {
 	http.HandleFunc("/registerauth", registerAuthHandler)
 	// Handle password change requests
 	http.HandleFunc("/passwordauth", passwordAuthHandler)
+	// Handle rating requests
+	http.HandleFunc("/rating", ratingHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -410,6 +415,75 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := RegisterResponse{Message: "Logged out"}
 	json.NewEncoder(w).Encode(response)
+}
+
+func ratingHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("ratingHandler running")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	file, err := os.Open("menu.component.html")
+	if err != nil {
+		f.Println("Error storing your ratings")
+		return
+	}
+	defer file.Close()
+
+	doc, err := goquery.NewDocumentFromReader(file)
+	if err != nil {
+		f.Println("Error parsing html file", err)
+		return
+	}
+
+	var dishRating, dishName string
+
+	restaurantName := doc.Find(".restaurant-name")
+
+	doc.Find("#menu-box-box").Each(func(i int, s *goquery.Selection) {
+		dishName = s.Find(".dish-name").Text()
+		dishRating = s.Find("#dish-rating").Find("ngb-rating").AttrOr("rate", "0")
+
+	})
+
+	var user User
+
+	err = json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	username := user.Username
+	rating, err := strconv.Atoi(dishRating)
+
+	// Retrive the id for the given username
+	var id int
+	statement := "SELECT id FROM users WHERE username = ?"
+	row := db.QueryRow(statement, username)
+	row.Scan(&id)
+
+	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user idd
+	var insertStatement *sql.Stmt
+	insertStatement, err = db.Prepare("INSERT INTO ratings (rating, Restaurant, Food, User_id) VALUES (?, ?);")
+
+	// If an error occurred, display an error message
+	if err != nil {
+		f.Println("Error preparing the statement: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered storing your rating in our database"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	defer insertStatement.Close()
+
+	// insert food, rating, restaurant, and user_id
+	var result sql.Result
+	result, err = insertStatement.Exec(rating, restaurantName, dishName, id)
+	f.Println("result", result)
 }
 
 func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {

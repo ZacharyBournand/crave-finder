@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { restaurants, Restaurant } from '../restaurants';
 
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -21,4 +22,6 @@ export class MenuComponent implements OnInit{
       this.restaurant = restaurant_check as Restaurant;
     }
   }
+
+ 
 }
