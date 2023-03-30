@@ -65,9 +65,10 @@ Demo Video: [https://youtu.be/3y5ngpRvWRM](https://www.youtube.com/watch?v=_PWmE
 
 **GOLANG API DOCUMENTATION**
 
-Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information.
+Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information. It also handles restaurant/food items searches by communicating with the Yelp Fusion API to give the requested information to the front-end. Another functionality almost complete is to handle user ratings by storing them in the MySQL database. And a functionality currently being developed is the ability to handle a password change.
 
 Dependencies
+- PuerkitoBio/goquery
 - gorilla/handlers
 - gorilla/sessions
 - go-sql-driver/mysql
@@ -81,6 +82,9 @@ Variables
 Structs
 - User: It contains the username and password of a user that are JSON-encoded and stored as strings.
 - RegisterResponse: It contains a JSON-encoded message field that stores a success message or an error message depending on the outcome of the task.
+- Dish: It contains the name, price, and decsription of a food item stored in the Yelp Fusion API.
+- Location: It contains a restaurant's 1st & 2nd addresses, city, state, and ZIP code.
+- Restaurant: It contains the ID, name, location, rating, price, service, food category, and dishes offered.
 
 
 Functions
@@ -92,6 +96,12 @@ Functions
 
 - logoutHandler(): It ends the current user session by logging the user out.
 
+- searchRestaurantsHandler(): It handles restaurant and food item searches by acception a POST request with 2 variable: 'location' and 'searchTerm'. It then retrieves information related to the user's inputs from the Yelp Fusion API and sends it back to the front-end.
+
+- ratingHandler(): It is supposed to store a user's rating of a food item by accepting a POST request with a JSON payload containing information about the user who is submitting the rating. It then retrieves the user's ID from the MySQL "users" table and inserts the rating into another MySQL table called "ratings".
+
+- passwordAuthHandler(): It handles password changes for existing accounts by accepting a POST request with a User object; it then checks if the given username and password match an account in the database. If so, it is supposed to send the user a valid response message giving them the possibility to change their password.
+
 
 Endpoints
 - POST /registerauth: It handles user registration by receiving a User object (JSON-encoded) in the request body and responding with a RegisterResponse object (JSON-encoded) containing a success or error message depending on the task's outcome.
@@ -99,6 +109,10 @@ Endpoints
 - POST /loginauth: It handles user login by receiving a User object (JSON-encoded) in the request body and responding with a session cookie if the user is successfully authenticated.
 
 - POST /logout: It handles user logout by getting a valid session cookie in the request; it then ends the current user session.
+
+- GET /restaurants/search: It handles search requests by extracting the search query parameters (location, term) from the request URL. It then sends a GET request to the Yelp API and decodes the JSON response into a struct. Then, it converts the struct into JSON format and writes the response to the HTTP response writer.
+
+- POST /rating: It handles the storage of users' ratings for a particular dish in a database. It parses an HTML file called "menu.component.html" and extract the name of the restaurant, the name of the dish that the user is rating, and the rating value selected by the user. Next, the function decodes the JSON data in the request body into a User struct. Then, it inserts the rating information into the database.
 
 
 Running the API
