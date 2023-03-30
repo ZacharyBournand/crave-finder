@@ -25,6 +25,7 @@ import { UserRegistrationComponent } from './user-registration/user-registration
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { UserRatingComponent } from './user-rating/user-rating.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
     NgbModule,
     FormsModule,
     MatCheckboxModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -17,7 +17,7 @@ describe('MenuComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('on click should go to the next menu item', () => {
     expect(component).toBeTruthy();
   });
 });

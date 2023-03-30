@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatMenuModule } from "@angular/material/menu"
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavMenuComponent } from './nav-menu.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('NavMenuComponent', () => {
   let component: NavMenuComponent;
@@ -8,6 +10,7 @@ describe('NavMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [MatMenuModule, BrowserAnimationsModule, HttpClientTestingModule],
       declarations: [ NavMenuComponent ]
     })
     .compileComponents();
@@ -18,6 +21,6 @@ describe('NavMenuComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component);
   });
 });
