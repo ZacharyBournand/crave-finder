@@ -144,3 +144,31 @@ func TestLogoutHandler(t *testing.T) {
 			response.Message, expectedMessage)
 	}
 }
+
+func TestRatingHandler(t *testing.T) {
+	// create a mock http.ResponseWriter
+	w := httptest.NewRecorder()
+
+	// create a mock http.Request with a POST method and a request body
+	jsonStr := []byte(`{"username": "john_doe"}`)
+	req, err := http.NewRequest("POST", "/rate", bytes.NewBuffer(jsonStr))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// call the ratingHandler function
+	ratingHandler(w, req)
+
+	// check the response status code
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+
+	// check that the result was written to the response
+	expected := "result"
+	if !strings.Contains(w.Body.String(), expected) {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			w.Body.String(), expected)
+	}
+}

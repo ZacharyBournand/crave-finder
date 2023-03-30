@@ -449,16 +449,13 @@ func ratingHandler(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow(statement, username)
 	row.Scan(&id)
 
-	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user idd
+	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user id
 	var insertStatement *sql.Stmt
 	insertStatement, err = db.Prepare("INSERT INTO ratings (rating, Restaurant, Food, User_id) VALUES (?, ?);")
 
 	// If an error occurred, display an error message
 	if err != nil {
 		f.Println("Error preparing the statement: ", err)
-
-		response := RegisterResponse{Message: "An issue was encountered storing your rating in our database"}
-		json.NewEncoder(w).Encode(response)
 		return
 	}
 	defer insertStatement.Close()
