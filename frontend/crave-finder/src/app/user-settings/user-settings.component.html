@@ -1,4 +1,4 @@
-<h1>Change Passwords for {{user.username}}</h1>
+<h1>Change Password for {{user.username}}</h1>
 <form (ngSubmit)="onSubmit($event)">
     <label>
         Username:
@@ -6,11 +6,13 @@
     </label>
     
     <label>
-        Old Password:
+        Current Password:
         <input type="password" name="password" [(ngModel)]="user.password" required>
     </label>
     
-    <button class="show-button" [routerLink]="['newPassword']"  *ngIf="buttonVisible">Submit</button>
+    <button class="show-button">Submit</button>
 </form>
 
 <p>{{ responseMessage }}</p>
+
+<button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button>

@@ -86,8 +86,10 @@ func main() {
 	http.HandleFunc("/logout", logoutHandler)
 	// Handle account registration requests
 	http.HandleFunc("/registerauth", registerAuthHandler)
-	// Handle password change requests
+	// Handle account authentication to change password
 	http.HandleFunc("/passwordauth", passwordAuthHandler)
+	// Handle password change requests
+	http.HandleFunc("/passwordchange", newPasswordHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -461,5 +463,101 @@ func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("Incorrect password")
 
 	response := RegisterResponse{Message: "Check password"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("passwordAuthHandler is running")
+
+	// Check if the HTTP method is POST
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Decode the JSON request body into a User struct
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	// If there was an error decoding the JSON, return an error response
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Extract the username and password from the User struct
+	username := user.Username
+	password := user.Password
+
+	// Check the password
+	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
+	passwordNoSpaces = true
+
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			passwordLowerCase = true
+		case unicode.IsUpper(char):
+			passwordUpperCase = true
+		case unicode.IsNumber(char):
+			passwordNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			passwordSpecial = true
+		case unicode.IsSpace(int32(char)):
+			passwordNoSpaces = false
+		}
+	}
+
+	if 5 < len(password) && len(password) < 50 {
+		passwordLength = true
+	}
+
+	f.Println("\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
+
+	// If the password doesn't meet the requirements, return an error response
+	if !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
+		response := RegisterResponse{Message: "Invalid password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Create a hash form of the password
+	var hash []byte
+
+	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		f.Println("bcrypt error: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Update the user's password in the database
+	statement := "UPDATE users SET hash = ? WHERE username = ?"
+
+	result, err := db.Exec(statement, hash, username)
+
+	if err != nil {
+		f.Println("Error updating user's password: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered while updating the password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Check if the update affected any rows in the database
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		f.Println("User not found: ", username)
+
+		response := RegisterResponse{Message: "User not found"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If the update was successful, return a success response
+	response := RegisterResponse{Message: "Password updated successfully"}
 	json.NewEncoder(w).Encode(response)
 }
