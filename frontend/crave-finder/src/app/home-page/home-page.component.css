@@ -4,6 +4,7 @@ div {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    overflow: hidden
 }
 
 p {
@@ -17,10 +18,10 @@ p {
 }
 
 .slider-ltr {
-    top: 15%;
+    top: 11%;
     text-align: center;
     overflow: hidden;
-    position: absolute;
+    position: fixed;
     animation: linear scroll 20s infinite;
     height: 700px;
     width: 9982px;
