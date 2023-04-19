@@ -1,50 +1,46 @@
-<h2 class="restaurant-name">{{restaurant.name}}</h2>
+<h2 class="restaurant-name">{{restaurantName}}</h2>
 
-<h1 id="restaurant-reviews">
-    <div class="restaurant-rating-overall">
-        Cleanliness: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating1" [readonly]="false"></ngb-rating>
-    </div>
-    <div class="restaurant-rating-overall">
-        Service: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating2" [readonly]="false"></ngb-rating>
-    </div>
-    <div class="restaurant-rating-overall">
-        Food: 
-        <ngb-rating [max]="5" [(rate)]="restaurant.rating3" [readonly]="false"></ngb-rating>
-    </div>
-</h1>
-
-<div *ngFor="let category of restaurant.categories; index as i">
-    <h1 class="category-name">{{restaurant.categories[i].name}}</h1>
+<div *ngFor="let category of categories index as i">
+    {{resetCount()}}
+    <h1 class="category-name">{{category}}</h1>
     <div style="display: flex;">
-        <div *ngFor="let dish of restaurant.categories[i].dishes">
-            <div id="menu-box">
-                <div id="menu-box-box">
-                    <div class="header">
-                        <div class="left=side">
-                            <a class="dish-name" [title] = "dish.name + ' details'">
-                                {{dish.name}}
-                            </a>
-    
-                            <h3 class="dish-price">
-                                {{dish.price}}
-                            </h3>
+        <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] - 1) >= 0 ? '1' : '0.5'}" 
+        [disabled]="(dishIndex[i] - 1) < 0"
+        (click)="lessDishes(i)">
+        &lt;</button>
+        <div *ngFor="let dish of menu index as j">
+                <div id="menu-box"*ngIf="(dish.Category == category)">
+                    {{countUp()}}
+                    <div id="menu-box-box">
+                        <div class="header">
+                            <div class="left=side">
+                                <a class="dish-name" [title] = "dish.name + ' details'">
+                                    {{dish.Name}}
+                                </a>
+        
+                                <h3 class="dish-price">
+                                    {{dish.Price}}
+                                </h3>
+                            </div>
                         </div>
-                    </div>
-    
-                    <h3 class="dish-description">
-                        {{dish.description}}
-                    </h3>
-                    
-                    <div style="height: 100%">
-                        <div id="dish-rating">
-                            <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="false"></ngb-rating>
+        
+                        <h3 class="dish-description">
+                            {{dish.Description}}
+                        </h3>
+                        
+                        <div style="height: 100%">
+                            <div id="dish-rating">
+                                <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="true"></ngb-rating>
+                            </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
-            
         </div>
+        <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] + 4) < categorySizes[i] ? '1' : '0.5'}" 
+        (click)="moreDishes(i)"
+        [disabled]="(dishIndex[i] + 4) >= categorySizes[i]">
+        &gt;</button>
+
     </div>
 </div>

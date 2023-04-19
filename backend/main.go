@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	f "fmt"
+	"fmt"
 	"net/http"
 	"unicode"
 
@@ -99,6 +100,8 @@ func main() {
 	http.HandleFunc("/passwordchange", newPasswordHandler)
 	// Handle getting an individual user's ratings request
 	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
+	// Handle page build requests
+	http.HandleFunc("/get-restaurant-info", restaurantBuild)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -614,4 +617,59 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f.Println(string(jsonContent))
+}
+
+func restaurantBuild(w http.ResponseWriter, r *http.Request) {
+	f.Println("restaurantBuilder is running")
+	restaurantName := r.URL.Query().Get("name")
+	fmt.Printf("%s", restaurantName)
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+    rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	type Dish struct {
+		ID          int
+		Name        string
+		Price       float32
+		Description string
+		Rating      int
+		Category    string
+	}
+
+	var dishes []Dish
+
+	for rows.Next() {
+		var dish Dish
+        if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+            fmt.Println(err)
+			return
+        }
+        dishes = append(dishes, dish)
+    }
+
+	fmt.Println(dishes)
+    if err := rows.Err(); err != nil {
+        return
+    }
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(dishes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Print the JSON content in the terminal
+	jsonContent, err := json.Marshal(dishes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println(string(jsonContent))
+
+	return
 }

@@ -9,17 +9,69 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent implements OnInit{
+  dishIndex: number[] = [];
   restaurant !: Restaurant;
+  restaurantName : string = "";
+  menu: any[] = [];
+  categories: string[] = [];
+  categorySizes : number[] = [];
+  counter : number = 0;
+
+  lessDishes(i: number){
+    this.dishIndex[i] -= 1;
+  }
+
+  moreDishes(i: number){
+    this.dishIndex[i] += 1;
+  }
+
+  countUp(){
+    this.counter++;
+  }
+
+  resetCount(){
+    this.counter = 0;
+  }
   
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
 
     const name = this.route.snapshot.paramMap.get('name');
-    let restaurant_check = restaurants.find(r => r.name === name);
-    if (restaurant_check)
-    {
-      this.restaurant = restaurant_check as Restaurant;
+    if (name)
+      this.restaurantName = name;
+
+    const params = new HttpParams()
+      .set('name', this.restaurantName);
+    this.http.get('http://localhost:8080/get-restaurant-info', { params }).subscribe({
+    next: (data: any) => {
+      // Store the restaurants data in a class variable
+      this.menu = data;
+      for (let i = 0; i < this.menu.length; i++)
+      {
+        this.categories.push(this.menu[i].Category);
+      }
+      this.categories = [... new Set(this.categories)];
+
+      this.categorySizes = new Array(this.categories.length).fill(0);
+      this.dishIndex = new Array(this.categories.length).fill(0);
+
+      for (let i = 0; i < this.categories.length; i++)
+      {
+        for (let j = 0; j < this.menu.length; j++)
+        {
+          if (this.menu[j].Category == this.categories[i])
+            this.categorySizes[i]++;
+        }
+        console.log(this.categorySizes)
+      }
+      this.dishIndex = new Array(this.categories.length).fill(0);
+      console.log(this.menu)
+    },
+    error: (error: any) => {
+      console.error(error);
     }
+  })
+
   }
 }

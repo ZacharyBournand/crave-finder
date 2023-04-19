@@ -22,13 +22,13 @@ export interface Restaurant {
     categories: Array<Category>;
 }
   
-  export const restaurants = [
+  export const restaurants : Restaurant[] = [
     {
         id: 1,
         name: 'CraveEats',
-        rating1: 0,
-        rating2: 0,
-        rating3: 0,
+        rating1: 1,
+        rating2: 2,
+        rating3: 3,
         categories: 
         [
             {
@@ -41,21 +41,40 @@ export interface Restaurant {
                         name: 'Calamari',
                         price: 6.99,
                         description: "Fried squid served with a marinara sauce.",
-                        rating: 0
+                        rating: 0,
+                        tags: ['Seafood', 'Fried']
                     },
                     {
                         id: 2,
                         name: 'French Fries',
                         price: 3.99,
                         description: "Delicious and classic. Salty as fuck.",
-                        rating: 0
+                        rating: 0,
+                        tags: ['Fried', 'Fastfood', 'Vegan (probably)']
                     },
                     {
                         id: 3,
                         name: 'Crab Rangoons',
                         price: 8.99,
                         description: 'These are so good no cap.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Fried', 'Top tier']
+                    },
+                    {
+                        id: 4,
+                        name: 'Salad',
+                        price: 3.99,
+                        description: 'Buncha leafy greens.',
+                        rating: 0,
+                        tags: ['Vegan', 'Low calories', 'Healthy']
+                    },
+                    {
+                        id: 5,
+                        name: 'Salad2',
+                        price: 3.99,
+                        description: 'Buncha leafy greens.',
+                        rating: 0,
+                        tags: ['Vegan', 'Low calories', 'Healthy']
                     }
 
                 ]
@@ -70,14 +89,16 @@ export interface Restaurant {
                         name: 'Tomato Soup',
                         price: 4.99,
                         description: 'Tomato, but as a soup.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Soup']
                     },
                     {
                         id: 2,
                         name: 'Clam Chowder',
                         price: 4.99,
                         description: 'Chowder, but with clams.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Soup']
                     }
                 ]
             },
@@ -91,14 +112,16 @@ export interface Restaurant {
                         name: 'Steak',
                         price: 11.99,
                         description: 'Beefy...',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Meat']
                     },
                     {
                         id: 2,
                         name: 'Fried Chicken',
                         price: 9.99,
                         description: 'Chickeny...',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Meat']
                     }
                 ]
             }
@@ -123,21 +146,24 @@ export interface Restaurant {
                         name: 'Cheese',
                         price: 6.99,
                         description: "Literally just a cheesewheel, like in Skyrim.",
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     },
                     {
                         id: 2,
                         name: 'French Fries',
                         price: 3.99,
                         description: "Delicious and classic. Salty as fuck.",
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     },
                     {
                         id: 3,
                         name: 'Crab Rangoons',
                         price: 8.99,
                         description: 'These are so good no cap.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     }
 
                 ]
@@ -152,14 +178,16 @@ export interface Restaurant {
                         name: 'Tomato Soup',
                         price: 4.99,
                         description: 'Tomato, but as a soup.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     },
                     {
                         id: 2,
                         name: 'Clam Chowder',
                         price: 4.99,
                         description: 'Chowder, but with clams.',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     }
                 ]
             },
@@ -173,14 +201,16 @@ export interface Restaurant {
                         name: 'Steak',
                         price: 11.99,
                         description: 'Beefy...',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     },
                     {
                         id: 2,
                         name: 'Fried Chicken',
                         price: 9.99,
                         description: 'Chickeny...',
-                        rating: 0
+                        rating: 0,
+                        tags: ['Food']
                     }
                 ]
             }
