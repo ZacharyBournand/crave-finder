@@ -573,10 +573,28 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the request query parameters
-	userID := r.URL.Query().Get("user_id")
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userID.Close()
+
+	var id int
+	if userID.Next() {
+		if err := userID.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 
 	// Query the ratings table for ratings matching the user ID
-	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", userID)
+	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
