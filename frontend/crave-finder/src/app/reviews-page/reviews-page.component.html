@@ -1,9 +1,11 @@
-<p class="header">My Ratings</p>
+<p class="header">Individual User's Ratings</p>
+<p class="header">{{ username }} Ratings</p>
+
 
 <div class="input-container">
     <label for="user-id-input">Enter Username:</label>
     <input id="user-id-input" type="text" [(ngModel)]="username">
-    <button (click)="getUserRatings()">Get My Ratings</button>
+    <button (click)="getUserRatings()">Get Ratings</button>
 </div>
   
 <table class="ratings-table">
