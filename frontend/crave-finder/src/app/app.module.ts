@@ -18,10 +18,13 @@ import { TopBarComponent } from './top-bar/top-bar.component';
 import { MenuComponent } from './menu/menu.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { RestaurantService } from './restaurant.service';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { NewPasswordComponent } from './new-password/new-password.component';
 
 
 @NgModule({
@@ -34,6 +37,8 @@ import { UserRegistrationComponent } from './user-registration/user-registration
     LoginPageComponent,
     SearchResultComponent,
     UserRegistrationComponent,
+    UserSettingsComponent,
+    NewPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +53,7 @@ import { UserRegistrationComponent } from './user-registration/user-registration
     MatCheckboxModule,
     HttpClientModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [RestaurantService],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
