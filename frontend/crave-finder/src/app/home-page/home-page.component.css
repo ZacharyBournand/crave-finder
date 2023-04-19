@@ -11,14 +11,15 @@ p {
     background-color: aliceblue;
     padding: 2% 1%;
     font-size: 20px;
+    border-radius: 10px;
     color: #333;
     text-align: center;
-    margin: 40px 0;
+    margin: 20px 0;
     width: 100%;
 }
 
 .slider-ltr {
-    top: 11%;
+    top: 14%;
     text-align: center;
     overflow: hidden;
     position: fixed;
@@ -32,6 +33,20 @@ p {
     background-color: white;
     width: 100%;
     height: 100%;
+}
+
+button {
+    width: 40%;
+    font-size: 15px;
+}
+
+.bottom {
+    width: 100%;
+    height: 128px;
+    position: fixed;
+    bottom: 0;
+    background-color:orangered;
+    top: 100%;
 }
 
 @keyframes scroll {
