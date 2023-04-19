@@ -6,6 +6,16 @@ div {
     text-align: left;
 }
 
+h1 {
+    text-align: center;
+}
+
+span {
+
+    padding: 10px;
+    display: block;
+}
+
 form {
     width: 400px;
     padding: 20px;
@@ -46,6 +56,12 @@ p {
     margin-top: 20px;
     font-size: 16px;
     color: #666;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .bottom {

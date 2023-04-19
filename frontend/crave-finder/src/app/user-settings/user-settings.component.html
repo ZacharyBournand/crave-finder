@@ -11,12 +11,15 @@
         <input type="password" name="password" [(ngModel)]="user.password" required>
     </label>
     
+    <span class="center">
     <button type="submit">Submit</button>
+    </span>
 </form>
 
 <p>{{ responseMessage }}</p>
-
-<p> <button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button> </p>
+<span class="center2">
+<p class="center"> <button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button> </p>
+</span>
 </div>
 
 
