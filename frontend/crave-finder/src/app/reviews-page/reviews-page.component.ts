@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 interface Rating {
   rating: number;
   restaurant: string;
@@ -15,12 +14,12 @@ interface Rating {
 })
 export class ReviewsPageComponent {
   ratings: Rating[] = [];
-  userId: string = '';
+  username: string = '';
 
   constructor(private http: HttpClient) { }
 
   getUserRatings() {
-    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=' + this.userId).subscribe(
+    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?username=' + this.username).subscribe(
       data => {
         this.ratings = data;
       },

@@ -576,10 +576,28 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the request query parameters
-	userID := r.URL.Query().Get("user_id")
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userID.Close()
+
+	var id int
+	if userID.Next() {
+		if err := userID.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 
 	// Query the ratings table for ratings matching the user ID
-	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", userID)
+	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -622,7 +640,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	f.Println("restaurantBuilder is running")
 	restaurantName := r.URL.Query().Get("name")
-	fmt.Printf("%s", restaurantName)
+
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
     rows, err := db.Query(query)
 	if err != nil {
@@ -662,14 +680,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	// Print the JSON content in the terminal
-	jsonContent, err := json.Marshal(dishes)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	f.Println(string(jsonContent))
 
 	return
 }
