@@ -11,7 +11,7 @@ import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 
 const routes: Routes = [
   {path: '', component: HomePageComponent},
-  {path: 'search-results/:name', component: MenuComponent},
+  {path: 'restaurant/:name', component: MenuComponent},
   {path: 'login', component: LoginPageComponent},
   {path: 'search-results', component: SearchResultComponent},
   {path: 'register', component: UserRegistrationComponent},

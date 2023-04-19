@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { restaurants, Restaurant } from '../restaurants';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-menu',
@@ -10,7 +11,7 @@ import { restaurants, Restaurant } from '../restaurants';
 export class MenuComponent implements OnInit{
   restaurant !: Restaurant;
   
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit(): void {
 
