@@ -25,6 +25,7 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
+import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { NewPasswordComponent } from './new-password/new-password.component';
     UserRegistrationComponent,
     UserSettingsComponent,
     NewPasswordComponent,
+    ReviewsPageComponent,
   ],
   imports: [
     BrowserModule,

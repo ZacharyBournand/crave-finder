@@ -1,0 +1,24 @@
+<p class="header">My Ratings</p>
+
+<div class="input-container">
+    <label for="user-id-input">Enter User ID:</label>
+    <input id="user-id-input" type="text" [(ngModel)]="userId">
+    <button (click)="getUserRatings()">Get Ratings</button>
+</div>
+  
+<table class="ratings-table">
+    <thead>
+      <tr>
+        <th>Rating</th>
+        <th>Restaurant</th>
+        <th>Food</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rating of ratings">
+        <td>{{ rating.rating }}</td>
+        <td>{{ rating.restaurant }}</td>
+        <td>{{ rating.food }}</td>
+      </tr>
+    </tbody>
+</table>

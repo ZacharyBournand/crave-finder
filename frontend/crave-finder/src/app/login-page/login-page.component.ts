@@ -23,7 +23,10 @@ export class LoginPageComponent{
     this.http.post('http://localhost:8080/loginauth', this.user).subscribe((response: any) => {
       console.log(response),
       this.responseMessage = response.message;
-      this.UserService.setUser(this.user);
+
+      if (this.responseMessage == "Logged in") {
+        this.UserService.setUser(this.user);
+      }
     });
   }
 }

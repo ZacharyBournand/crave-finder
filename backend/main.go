@@ -55,6 +55,13 @@ type Restaurant struct {
 	Dishes   []Dish     `json:"dishes"`
 }
 
+type Rating struct {
+	Rating     int    `json:"rating"`
+	Restaurant string `json:"restaurant"`
+	Food       string `json:"food"`
+	UserId     string `json:"user_id"`
+}
+
 // Pass the key in via an environment variable to avoid accidentally commi
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
@@ -90,6 +97,8 @@ func main() {
 	http.HandleFunc("/passwordauth", passwordAuthHandler)
 	// Handle password change requests
 	http.HandleFunc("/passwordchange", newPasswordHandler)
+	// Handle getting an individual user's ratings request
+	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -560,4 +569,49 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	// If the update was successful, return a success response
 	response := RegisterResponse{Message: "Password updated successfully"}
 	json.NewEncoder(w).Encode(response)
+}
+
+func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the user ID from the request query parameters
+	userID := r.URL.Query().Get("user_id")
+
+	// Query the ratings table for ratings matching the user ID
+	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", userID)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Create an array to hold the ratings, restaurants, and food items
+	ratings := []Rating{}
+
+	// Iterate over the rows and add each rating to the array
+	for rows.Next() {
+		var rating Rating
+
+		err := rows.Scan(&rating.Rating, &rating.Restaurant, &rating.Food, &rating.UserId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ratings = append(ratings, rating)
+	}
+
+	// Send the ratings as a JSON response to the client
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Print the JSON content in the terminal
+	jsonContent, err := json.Marshal(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println(string(jsonContent))
 }
