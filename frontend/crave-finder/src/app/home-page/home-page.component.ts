@@ -11,11 +11,17 @@ export class HomePageComponent {
   constructor(private appService:AppService) {}
 
   search : any;
+  criteria : any;
 
   getSearch() {
-    console.log(this.search);
+    console.log(this.search); // For testing/demonstration purpose
     this.appService.setSearch(this.search);
+  }
+  getCriteria(type: string) {
+    this.criteria = type;
+    this.appService.setCriteria(this.criteria);
   }
 
   ngOnInit() {}    
+  
 }

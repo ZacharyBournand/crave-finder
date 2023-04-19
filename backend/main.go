@@ -1,3 +1,4 @@
+// This is a Go file
 package main
 
 import (
@@ -63,7 +64,6 @@ var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 	var err error
-
 	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
 
@@ -83,15 +83,10 @@ func main() {
 
 	// Handle restaurant search requests
 	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
-	// Handle login requests
+	// Call a given function to handle a request to the server
 	http.HandleFunc("/loginauth", loginAuthHandler)
-	// Handle logout requests
 	http.HandleFunc("/logout", logoutHandler)
-	// Handle account registration requests
 	http.HandleFunc("/registerauth", registerAuthHandler)
-	// Handle password change requests
-	http.HandleFunc("/passwordauth", passwordAuthHandler)
-	// Handle rating requests
 	http.HandleFunc("/rating", ratingHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
@@ -104,6 +99,7 @@ func main() {
 }
 
 func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
+
 	// Get the search query parameters from the request URL
 	queryParams := r.URL.Query()
 
@@ -113,6 +109,7 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Build the Yelp Fusion API search endpoint URL
 	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
+	print("URL: ", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -197,20 +194,6 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 			Dishes:   dishes,
 		})
 	}
-
-	// Set the response header
-	w.Header().Set("Content-Type", "application/json")
-
-	// Convert the restaurants variable to JSON
-	responseJSON, err := json.Marshal(restaurants)
-	if err != nil {
-		f.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Write the response body
-	w.Write(responseJSON)
 
 	f.Println(restaurants)
 }
@@ -481,56 +464,4 @@ func ratingHandler(w http.ResponseWriter, r *http.Request) {
 	var result sql.Result
 	result, err = insertStatement.Exec(rating, restaurantName, dishName, id)
 	f.Println("result", result)
-}
-
-func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("passwordAuthHandler is running")
-
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var user User
-
-	err := json.NewDecoder(r.Body).Decode(&user)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Get the first 2 form values
-	username := user.Username
-	password := user.Password
-
-	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
-	var id, hash string
-	statement := "SELECT id, hash FROM users WHERE username = ?"
-	row := db.QueryRow(statement, username)
-	err = row.Scan(&id, &hash)
-
-	// If an error occurs scanning the hash, display the error
-	if err != nil {
-		f.Println("error selecting hash in db by username")
-
-		response := RegisterResponse{Message: "Check username and password"}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
-	// Compare the hash with the password
-	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-
-	// Display a successful message if there are no errors
-	if err == nil {
-		response := RegisterResponse{Message: "Account credentials confirmed! Please click on the button below to change your password."}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-
-	f.Println("Incorrect password")
-
-	response := RegisterResponse{Message: "Check password"}
-	json.NewEncoder(w).Encode(response)
 }
