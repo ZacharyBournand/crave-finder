@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { restaurants, Restaurant } from '../restaurants';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-menu',
@@ -33,7 +35,32 @@ export class MenuComponent implements OnInit{
     this.counter = 0;
   }
   
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private UserService:UserService) { }
+
+  responseMessage: string = '';
+
+  dish = {
+    category: '',
+    name: '',
+    price: '',
+    description: '',
+  };
+
+  dishAdd() {
+    const name = this.route.snapshot.paramMap.get('name');
+    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    {
+
+    }
+  }
+
+  dishRemove() {
+    const name = this.route.snapshot.paramMap.get('name');
+    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    {
+      
+    }
+  }
 
   ngOnInit(): void {
 
