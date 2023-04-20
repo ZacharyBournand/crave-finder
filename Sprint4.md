@@ -2,6 +2,10 @@
 
 Front End:
 - Only display the "Account" button when the user is loggged in by checking when the user is logged in or not in the reviews-page component.
+- Made reviewing dishes on menus accessible to users.
+- Users can now add new restaurants, and add and remove dishes from restaurant menus.
+- Overhauled CSS to be more consistent overall.
+- Linked search results to restaurant menu pages.
 
 Back End:
 - Enabled the user to change their password by creating a Golang function that verifies their initial account's identity. Then another function makes sure their new password meets the requirements.
