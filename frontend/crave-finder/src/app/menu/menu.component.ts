@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { restaurants, Restaurant, Category, Dish } from '../restaurants';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { UserService } from '../user.service'
 import { error } from 'cypress/types/jquery';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -70,6 +70,8 @@ export class MenuComponent implements OnInit{
     const name = this.route.snapshot.paramMap.get('name');
     if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
     {
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
       console.log(this.restaurantName);
       console.log(this.dish.category);
       const params = new HttpParams()
@@ -78,8 +80,15 @@ export class MenuComponent implements OnInit{
       .set('dishname', this.dish.dishname)
       .set('price', this.dish.price)
       .set('description', this.dish.description);
-      this.http.post('http://localhost:8080/add-dish', params ).subscribe(() => {
-        })
+      this.http.post('http://localhost:8080/add-dish', {}, {headers, params} ).subscribe(
+        res => {
+          console.log('Dish added');
+        },
+
+        err => {
+          console.error('Error storing dish', err);
+        }
+      )
     };
   }
 

@@ -756,13 +756,14 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("addDishHandler is running")
-	restaurantName := r.FormValue("name")
-	dishName := r.FormValue("dishname")
-	price := r.FormValue("price")
-	category := r.FormValue("category")
-	description := r.FormValue("description")
+	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+	price := r.URL.Query().Get("price")
+	category := r.URL.Query().Get("category")
+	description := r.URL.Query().Get("description")
 
 	f.Println(restaurantName)
+
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
 	if err != nil {
@@ -773,7 +774,7 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO  + %s +  (dishID, dishName, dishPrice, dishDescription, dishRating, dishCategory) VALUES (?, ?, ?, ?);", restaurantName)) 
+	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, DishRating, DishCategory) VALUES (?, ?, ?, ?, ?);", restaurantName)) 
 	if err != nil {
 		f.Println("Hey")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
