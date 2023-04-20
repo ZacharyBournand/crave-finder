@@ -576,7 +576,7 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
-	// Get the user ID from the request query parameters
+	// Get the username from the request query parameters
 	username := r.URL.Query().Get("username")
 
 	f.Println("Username:", username)
