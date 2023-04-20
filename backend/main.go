@@ -613,63 +613,27 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/*userID := r.URL.Query().Get("user_id")
-// Parsing the request body into the Rating struct
-var rating Rating
-err := json.NewDecoder(r.Body).Decode(&rating)
-
-if err != nil {
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-	return
-}
-
-// Insert rating into ratings table
-stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, user_id) VALUE(?, ?, ?, ?)")
-
-if err != nil {
-	fmt.Println("Error in preparing the statment")
-
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-	return
-}
-
-defer stmt.Close()
-
-result, err := stmt.Exec(rating.Rating, rating.Restaurant, rating.Food, userID)
-fmt.Println("Result:", result)
-
-// If an error occurred, let the user know
-if err != nil {
-	f.Println("Error inserting ratings into database")
-
-	response := RegisterResponse{Message: "An issue was encountered during rating storage"}
-	json.NewEncoder(w).Encode(response)
-	return
-}
-
-/// Get id of newly stored rating
-id, err := result.LastInsertId()
-if err != nil {
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-	return
-}
-
-// Return the ID of the newly inserted rating as a response
-response := struct {
-	ID int64 `json:"id"`
-}{
-	ID: id,
-}
-w.Header().Set("Content-Type", "application/json")
-json.NewEncoder(w).Encode(response)
-
-// Return a success message
-w.WriteHeader(http.StatusOK)
-fmt.Fprintln(w, "Rating added successfully") */
-
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the request query parameters
-	userID := r.URL.Query().Get("user_id")
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userID.Close()
+
+	var id int
+	if userID.Next() {
+		if err := userID.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 
 	// Query the ratings table for ratings matching the user ID
 	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", userID)

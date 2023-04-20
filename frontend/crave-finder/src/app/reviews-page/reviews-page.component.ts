@@ -15,12 +15,12 @@ interface Rating {
 })
 export class ReviewsPageComponent {
   ratings: Rating[] = [];
-  userId: string = '';
+  username: string = '';
 
   constructor(private http: HttpClient) { }
 
   getUserRatings() {
-    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=' + this.userId).subscribe(
+    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=' + this.username).subscribe(
       data => {
         this.ratings = data;
       },
