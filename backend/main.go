@@ -742,7 +742,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
+	
 	// Query the ratings table for ratings matching the user ID
 	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", id)
 

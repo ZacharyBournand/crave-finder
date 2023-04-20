@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 interface Rating {
   rating: number;
   restaurant: string;
@@ -19,7 +20,9 @@ export class ReviewsPageComponent {
   constructor(private http: HttpClient) { }
 
   getUserRatings() {
-    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=' + this.username).subscribe(
+    console.log(this.username);
+    const params = new HttpParams().set('username', this.username);
+    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=', {params}).subscribe(
       data => {
         this.ratings = data;
       },
