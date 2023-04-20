@@ -96,15 +96,17 @@ export class MenuComponent implements OnInit{
     const name = this.route.snapshot.paramMap.get('name');
     if (this.dish.dishname != '')
     {
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
       const params = new HttpParams()
       .set('name', this.restaurantName)
-      .set('category', this.dish.category)
       .set('dishname', this.dish.dishname)
-      .set('price', this.dish.price)
-      .set('description', this.dish.description);
-      this.http.post('http://localhost:8080/remove-dish', {params}).subscribe(() => {
-        
-        })
+      this.http.post('http://localhost:8080/remove-dish', {}, {headers, params}).subscribe(
+        res => {
+        console.log('Dish removed');
+      },
+      err => {
+        console.error('Error removing dish', err);
+      })
     }
   }
 

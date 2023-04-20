@@ -629,19 +629,19 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := map[string]interface{}{
-		"message": "Dish rating stored",
+		"message":      "Dish rating stored",
 		"rowsAffected": rowsAffected,
-	  }
-	  
-	  jsonData, err := json.Marshal(response)
-	  if err != nil {
+	}
+
+	jsonData, err := json.Marshal(response)
+	if err != nil {
 		log.Printf("Error marshaling response to JSON: %v", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
-	  }
-	  
-	  w.Header().Set("Content-Type", "application/json")
-	  w.Write(jsonData)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
 
 }
 
@@ -774,7 +774,7 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, DishRating, DishCategory) VALUES (?, ?, ?, ?, ?);", restaurantName)) 
+	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, DishRating, DishCategory) VALUES (?, ?, ?, ?, ?);", restaurantName))
 	if err != nil {
 		f.Println("Hey")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -828,12 +828,12 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 
 	if dishID != -1 {
 		var deleteStatement *sql.Stmt
-		deleteStatement, err = db.Prepare("DELETE FROM " + restaurantName + " WHERE DishName='" + dishName + "';")
+		deleteStatement, err = db.Prepare("DELETE FROM ? WHERE DishName='?';")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer deleteStatement.Close()
-
+		deleteStatement.Exec(restaurantName, dishName)
 	}
 }
