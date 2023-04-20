@@ -106,6 +106,8 @@ func main() {
 	http.HandleFunc("/add-dish", addDishHandler)
 	// Handles removing dishes to restaurant
 	http.HandleFunc("/remove-dish", removeDishHandler)
+	// Handles submissions of ratings
+	http.HandleFunc("/rating-submit")
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -673,7 +675,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		dishes = append(dishes, dish)
 	}
 
-	fmt.Println(dishes)
 	if err := rows.Err(); err != nil {
 		return
 	}
