@@ -73,15 +73,14 @@ export class MenuComponent implements OnInit{
       params.set('dishname', this.dish.dishname);
       params.set('price', this.dish.price);
       params.set('description', this.dish.description);
-      this.http.post('http://localhost:8080/add-dish', {params}).subscribe((response: any) => {
-        console.log(response);
+      this.http.post('http://localhost:8080/add-dish', {params}).subscribe(() => {
         })
     };
   }
 
   dishRemove() {
     const name = this.route.snapshot.paramMap.get('name');
-    if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
+    if (this.dish.dishname != '')
     {
       const params = new HttpParams();
       params.set('name', this.restaurantName);
@@ -89,6 +88,9 @@ export class MenuComponent implements OnInit{
       params.set('dishname', this.dish.dishname);
       params.set('price', this.dish.price);
       params.set('description', this.dish.description);
+      this.http.post('http://localhost:8080/remove-dish', {params}).subscribe(() => {
+        
+        })
     }
   }
 

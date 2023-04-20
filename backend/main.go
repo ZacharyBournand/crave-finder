@@ -104,6 +104,8 @@ func main() {
 	http.HandleFunc("/get-restaurant-info", restaurantBuild)
 	// Handles adding dishes to restaurant
 	http.HandleFunc("/add-dish", addDishHandler)
+	// Handles removing dishes to restaurant
+	http.HandleFunc("/remove-dish", removeDishHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -718,8 +720,9 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeDishHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("addDishHandler is running")
+	f.Println("removeDishHandler is running")
 	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
 
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
@@ -728,4 +731,37 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer rows.Close()
+
+	type Dish struct {
+		ID          int
+		Name        string
+		Price       float32
+		Description string
+		Rating      int
+		Category    string
+	}
+
+	dishID := -1
+	for rows.Next() {
+		var dish Dish
+		if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+			fmt.Println(err)
+			return
+		}
+		if dish.Name == dishName {
+			dishID = dish.ID
+		}
+	}
+	defer rows.Close()
+
+	if dishID != -1 {
+		var deleteStatement *sql.Stmt
+		deleteStatement, err = db.Prepare("DELETE FROM " + restaurantName + " WHERE DishName='" + dishName + "';")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer deleteStatement.Close()
+
+	}
 }
