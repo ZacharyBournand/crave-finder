@@ -853,5 +853,4 @@ func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f.Println("Result:", result)
-
 }
