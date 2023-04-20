@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../user.service';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-menu',
@@ -50,6 +51,31 @@ export class MenuComponent implements OnInit{
 
 
     this.dialog.open(RateMenuComponent, dialogConfig);
+  }
+
+  responseMessage: string = '';
+
+  dish = {
+    category: '',
+    name: '',
+    price: '',
+    description: '',
+  };
+
+  dishAdd() {
+    const name = this.route.snapshot.paramMap.get('name');
+    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    {
+
+    }
+  }
+
+  dishRemove() {
+    const name = this.route.snapshot.paramMap.get('name');
+    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    {
+      
+    }
   }
 
   ngOnInit(): void {
