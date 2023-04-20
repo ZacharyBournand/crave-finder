@@ -32,6 +32,7 @@ Back-end (Golang)
 - Dylan Bickram
 
 ## How to Run and Use our Application
+**How to Run our Application**
 1. Go to: https://github.com/ZacharyBournand/crave-finder
 
 2. Clone the repository
@@ -66,4 +67,16 @@ Back-end (Golang)
      - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
      - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
      
-6. Have fun!
+**How to Use our Application**
+1. On the Home Page, you can either:
+     - Sign Up
+     - Log In
+     - Search for a Restaurant or Food Item in your chosen City
+2. If you Log In, you get access to the "Account" button at the top right corner that gives 3 options:
+     - "Reviews": you can look up an individual user's ratings
+     - "Change Password": you can change you account's password
+     - "Logout": you can log out 
+3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
+     - Now, you can Add a restaurant's Dish to the Database
+     - You can also Remove a restaurant's Dish from the Database
+     - And you can Create a Dish Rating to the Database
