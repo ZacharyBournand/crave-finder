@@ -3,13 +3,13 @@
 <div class="center">
     <form>
           Category:
-          <input type="category" name="Category"  required>
+          <input type="category" name="category"  [(ngModel)]="dish.category">
           Name:
-          <input type="dishname" name="dishname"  required>
+          <input type="dishname" name="dishname"  [(ngModel)]="dish.dishname">
           Price:
-          <input type="price" name="price"  required>
+          <input type="price" name="price" [(ngModel)]="dish.price">
           Description:
-          <input type="description" name="description"  required>
+          <input type="description" name="description" [(ngModel)]="dish.description">
           <button mat-raised-button color="accent" (click)="dishAdd()">Add Dish</button>
           <button mat-raised-button color="accent" (click)="dishRemove()">Remove Dish</button>
     </form>

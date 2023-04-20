@@ -74,7 +74,9 @@ export class MenuComponent implements OnInit{
       .set('dishname', this.dish.dishname)
       .set('price', this.dish.price)
       .set('description', this.dish.description);
-      this.http.post('http://localhost:8080/add-dish', {params}).subscribe(() => {
+      console.log(this.restaurantName);
+      console.log(this.dish.category);
+      this.http.post('http://localhost:8080/add-dish', { params }).subscribe(() => {
         })
     };
   }
