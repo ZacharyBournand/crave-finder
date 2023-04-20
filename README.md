@@ -44,8 +44,10 @@ Back-end (Golang)
 3. Once in a code editor, open a new terminal (the end of your directory should be "\crave-finder")
     - Go to "frontend" (type "cd frontend) [Now your directory should end with "\crave-finder\frontend"]
     - Type the following commands in your terminal:
-            -- npm install angular
-            -- ng add @ng-bootstrap/ng-bootstrap --force
+     ```
+     npm install angular
+     ng add @ng-bootstrap/ng-bootstrap --force
+     ```
 
 4. Open a new terminal (the end of your directory should also be "\crave-finder")
     - Go to "backend" (type "cd backend) [Now your directory should end with "\crave-finder\backend"]
