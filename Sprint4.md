@@ -6,6 +6,7 @@ Front End:
 Back End:
 - Enabled the user to change their password by creating a Golang function that verifies their initial account's identity. Then another function makes sure their new password meets the requirements.
 - Enabled the user to see an individual user's ratings by creating a Golang function that retrieves a user's ratings and sends it to the front-end, so its ratings can be displayed.
+- Enable user to store their own ratings in a ratings by creating a golang function that stores the current user's ratings and sends it to a MySQL database.
 
 
 
@@ -31,6 +32,10 @@ Back End:
 - Rating Test: Created a mock test that runs the rating functionality to see if the function can run correctly.
 
 - Password Test: Created a mock test that runs the account verification functionality to see if the function can run correctly.
+
+- Store Ratings Test: Created a mock test that runs rating storage functionality to see if the function can run correctly.
+
+- Get Ratings Test: Created a mock test that runs the rating retrival functionality to see if the function can run correctly.
 
 - New Password Test: Created a mock test that runs the new password verification functionality to see if the function can run correctly.
 
