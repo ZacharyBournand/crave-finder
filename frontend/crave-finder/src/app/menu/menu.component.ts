@@ -1,8 +1,9 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { restaurants, Restaurant } from '../restaurants';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { UserService } from '../user.service';
+import { restaurants, Restaurant, Category, Dish } from '../restaurants';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {UserService} from '../user.service'
+import { error } from 'cypress/types/jquery';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { NgForm } from '@angular/forms';
@@ -138,6 +139,28 @@ export class MenuComponent implements OnInit{
       console.error(error);
     }
   })
-
-  }
 }
+  rateDish(dish: Dish, user_id: string) {
+    const url = 'http://localhost:8080/storeRatingAuth';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+    const params = new HttpParams()
+      .set('restaurant', this.restaurant.name)
+      .set('dish', dish.name)
+      .set('rating', dish.rating.toString())
+      .set('user_id', user_id)
+
+    this.http.post(url, {}, {headers, params}).subscribe(
+      res => {
+        console.log('Dish rating stored');
+      },
+
+      err => {
+        console.error('Error storing dish rating', err);
+      }
+
+    );
+    }
+}
+
+

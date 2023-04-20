@@ -191,3 +191,26 @@ func TestSearchRestaurantsHandler(t *testing.T) {
 		t.Errorf("handler returned unexpected body: got %v \n\n want %v", body, expectedBody)
 	}
 }
+
+func TestStoringRatings(t *testing.T) {
+	// Create a mock HTTP request with query parameters
+	req := httptest.NewRequest("POST", "/storeRatingAuth?restaurant=test_restaurant&dish=test_dish&rating=5&user_id=test_user", nil)
+
+	// Create a mock HTTP response writer
+	w := httptest.NewRecorder()
+
+	// Call the storeRatingAuth function with the mock request and response
+	storeUserRating(w, req)
+
+	// Check that the response status code is 200
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected status code 200, but got %d", w.Code)
+	}
+
+	// Check that the response body contains the expected message
+	expected := "Dish rating stored: 1"
+	if w.Body.String() != expected {
+		t.Errorf("Expected response body '%s', but got '%s'", expected, w.Body.String())
+	}
+
+}

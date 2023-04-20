@@ -19,7 +19,7 @@ export class ReviewsPageComponent {
   constructor(private http: HttpClient) { }
 
   getUserRatings() {
-    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?username=' + this.username).subscribe(
+    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=' + this.username).subscribe(
       data => {
         this.ratings = data;
       },

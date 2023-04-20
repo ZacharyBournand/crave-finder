@@ -40,15 +40,15 @@
                                 </h3>
                             </div>
                         </div>
-        
-                        <h3 class="dish-description">
-                            {{dish.Description}}
-                        </h3>
-                        
-                        <div style="height: 100%">
-                            <div id="dish-rating">
-                                <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="true"></ngb-rating>
-                            </div>
+                    </div>
+    
+                    <h3 class="dish-description">
+                        {{dish.description}}
+                    </h3>
+                    
+                    <div style="height: 100%">
+                        <div id="dish-rating">
+                            <ngb-rating id="rating-time" [max]="5" [(rate)]="dish.rating" [readonly]="false" (rateChange) ="rateDish(dish, category)"></ngb-rating>
                         </div>
 
                     </div>
