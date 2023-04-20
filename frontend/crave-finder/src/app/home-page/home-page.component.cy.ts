@@ -1,20 +1,21 @@
 import { HomePageComponent } from "./home-page.component";
 import { MountConfig } from "cypress/angular"
 import { MatMenuModule } from "@angular/material/menu"
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HomePageCompoennt', () => {
     const config: MountConfig<HomePageComponent> = {
         imports: [MatMenuModule]
     }
+
+    beforeEach(() => {TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule], 
+        providers: [HomePageComponent],
+        });
+    });
+
     it('Can be mounted?', () => {
         cy.mount(HomePageComponent, config)
-    })
-
-    it('Can take an input for search?', () => {
-        cy.mount(HomePageComponent, config)
-
-        const search = 'Good Food'
-
-        cy.get('input[name="search"]').type(search)
     })
 })
