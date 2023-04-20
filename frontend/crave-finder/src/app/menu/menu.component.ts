@@ -47,10 +47,11 @@ export class MenuComponent implements OnInit{
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '300px';
-    dialogConfig.height = '400px';
+    dialogConfig.height = '200px';
 
+    const mergedConfig = {... dialogConfig, data: [this.menu, this.restaurantName]}
 
-    this.dialog.open(RateMenuComponent, dialogConfig);
+    this.dialog.open(RateMenuComponent, mergedConfig);
   }
 
   responseMessage: string = '';

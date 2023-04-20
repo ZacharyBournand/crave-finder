@@ -1,8 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Inject} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
-import { NgForm } from '@angular/forms';
+import { FormGroup, NgForm } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
+import {MatDialogModule, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Form } from '@angular/forms';
+import { MenuComponent } from '../menu/menu.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-rate-menu',
@@ -10,9 +18,24 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./rate-menu.component.css']
 })
 export class RateMenuComponent {
+  form: FormGroup;
+  constructor(private http: HttpClient, public userService: UserService, public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.form = new FormGroup({})
+    console.log(data);
+    console.log("Kaeya Balls");
+  }
 
 
-  constructor(private http: HttpClient, public userService: UserService) {}
+  close(): void {
+    this.dialogRef.close();
+    }
 
+  submit(): void {
+    
+  }
+
+    selectedDish: string = "";
+    restaurantName: string = this.data[1];
+    rating: number = 0;
 
 }

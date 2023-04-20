@@ -1,17 +1,6 @@
 <h2 class="restaurant-name">{{restaurantName}}</h2>
-<div class="center">
-    <form>
-          Category:
-          <input type="category" name="Category"  required>
-          Name:
-          <input type="name" name="name"  required>
-          Price:
-          <input type="price" name="price"  required>
-          Description:
-          <input type="description" name="description"  required>
-          <button mat-raised-button color="accent" (click)="dishAdd()">Add Dish</button>
-          <button mat-raised-button color="accent" (click)="dishRemove()">Remove Dish</button>
-    </form>
+<div class="text-center">
+    <button mat-raised-button class="mx-auto" (click)="openDialog()">Click Me To Open Dialog</button>
 </div>
 
 <div *ngFor="let category of categories index as i">
@@ -57,5 +46,4 @@
         &gt;</button>
 
     </div>
-
 </div>
