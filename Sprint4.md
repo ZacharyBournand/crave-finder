@@ -18,7 +18,11 @@ Back End:
 **TESTING**
 
 Front End:
-
+ - Jasmine Tests:
+    - Test for each of 14 components to test creation (no errors loading).
+    - Test for app component to verify correct title
+    
+ - Cypress Tests:
 
 
 
