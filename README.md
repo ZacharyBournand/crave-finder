@@ -63,8 +63,7 @@ Back-end (Golang)
         ```
             
 5. Run the application:
-     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve"
+     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
      - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
-     - Enter the URL "http://localhost:4200/" in a web browser to access our application
      
 6. Have fun!
