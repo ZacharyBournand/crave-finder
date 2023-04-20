@@ -109,8 +109,6 @@ func main() {
 	http.HandleFunc("/add-dish", addDishHandler)
 	// Handles removing dishes to restaurant
 	http.HandleFunc("/remove-dish", removeDishHandler)
-	// Handles submissions of ratings
-	//http.HandleFunc("/rating-submit", addRatingHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -588,24 +586,37 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	restaurant := r.URL.Query().Get("restaurant")
 	food := r.URL.Query().Get("dish")
 	rating := r.URL.Query().Get("rating")
-	user_id := r.URL.Query().Get("user_id")
+	username := r.URL.Query().Get("username")
 
-	// Connect to MySQL database
-	db, err := sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
+	user_id, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	defer db.Close()
+	defer user_id.Close()
+
+	var id int
+	if user_id.Next() {
+		if err := user_id.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 
 	// Insert rating into database
-	stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, user_id) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO ratings (rating, Restaurant, Food, user_id) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-
-	res, err := stmt.Exec(rating, restaurant, food, user_id)
+	f.Println(rating)
+	f.Println(restaurant)
+	f.Println(food)
+	f.Println(id)
+	res, err := stmt.Exec(rating, restaurant, food, id)
 	if err != nil {
+		f.Println("beans")
 		log.Fatal(err)
 	}
 
@@ -617,7 +628,20 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Dish rating stored: %d", rowsAffected)
+	response := map[string]interface{}{
+		"message": "Dish rating stored",
+		"rowsAffected": rowsAffected,
+	  }
+	  
+	  jsonData, err := json.Marshal(response)
+	  if err != nil {
+		log.Printf("Error marshaling response to JSON: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	  }
+	  
+	  w.Header().Set("Content-Type", "application/json")
+	  w.Write(jsonData)
 
 }
 

@@ -1,10 +1,10 @@
 import { Component, Inject} from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
 import { FormGroup, NgForm } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import {MatDialogModule, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Form } from '@angular/forms';
 import { MenuComponent } from '../menu/menu.component';
@@ -19,7 +19,9 @@ import { MatSelectModule } from '@angular/material/select'
 })
 export class RateMenuComponent {
   form: FormGroup;
-  constructor(private http: HttpClient, public userService: UserService, public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+  user: any;
+  constructor(private http: HttpClient, public userService: UserService, 
+    public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.form = new FormGroup({})
     console.log(data);
     console.log("Kaeya Balls");
@@ -31,12 +33,34 @@ export class RateMenuComponent {
     }
 
   submit(): void {
+    this.userService.getUser.subscribe(usr => this.user = usr)
+
+    if(!this.user)
+    {
+      console.error('You are not logged in!');
+      return;
+    }
+    
+    const url = 'http://localhost:8080/storeRatingAuth';
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
     const params = new HttpParams()
-      .set('name', this.selectedDish)
-      .set('restuarantName', this.restaurantName)
-      .set('rating', this.rating);
-      this.http.post('http://localhost:8080/rating-submit', {params}).subscribe(() => {});
-      this.dialogRef.close();
+      .set('restaurant', this.restaurantName)
+      .set('dish', this.selectedDish)
+      .set('rating', this.rating)
+      .set('username', this.user.username)
+
+    this.http.post(url, {}, {headers, params}).subscribe(
+      res => {
+        console.log('Dish rating stored');
+      },
+
+      err => {
+        console.error('Error storing dish rating', err);
+      }
+
+    );
+        this.dialogRef.close();
   }
 
     selectedDish: string = "";
