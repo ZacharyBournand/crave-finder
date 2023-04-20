@@ -35,7 +35,7 @@ Back-end (Golang)
 1. Go to: https://github.com/ZacharyBournand/crave-finder
 
 2. Clone the repository
-    a) Click on the green "Code" button 
+    - Click on the green "Code" button 
     b) Copy the HTTPS link: https://github.com/ZacharyBournand/crave-finder.git
     c) Open "Git Bash" (or another application to clone the repository)
     d) Paste the copied HTTPS link
