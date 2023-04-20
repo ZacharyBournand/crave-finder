@@ -19,7 +19,7 @@ export class MenuComponent implements OnInit{
   restaurantName : string = "";
   menu: any[] = [];
   categories: string[] = [];
-  categorySizes : number[] = [];
+  categorySizes : any[][] = [[]];
   counter : number = 0;
 
   lessDishes(i: number){
@@ -110,21 +110,26 @@ export class MenuComponent implements OnInit{
         this.categories.push(this.menu[i].Category);
       }
       this.categories = [... new Set(this.categories)];
-
-      this.categorySizes = new Array(this.categories.length).fill(0);
+      
       this.dishIndex = new Array(this.categories.length).fill(0);
+      for (let i = 0; i < this.categories.length; i++) {
+        this.categorySizes[i] = [];
+      }
+      console.log(this.categorySizes);
 
       for (let i = 0; i < this.categories.length; i++)
       {
         for (let j = 0; j < this.menu.length; j++)
         {
           if (this.menu[j].Category == this.categories[i])
-            this.categorySizes[i]++;
+          {
+            console.log(this.menu[j]);
+            this.categorySizes[i].push(this.menu[j]);
+          }
         }
-        console.log(this.categorySizes)
       }
+      console.log(this.categorySizes)
       this.dishIndex = new Array(this.categories.length).fill(0);
-      console.log(this.menu)
     },
     error: (error: any) => {
       console.error(error);
