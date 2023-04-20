@@ -5,12 +5,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
+import { ReactiveFormsModule } from '@angular/forms';
 
 // Angular Materials
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatToolbarModule,  } from '@angular/material/toolbar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
 // Project Components
 import { AppComponent } from './app.component';
@@ -25,6 +30,8 @@ import { SearchResultComponent } from './search-result/search-result.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
+import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
+import { RateMenuComponent } from './rate-menu/rate-menu.component';
 
 
 @NgModule({
@@ -39,6 +46,9 @@ import { NewPasswordComponent } from './new-password/new-password.component';
     UserRegistrationComponent,
     UserSettingsComponent,
     NewPasswordComponent,
+    ReviewsPageComponent,
+    RateMenuComponent
+
   ],
   imports: [
     BrowserModule,
@@ -51,7 +61,13 @@ import { NewPasswordComponent } from './new-password/new-password.component';
     NgbModule,
     FormsModule,
     MatCheckboxModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatToolbarModule
+
   ],
   providers: [RestaurantService],
   bootstrap: [AppComponent],

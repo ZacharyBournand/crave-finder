@@ -1,24 +1,24 @@
 <div class="form">
-  <label for="location">Location:</label>
-  <input type="text" id="location" [(ngModel)]="location" />
-
-  <label for="term">Search Term:</label>
-  <input type="text" id="term" [(ngModel)]="searchTerm" />
-
-  <button mat-raised-button color="accent" (click)="filterRestaurants()">Search</button>
-</div>
-
-<table class="show-table" *ngIf="tableVisible">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Rating ( /5)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let restaurant of restaurants">
-      <td>{{ restaurant.name }}</td>
-      <td>{{ restaurant.rating }}</td>
-    </tr>
-  </tbody>
-</table>
+    <label for="location">Location</label>
+    <input type="text" id="location" [(ngModel)]="location" />
+  
+    <label for="term">Search Term</label>
+    <input type="text" id="term" [(ngModel)]="searchTerm" />
+  
+    <button mat-raised-button color="accent" (click)="filterRestaurants()">Search</button>
+  </div>
+  
+  <table class="show-table" *ngIf="tableVisible">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Rating ( /5)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let restaurant of restaurants">
+        <td> <a [routerLink]="['/restaurant/', restaurant.name]" >{{ restaurant.name }}</a></td>
+        <td>{{ restaurant.rating }}</td>
+      </tr>
+    </tbody>
+  </table>

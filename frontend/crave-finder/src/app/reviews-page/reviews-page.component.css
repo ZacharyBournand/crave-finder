@@ -1,0 +1,67 @@
+/* Styles for header */
+.header {
+    font-size: 32px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    font-weight: lighter;
+    text-align: center;
+  }
+  
+  /* Styles for input container */
+  .input-container {
+    margin-bottom: 20px;
+  }
+  
+  /* Styles for label */
+  .input-container label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  /* Styles for input */
+  .input-container input {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+  }
+  
+  /* Styles for button */
+  .input-container button {
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  .input-container button:hover {
+    background-color: #3e8e41;
+  }
+  
+  /* Styles for table */
+  .ratings-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  /* Styles for table head */
+  .ratings-table th {
+    text-align: left;
+    padding: 10px;
+    background-color: #f2f2f2;
+  }
+  
+  /* Styles for table row */
+  .ratings-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  /* Styles for alternating row colors */
+  .ratings-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  

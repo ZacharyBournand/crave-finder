@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-new-password',
   templateUrl: './new-password.component.html',
-  styleUrls: ['./new-password.component.css']
+  styleUrls: ['./new-password.component.css'],
+  providers: [HttpClient],
 })
 export class NewPasswordComponent {
   responseMessage: string = '';
@@ -15,10 +19,10 @@ export class NewPasswordComponent {
   };
   //user: any
 
-  constructor(/*private http: HttpClient, private UserService: UserService*/) {}
+  constructor(private http: HttpClient, private UserService: UserService) {}
 
-  /*onSubmit(form: NgForm) {
-    this.http.post('http://localhost:8080/passwordauth', {
+  onSubmit(form: NgForm) {
+    this.http.post('http://localhost:8080/passwordchange', {
       username: this.user.username,
       password: this.user.password,
     }).subscribe((response: any) => {
@@ -26,5 +30,5 @@ export class NewPasswordComponent {
       this.responseMessage = response.message
       this.UserService.setUser(this.user);
     });
-  }*/
+  }
 }

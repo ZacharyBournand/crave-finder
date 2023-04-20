@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	f "fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -58,6 +60,13 @@ type Restaurant struct {
 	Dishes   []Dish     `json:"dishes"`
 }
 
+type Rating struct {
+	Rating     int    `json:"rating"`
+	Restaurant string `json:"restaurant"`
+	Food       string `json:"food"`
+	UserId     string `json:"user_id"`
+}
+
 // Pass the key in via an environment variable to avoid accidentally commi
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
@@ -89,8 +98,22 @@ func main() {
 	http.HandleFunc("/logout", logoutHandler)
 	// Handle account registration requests
 	http.HandleFunc("/registerauth", registerAuthHandler)
-	// Handle password change requests
+	// Handle account authentication to change password
 	http.HandleFunc("/passwordauth", passwordAuthHandler)
+	// Handle password change requests
+	http.HandleFunc("/passwordchange", newPasswordHandler)
+	// Handle getting an individual user's ratings request
+	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
+	// Handle storing a individual user's ratings request
+	http.HandleFunc("/storeRatingAuth", storeUserRating)
+	// Handle page build requests
+	http.HandleFunc("/get-restaurant-info", restaurantBuild)
+	// Handles adding dishes to restaurant
+	http.HandleFunc("/add-dish", addDishHandler)
+	// Handles removing dishes to restaurant
+	http.HandleFunc("/remove-dish", removeDishHandler)
+	// Handles adding unseen restaurants
+	http.HandleFunc("/add-restaurant", addRestaurantHandler)
 	// Handle rating requests
 	http.HandleFunc("/rating", ratingHandler)
 
@@ -536,4 +559,379 @@ func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := RegisterResponse{Message: "Check password"}
 	json.NewEncoder(w).Encode(response)
+}
+
+func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("passwordAuthHandler is running")
+
+	// Check if the HTTP method is POST
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Decode the JSON request body into a User struct
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	// If there was an error decoding the JSON, return an error response
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Extract the username and password from the User struct
+	username := user.Username
+	password := user.Password
+
+	// Check the password
+	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
+	passwordNoSpaces = true
+
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			passwordLowerCase = true
+		case unicode.IsUpper(char):
+			passwordUpperCase = true
+		case unicode.IsNumber(char):
+			passwordNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			passwordSpecial = true
+		case unicode.IsSpace(int32(char)):
+			passwordNoSpaces = false
+		}
+	}
+
+	if 5 < len(password) && len(password) < 50 {
+		passwordLength = true
+	}
+
+	f.Println("\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
+
+	// If the password doesn't meet the requirements, return an error response
+	if !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
+		response := RegisterResponse{Message: "Invalid password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Create a hash form of the password
+	var hash []byte
+
+	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		f.Println("bcrypt error: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Update the user's password in the database
+	statement := "UPDATE users SET hash = ? WHERE username = ?"
+
+	result, err := db.Exec(statement, hash, username)
+
+	if err != nil {
+		f.Println("Error updating user's password: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered while updating the password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Check if the update affected any rows in the database
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		f.Println("User not found: ", username)
+
+		response := RegisterResponse{Message: "User not found"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If the update was successful, return a success response
+	response := RegisterResponse{Message: "Password updated successfully"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func storeUserRating(w http.ResponseWriter, r *http.Request) {
+	// Parse request parameters
+	restaurant := r.URL.Query().Get("restaurant")
+	food := r.URL.Query().Get("dish")
+	rating := r.URL.Query().Get("rating")
+	username := r.URL.Query().Get("username")
+
+	user_id, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer user_id.Close()
+
+	var id int
+	if user_id.Next() {
+		if err := user_id.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Insert rating into database
+	stmt, err := db.Prepare("INSERT INTO ratings (rating, Restaurant, Food, user_id) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	f.Println(rating)
+	f.Println(restaurant)
+	f.Println(food)
+	f.Println(id)
+	res, err := stmt.Exec(rating, restaurant, food, id)
+	if err != nil {
+		f.Println("beans")
+		log.Fatal(err)
+	}
+
+	// Return success response
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"message":      "Dish rating stored",
+		"rowsAffected": rowsAffected,
+	}
+
+	jsonData, err := json.Marshal(response)
+	if err != nil {
+		log.Printf("Error marshaling response to JSON: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+
+}
+
+func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the user ID from the request query parameters
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userID.Close()
+
+	var id int
+	if userID.Next() {
+		if err := userID.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Query the ratings table for ratings matching the user ID
+	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Create an array to hold the ratings, restaurants, and food items
+	ratings := []Rating{}
+
+	// Iterate over the rows and add each rating to the array
+	for rows.Next() {
+		var rating Rating
+
+		err := rows.Scan(&rating.Rating, &rating.Restaurant, &rating.Food, &rating.UserId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ratings = append(ratings, rating)
+	}
+
+	// Send the ratings as a JSON response to the client
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Print the JSON content in the terminal
+	jsonContent, err := json.Marshal(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println(string(jsonContent))
+}
+
+func restaurantBuild(w http.ResponseWriter, r *http.Request) {
+	f.Println("restaurantBuilder is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	type Dish struct {
+		ID          int
+		Name        string
+		Price       float32
+		Description string
+		Rating      int
+		Category    string
+	}
+
+	var dishes []Dish
+
+	for rows.Next() {
+		var dish Dish
+		if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+			fmt.Println(err)
+			return
+		}
+		dishes = append(dishes, dish)
+	}
+
+	if err := rows.Err(); err != nil {
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(dishes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	return
+}
+
+func addDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+	price := r.URL.Query().Get("price")
+	category := r.URL.Query().Get("category")
+	description := r.URL.Query().Get("description")
+
+	f.Println(restaurantName)
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		f.Println("Hello")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var insertStatement *sql.Stmt
+	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, DishRating, DishCategory) VALUES (?, ?, ?, ?, ?);", restaurantName))
+	if err != nil {
+		f.Println("Hey")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer insertStatement.Close()
+	var result sql.Result
+	result, err = insertStatement.Exec(dishName, price, description, 0, category)
+	f.Println("Result:", result)
+	if err != nil {
+		f.Println("How's it going")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func removeDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("removeDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		f.Println("hello :()")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	type Dish struct {
+		ID          int
+		Name        string
+		Price       float32
+		Description string
+		Rating      int
+		Category    string
+	}
+
+	var deleteStatement *sql.Stmt
+	deleteStatement, err = db.Prepare(fmt.Sprintf("DELETE FROM %s WHERE DishName = ?", restaurantName))
+	if err != nil {
+		f.Println("hello :)")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer deleteStatement.Close()
+	
+	var result sql.Result
+	result, err = deleteStatement.Exec(dishName)
+	f.Println("Result:", result)
+	if err != nil {
+		f.Println("How's it going")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func addRestaurantHandler(w http.ResponseWriter, r *http.Request)
+{
+	f.Println("addRestaurantHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		createStatement, err = db.Prepare(fmt.Sprintf("CREATE TABLE %s (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		var result sql.Result
+		result, err = createStatement.Exec()
+		f.Println("Result:", result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		f.Println("Restaurant created.")
+		return
+	}
+
+
 }

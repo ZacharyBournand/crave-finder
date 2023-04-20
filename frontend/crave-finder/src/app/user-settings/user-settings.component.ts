@@ -12,6 +12,7 @@ import { UserService } from '../user.service';
 export class UserSettingsComponent {
   responseMessage: string = '';
   buttonVisible = false;
+  showNewPasswordButton = false;
 
   user = {
     username: '',
@@ -29,8 +30,8 @@ export class UserSettingsComponent {
       this.responseMessage = response.message
       this.UserService.setUser(this.user);
 
-      if (this.responseMessage = "Account credentials confirmed! Please click on the button below to change your password.") {
-        this.buttonVisible = true;
+      if (this.responseMessage == "Account credentials confirmed! Please click on the button below to change your password.") {
+        this.showNewPasswordButton = true;
       }
     });
   }
