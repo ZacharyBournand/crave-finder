@@ -72,7 +72,7 @@ export class MenuComponent implements OnInit{
       params.set('dishname', this.dish.dishname);
       params.set('price', this.dish.price);
       params.set('description', this.dish.description);
-      this.http.post('http://localhost:8080/loginauth', {params}).subscribe((response: any) => {
+      this.http.post('http://localhost:8080/add-dish', {params}).subscribe((response: any) => {
         console.log(response);
         })
     };

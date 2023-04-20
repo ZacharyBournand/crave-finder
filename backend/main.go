@@ -102,6 +102,8 @@ func main() {
 	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
 	// Handle page build requests
 	http.HandleFunc("/get-restaurant-info", restaurantBuild)
+	// Handles adding dishes to restaurant
+	http.HandleFunc("/add-dish", addDishHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -695,21 +697,24 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
 	if err != nil {
-		var insertStatement *sql.Stmt
-		insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?, ?);")
-		insertStatement.Exec(restaurantName, 0, 0, 0)
-		insertStatement := db.Prepare("CREATE TABLE (DishID int, DishName varchar(255), DishPrice varchar(255), DishDescription varchar(255), foodRating varchar(255));")
-		query.Exec()
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	query := fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, foodRating) VALUES (?, ?, ?, ?);", restaurantName)
+	defer rows.Close()
 	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?);")
+	insertStatement, err = db.Prepare("INSERT INTO " + restaurantName + " (dishName, dishPrice, dishDescription, dishRating, dishCategory) VALUES (?, ?, ?, ?);")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer rowsNext.Close()
+	defer insertStatement.Close()
+	var result sql.Result
+	result, err = insertStatement.Exec(dishName, price, description, 0, category)
+	f.Println("Result:", result)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func removeDishHandler(w http.ResponseWriter, r *http.Request) {
