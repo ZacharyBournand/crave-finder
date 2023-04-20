@@ -1,8 +1,10 @@
 /* Styles for header */
 .header {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    font-weight: lighter;
+    text-align: center;
   }
   
   /* Styles for input container */
@@ -30,10 +32,13 @@
     padding: 5px 10px;
     font-size: 16px;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: #fff;
     border: none;
     cursor: pointer;
+  }
+  .input-container button:hover {
+    background-color: #3e8e41;
   }
   
   /* Styles for table */

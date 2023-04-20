@@ -1,4 +1,5 @@
 <div>
+<h1>Log In</h1>
 <form (ngSubmit)="onSubmit($event)">
     <label>
       Username:
@@ -10,7 +11,9 @@
       <input type="password" name="password" [(ngModel)]="user.password" required>
     </label>
   
+    <span class="center">
     <button type="submit">Log In</button>
+    </span>
 </form>
 
 <p>{{ responseMessage }}</p>

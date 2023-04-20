@@ -51,6 +51,9 @@ p {
     font-size: 16px;
     color: #666;
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .newPasswordButton {
     background-color: #4CAF50;
@@ -61,10 +64,23 @@ p {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    
 }
 
 .newPasswordButton:hover {
     background-color: #3e8e41;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.center2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:70px;
 }
 
 .bottom {

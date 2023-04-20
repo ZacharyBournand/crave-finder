@@ -1,6 +1,7 @@
 <button mat-raised-button color="accent"  *ngIf="userService.isLoggedIn" [matMenuTriggerFor]="navMenu">Account</button>
 
 <mat-menu #navMenu="matMenu" yPosition="below" >
+    <a [routerLink]="['/restaurant/CraveEats']" mat-menu-item>Favorites</a>
     <a [routerLink]="['/reviews']" mat-menu-item>Reviews</a>
     <a [routerLink]="['/password']" mat-menu-item>Change Password</a>
     <a #refLogoutLink (click)="logout()" mat-menu-item class="logout" [routerLink]="['/']">Logout</a>
