@@ -58,24 +58,37 @@ export class MenuComponent implements OnInit{
 
   dish = {
     category: '',
-    name: '',
+    dishname: '',
     price: '',
     description: '',
   };
 
   dishAdd() {
     const name = this.route.snapshot.paramMap.get('name');
-    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
     {
-
-    }
+      const params = new HttpParams();
+      params.set('name', this.restaurantName);
+      params.set('category', this.dish.category);
+      params.set('dishname', this.dish.dishname);
+      params.set('price', this.dish.price);
+      params.set('description', this.dish.description);
+      this.http.post('http://localhost:8080/add-dish', {params}).subscribe((response: any) => {
+        console.log(response);
+        })
+    };
   }
 
   dishRemove() {
     const name = this.route.snapshot.paramMap.get('name');
-    if (this.dish.category != '' || this.dish.name != '' || this.dish.price != '' || this.dish.description != '')
+    if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
     {
-      
+      const params = new HttpParams();
+      params.set('name', this.restaurantName);
+      params.set('category', this.dish.category);
+      params.set('dishname', this.dish.dishname);
+      params.set('price', this.dish.price);
+      params.set('description', this.dish.description);
     }
   }
 

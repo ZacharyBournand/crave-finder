@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	f "fmt"
 	"fmt"
+	f "fmt"
 	"net/http"
 	"unicode"
 
@@ -102,6 +102,8 @@ func main() {
 	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
 	// Handle page build requests
 	http.HandleFunc("/get-restaurant-info", restaurantBuild)
+	// Handles adding dishes to restaurant
+	http.HandleFunc("/add-dish", addDishHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -642,7 +644,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	restaurantName := r.URL.Query().Get("name")
 
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
-    rows, err := db.Query(query)
+	rows, err := db.Query(query)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -662,17 +664,17 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var dish Dish
-        if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
-            fmt.Println(err)
+		if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+			fmt.Println(err)
 			return
-        }
-        dishes = append(dishes, dish)
-    }
+		}
+		dishes = append(dishes, dish)
+	}
 
 	fmt.Println(dishes)
-    if err := rows.Err(); err != nil {
-        return
-    }
+	if err := rows.Err(); err != nil {
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(dishes)
@@ -682,4 +684,48 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	}
 
 	return
+}
+
+func addDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+	price := r.URL.Query().Get("price")
+	category := r.URL.Query().Get("category")
+	description := r.URL.Query().Get("description")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	var insertStatement *sql.Stmt
+	insertStatement, err = db.Prepare("INSERT INTO " + restaurantName + " (dishName, dishPrice, dishDescription, dishRating, dishCategory) VALUES (?, ?, ?, ?);")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer insertStatement.Close()
+	var result sql.Result
+	result, err = insertStatement.Exec(dishName, price, description, 0, category)
+	f.Println("Result:", result)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func removeDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
 }
