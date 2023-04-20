@@ -813,27 +813,19 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 		Category    string
 	}
 
-	dishID := -1
-	for rows.Next() {
-		var dish Dish
-		if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
-			fmt.Println(err)
-			return
-		}
-		if dish.Name == dishName {
-			dishID = dish.ID
-		}
+	var deleteStatement *sql.Stmt
+	deleteStatement, err = db.Prepare("DELETE FROM ? WHERE DishName='?';")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	defer rows.Close()
-
-	if dishID != -1 {
-		var deleteStatement *sql.Stmt
-		deleteStatement, err = db.Prepare("DELETE FROM ? WHERE DishName='?';")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer deleteStatement.Close()
-		deleteStatement.Exec(restaurantName, dishName)
+	defer deleteStatement.Close()
+	var result sql.Result
+	result, err = deleteStatement.Exec(restaurantName, dishName)
+	f.Println("Result:", result)
+	if err != nil {
+		f.Println("How's it going")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
