@@ -54,15 +54,18 @@ Back End:
 
 - User Ratings Test: Created a mock test that runs the access to individual user ratings functionality to see if the function can run correctly.
 
+- Add Dish Test: Created a mock test that runs the the storage of a restaurant's dish and its related information to the MySQL database.
 
-Demo Video: 
+- Remove Dish Test: Created a mock test that runs the the deletion of a restaurant's dish and its related information from the MySQL database.
+
+- Add Restaurant Test: Created a mock test that runs the the storage of a new restaurant table in the MySQL database.
 
 
 
 
 **GOLANG API DOCUMENTATION**
 
-Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information. It also handles restaurant/food items searches by communicating with the Yelp Fusion API to give the requested information to the front-end. Another functionality it can perform is to handle user ratings by storing them in the MySQL database. It can also handle a user's password change by modifying the hashed password in the MySQL database. And it can retrieve an individual user's ratings from the MySQL table "ratings" to send that information to the front-end.
+Our Golang API handles user registration, login, and logout that communicates with a MySQL database we created that contains a table named "users" to store user information. It also handles restaurant/food items searches by communicating with the Yelp Fusion API to give the requested information to the front-end. Another functionality it can perform is to handle user ratings by storing them in the MySQL database. It can also handle a user's password change by modifying the hashed password in the MySQL database. And it can retrieve an individual user's ratings from the MySQL table "ratings" to send that information to the front-end. In addition to these features, it can add and remove a restaurant's dish from the database as well. And it can add a new restaurant table to the MySQL database.
 
 Dependencies
 - database/sql
@@ -115,6 +118,12 @@ Functions
 
 - getUserRatingsHandler(): It handles individual user ratings' searches by accepting a POST request with the username. It then retrieves information from the MySQL "ratings" table that contains the ratings given by this user, and it sends it back to the front-end.
 
+- addDishHandler(): It stores a restaurant's dish and its related information by accepting query parameters. It then inserts that information into the MySQL database.
+
+- removeDishHandler(): It removes a restaurant's dish and its related information by accepting query parameters. It then removes that information from the MySQL database.
+
+- addRestaurantHandler(): It stores a new restaurant table by accepting the restaurant's name as a query parameter. It then create a new table with that information in the MySQL database.
+
 
 Endpoints
 - POST /registerauth: It handles user registration by receiving a User object (JSON-encoded) in the request body and responding with a RegisterResponse object (JSON-encoded) containing a success or error message depending on the task's outcome.
@@ -132,6 +141,12 @@ Endpoints
 - POST /passwordchange: It handles password requirement verification by receiving a User object (JSON-encoded) in the request body and responding with a RegisterResponse object (JSON-encoded) containing a success message if the new password given by the user is valid or an error message if it is instead invalid.
 
 - GET /getUserRatingsHandler: It handles individual user ratings request by extracting the search query parameter "username" fromt the request URL. It then retrieves the data from the MySQL "ratings" table that is related to this specific user and sends the JSON response to the client.
+
+- GET /addDishHandler: It handles the storage of a restaurant's dish and its related information in a database. It gets the data from queries to then insert them into the MySQL database.
+
+- GET /removeDishHandler: It handles the removal of a restaurant's dish and its related information from a database. It gets the data from queries to then remove the data related to the information given in these queries from the MySQL database.
+
+- GET /add-restaurant: It handles the creation of a restaurant's table in a database. It gets the restaurant's name from a query to then createa table in the MySQL database.
 
 
 
