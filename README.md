@@ -79,4 +79,4 @@ Back-end (Golang)
 3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
      - Now, you can Add a restaurant's Dish to the Database
      - You can also Remove a restaurant's Dish from the Database
-     - And you can Create a Dish Rating to the Database
+     - And you can Create a Dish Rating that gets stored in the Database
