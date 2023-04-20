@@ -799,6 +799,7 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
 	if err != nil {
+		f.Println("hello :()")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -814,14 +815,16 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var deleteStatement *sql.Stmt
-	deleteStatement, err = db.Prepare("DELETE FROM ? WHERE DishName='?';")
+	deleteStatement, err = db.Prepare(fmt.Sprintf("DELETE FROM %s WHERE DishName = ?", restaurantName))
 	if err != nil {
+		f.Println("hello :)")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer deleteStatement.Close()
+	
 	var result sql.Result
-	result, err = deleteStatement.Exec(restaurantName, dishName)
+	result, err = deleteStatement.Exec(dishName)
 	f.Println("Result:", result)
 	if err != nil {
 		f.Println("How's it going")
