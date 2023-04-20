@@ -26,6 +26,7 @@ import { UserRegistrationComponent } from './user-registration/user-registration
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
+import { RateMenuComponent } from './rate-menu/rate-menu.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
     UserSettingsComponent,
     NewPasswordComponent,
     ReviewsPageComponent,
+    RateMenuComponent,
   ],
   imports: [
     BrowserModule,

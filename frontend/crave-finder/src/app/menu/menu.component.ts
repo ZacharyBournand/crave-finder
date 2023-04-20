@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { restaurants, Restaurant } from '../restaurants';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { UserService } from '../user.service';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 
 @Component({
   selector: 'app-menu',
@@ -9,6 +12,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent implements OnInit{
+  
   dishIndex: number[] = [];
   restaurant !: Restaurant;
   restaurantName : string = "";
@@ -33,10 +37,22 @@ export class MenuComponent implements OnInit{
     this.counter = 0;
   }
   
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private dialog: MatDialog, private route: ActivatedRoute, private http: HttpClient, public userService: UserService) { }
+
+  openDialog() {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '300px';
+    dialogConfig.height = '400px';
+
+
+    this.dialog.open(RateMenuComponent, dialogConfig);
+  }
 
   ngOnInit(): void {
-
     const name = this.route.snapshot.paramMap.get('name');
     if (name)
       this.restaurantName = name;
