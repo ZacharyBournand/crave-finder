@@ -61,6 +61,7 @@ Dependencies
 
 
 **NOT COMPLETE YET**
+
 Variables
 - db: It holds the connection to the MySQL database.
 - store: It holds and handles a session created using gorilla/sessions.
