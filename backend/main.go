@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	f "fmt"
 	"net/http"
+	"strings"
 	"unicode"
 
 	"github.com/gorilla/handlers"
@@ -116,6 +117,9 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the search query parameters
 	location := queryParams.Get("location")
 	term := queryParams.Get("term")
+
+	// Replace spaces in location with dashes
+	location = strings.ReplaceAll(location, " ", "-")
 
 	// Build the Yelp Fusion API search endpoint URL
 	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
