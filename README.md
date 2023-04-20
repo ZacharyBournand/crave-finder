@@ -30,3 +30,40 @@ Front-end (Angular/Typescript)
 Back-end (Golang)
 - Zachary Bournand
 - Dylan Bickram
+
+## How to Run and Use our Application
+1. Go to: https://github.com/ZacharyBournand/crave-finder
+
+2. Clone the repository
+    - Click on the green "Code" button 
+    - Copy the HTTPS link: https://github.com/ZacharyBournand/crave-finder.git
+    - Open "Git Bash" (or another application to clone the repository)
+    - Paste the copied HTTPS link
+    - Type "code crave-finder" to open the application in Visual Studio Code (or open it in another code editor)
+
+3. Once in a code editor, open a new terminal (the end of your directory should be "\crave-finder")
+    - Go to "frontend" (type "cd frontend) [Now your directory should end with "\crave-finder\frontend"]
+    - Type the following commands in your terminal:
+        ```
+        npm install angular
+        ng add @ng-bootstrap/ng-bootstrap --force
+        ```
+
+
+
+4. Open a new terminal (the end of your directory should also be "\crave-finder")
+    - Go to "backend" (type "cd backend) [Now your directory should end with "\crave-finder\backend"]
+    - Type the following commands in your terminal:
+        ```
+        go get -u github.com/go-sql-driver/mysql
+        go get golang.org/x/crypto/bcrypt
+        go get github.com/gorilla/context
+        go get github.com/gorilla/sessions
+        go get github.com/gorilla/handlers
+        ```
+            
+5. Run the application:
+     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
+     - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
+     
+6. Have fun!
