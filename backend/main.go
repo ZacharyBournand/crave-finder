@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	f "fmt"
 	"fmt"
+	f "fmt"
 	"net/http"
 	"unicode"
 
@@ -642,7 +642,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	restaurantName := r.URL.Query().Get("name")
 
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
-    rows, err := db.Query(query)
+	rows, err := db.Query(query)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -662,17 +662,17 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var dish Dish
-        if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
-            fmt.Println(err)
+		if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+			fmt.Println(err)
 			return
-        }
-        dishes = append(dishes, dish)
-    }
+		}
+		dishes = append(dishes, dish)
+	}
 
 	fmt.Println(dishes)
-    if err := rows.Err(); err != nil {
-        return
-    }
+	if err := rows.Err(); err != nil {
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(dishes)
@@ -682,4 +682,35 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	}
 
 	return
+}
+
+func addDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	restaurantName := r.URL.Query().Get("name")
+	restaurantName := r.URL.Query().Get("name")
+	restaurantName := r.URL.Query().Get("name")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		var insertStatement *sql.Stmt
+		insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?);")
+		insertStatement.Exec(restaurantName, 0, 0, 0)
+		return
+	}
+}
+
+func removeDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
 }
