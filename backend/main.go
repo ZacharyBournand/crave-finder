@@ -109,6 +109,8 @@ func main() {
 	http.HandleFunc("/add-dish", addDishHandler)
 	// Handles removing dishes to restaurant
 	http.HandleFunc("/remove-dish", removeDishHandler)
+	// Handles adding unseen restaurants
+	http.HandleFunc("/add-restaurant", addRestaurantHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -814,18 +816,45 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var deleteStatement *sql.Stmt
-	deleteStatement, err = db.Prepare("DELETE FROM ? WHERE DishName='?';")
+	deleteStatement, err = db.Prepare(fmt.Sprintf("DELETE FROM %s WHERE DishName='?';", restaurantName))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer deleteStatement.Close()
 	var result sql.Result
-	result, err = deleteStatement.Exec(restaurantName, dishName)
+	result, err = deleteStatement.Exec(dishName)
 	f.Println("Result:", result)
 	if err != nil {
 		f.Println("How's it going")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func addRestaurantHandler(w http.ResponseWriter, r *http.Request)
+{
+	f.Println("addRestaurantHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
+	rows, err := db.Query(query)
+	if err != nil {
+		createStatement, err = db.Prepare(fmt.Sprintf("CREATE TABLE %s (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		var result sql.Result
+		result, err = createStatement.Exec()
+		f.Println("Result:", result)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		f.Println("Restaurant created.")
+		return
+	}
+
+
 }

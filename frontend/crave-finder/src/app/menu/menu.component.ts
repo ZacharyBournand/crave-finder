@@ -66,6 +66,22 @@ export class MenuComponent implements OnInit{
     description: '',
   };
 
+  checkIfCreated()
+  {
+    const name = this.route.snapshot.paramMap.get('name');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    .set('name', this.restaurantName);
+    this.http.post('http://localhost:8080/add-restaurant', {}, {headers, params} ).subscribe(
+      res => {
+        console.log('Restaurant created');
+      },
+
+      err => {
+        console.error('Preexisting restaurant', err);
+      })
+  }
+
   dishAdd() {
     const name = this.route.snapshot.paramMap.get('name');
     if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
