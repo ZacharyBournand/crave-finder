@@ -898,7 +898,7 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer deleteStatement.Close()
-	
+
 	var result sql.Result
 	result, err = deleteStatement.Exec(dishName)
 	f.Println("Result:", result)
@@ -909,29 +909,22 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addRestaurantHandler(w http.ResponseWriter, r *http.Request)
-{
+func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("addRestaurantHandler is running")
 	restaurantName := r.URL.Query().Get("name")
-
-	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
-	rows, err := db.Query(query)
+	var createStatement *sql.Stmt
+	createStatement, err := db.Prepare(fmt.Sprintf("CREATE TABLE IF NOT EXISTS craveFinder.`%s` (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
 	if err != nil {
-		createStatement, err = db.Prepare(fmt.Sprintf("CREATE TABLE %s (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		var result sql.Result
-		result, err = createStatement.Exec()
-		f.Println("Result:", result)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		f.Println("Restaurant created.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	var result sql.Result
+	result, err = createStatement.Exec()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println("Result:", result)
 
 }

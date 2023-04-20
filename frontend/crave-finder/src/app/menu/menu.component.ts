@@ -79,7 +79,7 @@ export class MenuComponent implements OnInit{
       },
 
       err => {
-        console.error('Preexisting restaurant', err);
+        console.error('Error creating restaurant', err);
       })
   }
 
