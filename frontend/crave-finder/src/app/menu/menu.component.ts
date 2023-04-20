@@ -68,15 +68,15 @@ export class MenuComponent implements OnInit{
     const name = this.route.snapshot.paramMap.get('name');
     if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
     {
+      console.log(this.restaurantName);
+      console.log(this.dish.category);
       const params = new HttpParams()
       .set('name', this.restaurantName)
       .set('category', this.dish.category)
       .set('dishname', this.dish.dishname)
       .set('price', this.dish.price)
       .set('description', this.dish.description);
-      console.log(this.restaurantName);
-      console.log(this.dish.category);
-      this.http.post('http://localhost:8080/add-dish', { params }).subscribe(() => {
+      this.http.post('http://localhost:8080/add-dish', params ).subscribe(() => {
         })
     };
   }

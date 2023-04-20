@@ -107,7 +107,7 @@ func main() {
 	// Handles removing dishes to restaurant
 	http.HandleFunc("/remove-dish", removeDishHandler)
 	// Handles submissions of ratings
-	http.HandleFunc("/rating-submit")
+	//http.HandleFunc("/rating-submit", addRatingHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -691,22 +691,26 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("addDishHandler is running")
-	restaurantName := r.URL.Query().Get("name")
-	dishName := r.URL.Query().Get("dishname")
-	price := r.URL.Query().Get("price")
-	category := r.URL.Query().Get("category")
-	description := r.URL.Query().Get("description")
+	restaurantName := r.FormValue("name")
+	dishName := r.FormValue("dishname")
+	price := r.FormValue("price")
+	category := r.FormValue("category")
+	description := r.FormValue("description")
 
+	f.Println(restaurantName)
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
 	if err != nil {
+		f.Println("Hello")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
+
 	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare("INSERT INTO " + restaurantName + " (dishName, dishPrice, dishDescription, dishRating, dishCategory) VALUES (?, ?, ?, ?);")
+	insertStatement, err = db.Prepare(fmt.Sprintf("INSERT INTO  + %s +  (dishID, dishName, dishPrice, dishDescription, dishRating, dishCategory) VALUES (?, ?, ?, ?);", restaurantName)) 
 	if err != nil {
+		f.Println("Hey")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -715,6 +719,7 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	result, err = insertStatement.Exec(dishName, price, description, 0, category)
 	f.Println("Result:", result)
 	if err != nil {
+		f.Println("How's it going")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
