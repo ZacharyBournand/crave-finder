@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	f "fmt"
+	"log"
 	"net/http"
 	"unicode"
 
@@ -99,6 +101,8 @@ func main() {
 	http.HandleFunc("/passwordchange", newPasswordHandler)
 	// Handle getting an individual user's ratings request
 	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
+	// Handle storing a individual user's ratings request
+	http.HandleFunc("/storeRatingAuth", storeUserRating)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -570,6 +574,98 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	response := RegisterResponse{Message: "Password updated successfully"}
 	json.NewEncoder(w).Encode(response)
 }
+
+func storeUserRating(w http.ResponseWriter, r *http.Request) {
+	// Parse request parameters
+	restaurant := r.URL.Query().Get("restaurant")
+	food := r.URL.Query().Get("dish")
+	rating := r.URL.Query().Get("rating")
+	user_id := r.URL.Query().Get("user_id")
+
+	// Connect to MySQL database
+	db, err := sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	// Insert rating into database
+	stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, user_id) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(rating, restaurant, food, user_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Return success response
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Dish rating stored: %d", rowsAffected)
+
+}
+
+/*userID := r.URL.Query().Get("user_id")
+// Parsing the request body into the Rating struct
+var rating Rating
+err := json.NewDecoder(r.Body).Decode(&rating)
+
+if err != nil {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+	return
+}
+
+// Insert rating into ratings table
+stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, user_id) VALUE(?, ?, ?, ?)")
+
+if err != nil {
+	fmt.Println("Error in preparing the statment")
+
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+	return
+}
+
+defer stmt.Close()
+
+result, err := stmt.Exec(rating.Rating, rating.Restaurant, rating.Food, userID)
+fmt.Println("Result:", result)
+
+// If an error occurred, let the user know
+if err != nil {
+	f.Println("Error inserting ratings into database")
+
+	response := RegisterResponse{Message: "An issue was encountered during rating storage"}
+	json.NewEncoder(w).Encode(response)
+	return
+}
+
+/// Get id of newly stored rating
+id, err := result.LastInsertId()
+if err != nil {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+	return
+}
+
+// Return the ID of the newly inserted rating as a response
+response := struct {
+	ID int64 `json:"id"`
+}{
+	ID: id,
+}
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(response)
+
+// Return a success message
+w.WriteHeader(http.StatusOK)
+fmt.Fprintln(w, "Rating added successfully") */
 
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the request query parameters
