@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
@@ -133,6 +134,9 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the search query parameters
 	location := queryParams.Get("location")
 	term := queryParams.Get("term")
+
+	// Replace spaces in location with dashes
+	location = strings.ReplaceAll(location, " ", "-")
 
 	// Build the Yelp Fusion API search endpoint URL
 	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
@@ -742,7 +746,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	
+
 	// Query the ratings table for ratings matching the user ID
 	rows, err := db.Query("SELECT rating, Restaurant, Food, User_id FROM craveFinder.ratings WHERE User_id = ?", id)
 
