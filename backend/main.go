@@ -838,9 +838,8 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("addRestaurantHandler is running")
 	restaurantName := r.URL.Query().Get("name")
-
 	var createStatement *sql.Stmt
-	createStatement, err := db.Prepare(fmt.Sprintf("CREATE TABLE %s (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
+	createStatement, err := db.Prepare(fmt.Sprintf("CREATE TABLE IF NOT EXISTS craveFinder.`%s` (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
