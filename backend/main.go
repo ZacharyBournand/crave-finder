@@ -687,19 +687,29 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("addDishHandler is running")
 	restaurantName := r.URL.Query().Get("name")
-	restaurantName := r.URL.Query().Get("name")
-	restaurantName := r.URL.Query().Get("name")
-	restaurantName := r.URL.Query().Get("name")
-	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+	price := r.URL.Query().Get("price")
+	category := r.URL.Query().Get("category")
+	description := r.URL.Query().Get("description")
 
 	query := fmt.Sprintf("SELECT * FROM %s", restaurantName)
 	rows, err := db.Query(query)
 	if err != nil {
 		var insertStatement *sql.Stmt
-		insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?);")
+		insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?, ?);")
 		insertStatement.Exec(restaurantName, 0, 0, 0)
+		insertStatement := db.Prepare("CREATE TABLE (DishID int, DishName varchar(255), DishPrice varchar(255), DishDescription varchar(255), foodRating varchar(255));")
+		query.Exec()
 		return
 	}
+	query := fmt.Sprintf("INSERT INTO %s (DishName, DishPrice, DishDescription, foodRating) VALUES (?, ?, ?, ?);", restaurantName)
+	var insertStatement *sql.Stmt
+	insertStatement, err = db.Prepare("INSERT INTO restaurants (name, cleanRating, serveRating, foodRating) VALUES (?, ?, ?, ?);")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rowsNext.Close()
 }
 
 func removeDishHandler(w http.ResponseWriter, r *http.Request) {
