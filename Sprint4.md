@@ -23,6 +23,11 @@ Front End:
     - Test for app component to verify correct title
     
  - Cypress Tests:
+    - Tests mounting for home-page, login-page, reviews-page, search-result, and user-registration components.
+    - Tests that login-page component can take two-field text inputs.
+    - Tests that reviews-page component can take single field text inputs.
+    - Tests that search-result component can take two-field text inputs.
+    - Tests that user-registration component can take two-field text inputs.
 
 
 
