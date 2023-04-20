@@ -34,7 +34,7 @@ func TestRegisterAuthHandler(t *testing.T) {
 		panic(err.Error())
 	}
 
-	reqBody := []byte(`{"username": "testUser146", "password": "testPass68!"}`)
+	reqBody := []byte(`{"username": "testUser148", "password": "testPass70!"}`)
 	req, err := http.NewRequest("POST", "/registerauth", bytes.NewBuffer(reqBody))
 	if err != nil {
 		t.Fatal(err)
@@ -152,26 +152,18 @@ func TestSearchRestaurantsHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	print("1")
-
 	// Create a response recorder to record the response
 	rr := httptest.NewRecorder()
-
-	print("2")
 
 	// Call the handler function with the new request and response recorder
 	handler := http.HandlerFunc(searchRestaurantsHandler)
 	handler.ServeHTTP(rr, req)
-
-	print("3")
 
 	// Check the status code of the response
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
-
-	print("4")
 
 	// Check the content type of the response
 	expectedContentType := "application/json"
@@ -180,12 +172,8 @@ func TestSearchRestaurantsHandler(t *testing.T) {
 			contentType, expectedContentType)
 	}
 
-	print("5")
-
 	// Check the response body
-	expectedBody := `[{"id":0,"name":"Pizza Johny's","location":[],"rating":4.5,"price":"$","service":"","food":"","dishes":[]},{"id":0,"name":"Pizzaiola","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Joe's Pizza","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Pummarola Coral Gables","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Mister O1 Extraordinary Pizza - Brickell","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Vice City Pizza - West Kendall","location":[],"rating":5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Miami Slice","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"CRUST","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Cèrto ","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Al Forno Neapolitan Wood Fired Pizza","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Magic City Pizza","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Amor di Pasta - Blue Lagoon","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Al’s New York Pizza","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Mister O1 Extraordinary Pizza - Coconut Grove","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Marakas Pizza","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Apizza Brooklyn Resto + Vino","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Pizzillo","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Anthony's Coal Fired Pizza \u0026 Wings","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"La Pizza","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Piacere Wood Fired Pizza","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]}]`
-
-	print("6")
+	expectedBody := `[{"id":0,"name":"Joe's Pizza","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Pizza Johny's","location":[],"rating":4.5,"price":"$","service":"","food":"","dishes":[]},{"id":0,"name":"Pizzaiola","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Miami Slice","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Mister O1 Extraordinary Pizza - Brickell","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"CRUST","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Vice City Pizza - West Kendall","location":[],"rating":5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Cèrto ","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Pummarola Coral Gables","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Magic City Pizza","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Pizza Deli \u0026 Company","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Amor di Pasta - Blue Lagoon","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Al Forno Neapolitan Wood Fired Pizza","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"The Big Cheese Of Miami","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"New York Roma Pizza","location":[],"rating":3.5,"price":"$","service":"","food":"","dishes":[]},{"id":0,"name":"Pizzillo","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Mienzza Pizza \u0026 Grill","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"LOCAL PIE","location":[],"rating":4.5,"price":"$$","service":"","food":"","dishes":[]},{"id":0,"name":"Al’s New York Pizza","location":[],"rating":4.5,"price":"","service":"","food":"","dishes":[]},{"id":0,"name":"Anthony's Coal Fired Pizza \u0026 Wings","location":[],"rating":4,"price":"$$","service":"","food":"","dishes":[]}]`
 
 	if body := rr.Body.String(); body != expectedBody {
 		t.Errorf("handler returned unexpected body: got %v \n\n want %v", body, expectedBody)
@@ -213,4 +201,26 @@ func TestStoringRatings(t *testing.T) {
 		t.Errorf("Expected response body '%s', but got '%s'", expected, w.Body.String())
 	}
 
+func TestRatingHandler(t *testing.T) {
+	// create a mock http.ResponseWriter
+	w := httptest.NewRecorder()
+	// create a mock http.Request with a POST method and a request body
+	jsonStr := []byte(`{"username": "john_doe"}`)
+	req, err := http.NewRequest("POST", "/rating handler", bytes.NewBuffer(jsonStr))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// call the ratingHandler function
+	ratingHandler(w, req)
+	// check the response status code
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	// check that the result was written to the response
+	expected := "result"
+	if !strings.Contains(w.Body.String(), expected) {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			w.Body.String(), expected)
+	}
 }

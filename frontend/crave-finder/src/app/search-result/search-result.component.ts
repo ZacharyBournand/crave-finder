@@ -7,7 +7,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
   styleUrls: ['./search-result.component.css']
 })
 export class SearchResultComponent implements OnInit {
-
   location = '';
   searchTerm = '';
   restaurants: any[] = [];

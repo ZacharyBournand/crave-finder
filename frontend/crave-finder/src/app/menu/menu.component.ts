@@ -8,6 +8,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { NgForm } from '@angular/forms';
 
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -167,7 +168,6 @@ export class MenuComponent implements OnInit{
       console.error(error);
     }
   })
-}
 }
 
 
