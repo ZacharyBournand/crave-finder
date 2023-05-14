@@ -153,4 +153,4 @@ Endpoints
 Running the API
 
 To run the API, open a terminal and navigate to the project directory ending in "crave-finder\backend", then type the command "go run main.go". Once the terminal displays "Successful connection to the database", it is now available at http://localhost:8080.
-If you use instead connect via the front-end to http://localhost:4200, you can run the Golang API by having the front-end communicate with it to create an account, log in, or log out.
+If you connect via the front-end to http://localhost:4200, you can run the Golang API by having the front-end communicate with it to perform the functionalities available in our application.

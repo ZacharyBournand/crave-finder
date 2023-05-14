@@ -32,6 +32,7 @@ Back-end (Golang)
 - Dylan Bickram
 
 ## How to Run and Use our Application
+**How to Run our Application**
 1. Go to: https://github.com/ZacharyBournand/crave-finder
 
 2. Clone the repository
@@ -40,8 +41,14 @@ Back-end (Golang)
     - Open "Git Bash" (or another application to clone the repository)
     - Paste the copied HTTPS link
     - Type "code crave-finder" to open the application in Visual Studio Code (or open it in another code editor)
+    
+3. If you do not have npm, go to https://nodejs.org/en/download
+    - Download the version that fits your operating system 
+    - Restart Visual Studio Code
+    - Open a terminal and type "npm -v" to see if it has been installed
+    - Then, go to the "frontend" directory (your path should end with "crave-finder\frontend"). Then, type the command: "npm install -g @angular/cli"
 
-3. Once in a code editor, open a new terminal (the end of your directory should be "\crave-finder")
+4. Once in a code editor, open a new terminal (the end of your directory should be "\crave-finder")
     - Go to "frontend" (type "cd frontend) [Now your directory should end with "\crave-finder\frontend"]
     - Type the following commands in your terminal:
         ```
@@ -49,9 +56,11 @@ Back-end (Golang)
         ng add @ng-bootstrap/ng-bootstrap --force
         ```
 
+5. If you do not have Golang installed, you can download it at https://go.dev/dl/
+    - You can then add the Go extension in Visual Studio Code
+    - If Go is not available, it will give you the option at the bottom right to get it
 
-
-4. Open a new terminal (the end of your directory should also be "\crave-finder")
+6. Open a new terminal (the end of your directory should also be "\crave-finder")
     - Go to "backend" (type "cd backend) [Now your directory should end with "\crave-finder\backend"]
     - Type the following commands in your terminal:
         ```
@@ -62,8 +71,21 @@ Back-end (Golang)
         go get github.com/gorilla/handlers
         ```
             
-5. Run the application:
+7. Run the application:
      - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
      - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
      
-6. Have fun!
+    
+**How to Use our Application**
+1. On the Home Page, you can either:
+     - Sign Up
+     - Log In
+     - Search for a Restaurant or Food Item in your chosen City
+2. If you Log In, you get access to the "Account" button at the top right corner that gives 3 options:
+     - "Reviews": you can look up an individual user's ratings
+     - "Change Password": you can change you account's password
+     - "Logout": you can log out 
+3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
+     - Now, you can Add a restaurant's Dish to the Database
+     - You can also Remove a restaurant's Dish from the Database
+     - And you can Create a Dish Rating that gets stored in the Database
