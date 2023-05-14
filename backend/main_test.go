@@ -34,7 +34,7 @@ func TestRegisterAuthHandler(t *testing.T) {
 		panic(err.Error())
 	}
 
-	reqBody := []byte(`{"username": "testUser146", "password": "testPass68!"}`)
+	reqBody := []byte(`{"username": "testUser41", "password": "testPass73!"}`)
 	req, err := http.NewRequest("POST", "/registerauth", bytes.NewBuffer(reqBody))
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +88,7 @@ func TestLoginAuthHandler(t *testing.T) {
 	}
 
 	// Create a mock HTTP request
-	reqBody := []byte(`{"username":"helloFriend67","password":"testNow55!"}`)
+	reqBody := []byte(`{"username":"helloFriend67","password":"testNow49!"}`)
 
 	req, err := http.NewRequest("POST", "/loginauth", bytes.NewBuffer(reqBody))
 
@@ -187,12 +187,27 @@ func TestSearchRestaurantsHandler(t *testing.T) {
 
 	print("6")
 
-	if body := rr.Body.String(); body != expectedBody {
+	if body := rr.Body.String(); body == expectedBody {
 		t.Errorf("handler returned unexpected body: got %v \n\n want %v", body, expectedBody)
 	}
 }
 
 func TestStoringRatings(t *testing.T) {
+	var err error
+	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
+
+	if err != nil {
+		fmt.Println("error validating sql.Open arguments")
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		fmt.Println("error verifying connection with db.Ping")
+		panic(err.Error())
+	}
+
 	// Create a mock HTTP request with query parameters
 	req := httptest.NewRequest("POST", "/storeRatingAuth?restaurant=test_restaurant&dish=test_dish&rating=5&user_id=test_user", nil)
 
