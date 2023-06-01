@@ -18,9 +18,16 @@ Once the user decides on a restaurant, they will be able to view their menu dire
 User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
 
 ## Main Takeaways:
-- Search for restaurants by menu items
-- Rate menu items individually or the restaurant as a whole
-- Store food ratings on user profile
+- Search for restaurants by menu items<br>
+<img src="./app-screenshots/search-restaurants.PNG" alt="App screenshot 1" width="601.14vw" height="300vw"><br><br>
+- Add & remove food items<br>
+<img src="./app-screenshots/add-remove-item.PNG" alt="App screenshot 2" width="601.14vw" height="300vw"><br><br>
+- Rate menu items<br>
+<img src="./app-screenshots/rate-item.PNG" alt="App screenshot 3" width="601.14vw" height="300vw"><br><br>
+- View a user's ratings<br>
+<img src="./app-screenshots/view-user-ratings.PNG" alt="App screenshot 4" width="601.14vw" height="300vw"><br><br>
+- Change your password<br>
+<img src="./app-screenshots/change-password.PNG" alt="App screenshot 5" width="601.14vw" height="300vw"><br>
 
 ## Members
 Front-end (Angular/Typescript)
