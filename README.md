@@ -17,7 +17,7 @@ Once the user decides on a restaurant, they will be able to view their menu dire
 
 User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
 
-## Main Takeaways:
+## Functionalities:
 - Search for restaurants by menu items<br>
 <img src="./app-screenshots/search-restaurants.PNG" alt="App screenshot 1" width="601.14vw" height="300vw"><br><br>
 - Add & remove food items<br>
