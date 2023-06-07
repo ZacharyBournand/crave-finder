@@ -1,0 +1,139 @@
+.restaurant-name
+{
+    margin-top: 20px;
+    font-weight: bolder;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#restaurant-reviews
+{
+    display: flex;
+    justify-content: center;
+}
+
+
+.restaurant-rating-overall
+{
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 30px;
+}
+
+
+.scroll-button
+{
+    height: 120px;
+    background-color: #D3D3D3;    
+    color: black;
+    border-style: solid;
+    border-radius: 8px;
+    border-width: 1px;
+}
+
+#custom-container
+{
+    display: flex;
+}
+
+#menu-box
+{
+    display: block;
+    width: 300px;
+    height: 120px;
+    border-style: solid;
+    border-radius: 8px;
+    border-width: 1px;
+    margin-bottom: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#menu-box-box
+{
+    margin: 10px;
+    flex-direction: column;
+}
+
+.header
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dish-name
+{
+    font-size: 18px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.dish-price
+{
+    font-size: 15px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+
+}
+
+/* Adjust bottom margin using dish-rating only!!!! */
+
+#dish-rating
+{
+    font-size: large;
+    width: 50px;
+}
+
+#rating-time
+{
+    color: yellow;
+    text-align: center;
+    align-items: center;
+}
+
+.dish-description
+{
+    font-size: 16px;
+    font-weight: lighter;
+    height: 45px;
+    margin-bottom: 0;
+    margin-left: 8px;
+}
+
+i {
+    font-size: 1.5rem;
+    padding-right: 0.1rem;
+    color: #b0c4de;
+}
+.filled {
+    color: #1e90ff;
+}
+.low {
+    color: #deb0b0;
+}
+.filled.low {
+    color: #ff1e1e;
+}   
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+margin: 20px;
+padding: 10px;
+background-color: #f5f5f5;
+border-radius: 5px;
+}
+
+.edit {
+    margin: 20px;
+    padding: 10px;
+}

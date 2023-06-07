@@ -1,0 +1,26 @@
+<div>
+<h1>Change Password</h1>
+<form (ngSubmit)="onSubmit($event)">
+    <label>
+        Username:
+        <input type="username" name="username" [(ngModel)]="user.username" required>
+    </label>
+    
+    <label>
+        Current Password:
+        <input type="password" name="password" [(ngModel)]="user.password" required>
+    </label>
+    
+    <span class="center">
+    <button type="submit">Submit</button>
+    </span>
+</form>
+
+<p>{{ responseMessage }}</p>
+<span class="center2">
+<p class="center"> <button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button> </p>
+</span>
+</div>
+
+
+<div class="bottom"></div>

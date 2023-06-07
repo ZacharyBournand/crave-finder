@@ -1,0 +1,16 @@
+<img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
+<div>
+  <button mat-raised-button color="accent" [routerLink]="['register']">Sign Up</button>
+  <button mat-raised-button color="accent" [routerLink]="['login']">Log In</button>
+
+  <p>
+    <span>
+    Are you craving some food?<br><br>
+    Search for a Restaurant or Food Item in your chosen City
+    </span>
+  </p>
+
+  <button mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getSearch()">Search</button>
+</div>
+
+<div class="bottom"></div>

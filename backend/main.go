@@ -1,13 +1,14 @@
-// This is a Go file
 package main
 
 import (
 	"database/sql"
 	"encoding/json"
 	f "fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
@@ -59,11 +60,19 @@ type Restaurant struct {
 	Dishes   []Dish     `json:"dishes"`
 }
 
+type Rating struct {
+	Rating     int    `json:"rating"`
+	Restaurant string `json:"restaurant"`
+	Food       string `json:"food"`
+	UserId     string `json:"userId"`
+}
+
 // Pass the key in via an environment variable to avoid accidentally commi
 var store = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 	var err error
+
 	// Open the database
 	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
 
@@ -83,10 +92,29 @@ func main() {
 
 	// Handle restaurant search requests
 	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
-	// Call a given function to handle a request to the server
+	// Handle login requests
 	http.HandleFunc("/loginauth", loginAuthHandler)
+	// Handle logout requests
 	http.HandleFunc("/logout", logoutHandler)
+	// Handle account registration requests
 	http.HandleFunc("/registerauth", registerAuthHandler)
+	// Handle account authentication to change password
+	http.HandleFunc("/passwordauth", passwordAuthHandler)
+	// Handle password change requests
+	http.HandleFunc("/passwordchange", newPasswordHandler)
+	// Handle getting an individual user's ratings request
+	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
+	// Handle storing a individual user's ratings request
+	http.HandleFunc("/storeRatingAuth", storeUserRating)
+	// Handle page build requests
+	http.HandleFunc("/get-restaurant-info", restaurantBuild)
+	// Handles adding dishes to restaurant
+	http.HandleFunc("/add-dish", addDishHandler)
+	// Handles removing dishes to restaurant
+	http.HandleFunc("/remove-dish", removeDishHandler)
+	// Handles adding unseen restaurants
+	http.HandleFunc("/add-restaurant", addRestaurantHandler)
+	// Handle rating requests
 	http.HandleFunc("/rating", ratingHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
@@ -99,7 +127,6 @@ func main() {
 }
 
 func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
-
 	// Get the search query parameters from the request URL
 	queryParams := r.URL.Query()
 
@@ -107,9 +134,11 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 	location := queryParams.Get("location")
 	term := queryParams.Get("term")
 
+	// Replace spaces in location with dashes
+	location = strings.ReplaceAll(location, " ", "-")
+
 	// Build the Yelp Fusion API search endpoint URL
 	url := f.Sprintf("https://api.yelp.com/v3/businesses/search?location=%s&term=%s", location, term)
-	print("URL: ", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -194,6 +223,20 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 			Dishes:   dishes,
 		})
 	}
+
+	// Set the response header
+	w.Header().Set("Content-Type", "application/json")
+
+	// Convert the restaurants variable to JSON
+	responseJSON, err := json.Marshal(restaurants)
+	if err != nil {
+		f.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Write the response body
+	w.Write(responseJSON)
 
 	f.Println(restaurants)
 }
@@ -449,19 +492,539 @@ func ratingHandler(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow(statement, username)
 	row.Scan(&id)
 
-	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user id
+	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user idd
 	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare("INSERT INTO ratings (rating, Restaurant, Food, User_id) VALUES (?, ?);")
+	insertStatement, err = db.Prepare("INSERT INTO ratings (rating, restaurant, food, userId) VALUES (?, ?, ?, ?);")
 
 	// If an error occurred, display an error message
 	if err != nil {
 		f.Println("Error preparing the statement: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered storing your rating in our database"}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 	defer insertStatement.Close()
 
-	// insert food, rating, restaurant, and user_id
+	// insert food, rating, restaurant, and userId
 	var result sql.Result
 	result, err = insertStatement.Exec(rating, restaurantName, dishName, id)
 	f.Println("result", result)
+}
+
+func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("passwordAuthHandler is running")
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Get the first 2 form values
+	username := user.Username
+	password := user.Password
+
+	// Retrieve the password from the database to compare the hash (encrypted password stored in the database) with the password entered by the user
+	var id, hash string
+	statement := "SELECT id, hash FROM users WHERE username = ?"
+	row := db.QueryRow(statement, username)
+	err = row.Scan(&id, &hash)
+
+	// If an error occurs scanning the hash, display the error
+	if err != nil {
+		f.Println("error selecting hash in db by username")
+
+		response := RegisterResponse{Message: "Check username and password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Compare the hash with the password
+	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	// Display a successful message if there are no errors
+	if err == nil {
+		response := RegisterResponse{Message: "Account credentials confirmed! Please click on the button below to change your password."}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	f.Println("Incorrect password")
+
+	response := RegisterResponse{Message: "Check password"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("passwordAuthHandler is running")
+
+	// Check if the HTTP method is POST
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Decode the JSON request body into a User struct
+	var user User
+	err := json.NewDecoder(r.Body).Decode(&user)
+
+	// If there was an error decoding the JSON, return an error response
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Extract the username and password from the User struct
+	username := user.Username
+	password := user.Password
+
+	// Check the password
+	var passwordLowerCase, passwordUpperCase, passwordNumber, passwordSpecial, passwordLength, passwordNoSpaces bool
+	passwordNoSpaces = true
+
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			passwordLowerCase = true
+		case unicode.IsUpper(char):
+			passwordUpperCase = true
+		case unicode.IsNumber(char):
+			passwordNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			passwordSpecial = true
+		case unicode.IsSpace(int32(char)):
+			passwordNoSpaces = false
+		}
+	}
+
+	if 5 < len(password) && len(password) < 50 {
+		passwordLength = true
+	}
+
+	f.Println("\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
+
+	// If the password doesn't meet the requirements, return an error response
+	if !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
+		response := RegisterResponse{Message: "Invalid password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Create a hash form of the password
+	var hash []byte
+
+	hash, err = bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	if err != nil {
+		f.Println("bcrypt error: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered during the account registration"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Update the user's password in the database
+	statement := "UPDATE users SET hash = ? WHERE username = ?"
+
+	result, err := db.Exec(statement, hash, username)
+
+	if err != nil {
+		f.Println("Error updating user's password: ", err)
+
+		response := RegisterResponse{Message: "An issue was encountered while updating the password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// Check if the update affected any rows in the database
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		f.Println("User not found: ", username)
+
+		response := RegisterResponse{Message: "User not found"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If the update was successful, return a success response
+	response := RegisterResponse{Message: "Password updated successfully"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func storeUserRating(w http.ResponseWriter, r *http.Request) {
+	// Parse request parameters
+	restaurant := r.URL.Query().Get("restaurant")
+	food := r.URL.Query().Get("dish")
+	rating := r.URL.Query().Get("rating")
+	username := r.URL.Query().Get("username")
+
+	userId, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userId.Close()
+
+	var id int
+	if userId.Next() {
+		if err := userId.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Insert rating into database
+	stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, userId) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+	f.Println(rating)
+	f.Println(restaurant)
+	f.Println(food)
+	f.Println(id)
+	res, err := stmt.Exec(rating, restaurant, food, id)
+	if err != nil {
+		f.Println("beans")
+		log.Fatal(err)
+	}
+
+	// Return success response
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("Error getting rows affected: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"message":      "Dish rating stored",
+		"rowsAffected": rowsAffected,
+	}
+
+	jsonData, err := json.Marshal(response)
+	if err != nil {
+		log.Printf("Error marshaling response to JSON: %v", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+
+}
+
+func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the user ID from the request query parameters
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer userID.Close()
+
+	var id int
+	if userID.Next() {
+		if err := userID.Scan(&id); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Query the ratings table for ratings matching the user ID
+	rows, err := db.Query("SELECT rating, restaurant, food, userId FROM craveFinder.ratings WHERE userId = ?", id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Create an array to hold the ratings, restaurants, and food items
+	ratings := []Rating{}
+
+	// Iterate over the rows and add each rating to the array
+	for rows.Next() {
+		var rating Rating
+
+		err := rows.Scan(&rating.Rating, &rating.Restaurant, &rating.Food, &rating.UserId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ratings = append(ratings, rating)
+	}
+
+	// Send the ratings as a JSON response to the client
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Print the JSON content in the terminal
+	jsonContent, err := json.Marshal(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println(string(jsonContent))
+}
+
+// Function to check if a table exists in the database
+func checkIfTableExists(db *sql.DB, tableName string) (int, error) {
+	// Query to check if the table exists
+	//query := "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'craveFinder' AND table_name = ?"
+	query := "SELECT COUNT(*) FROM craveFinder.restaurants WHERE name = ?"
+
+	// Execute the query
+	var count int
+	err := db.QueryRow(query, tableName).Scan(&count)
+	if err != nil {
+		return count, err
+	}
+
+	f.Println("Count:", count)
+
+	// Return true if the count is greater than or equal to 0
+	return count, nil
+}
+
+func insertRestaurant(db *sql.DB, restaurantName string) error {
+	// Insert restaurant name into the MySQL database
+	query := "INSERT INTO craveFinder.restaurants (name) VALUES (?)"
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Execute the prepared statement with the restaurant name as a parameter
+	_, err = stmt.Exec(restaurantName)
+	if err != nil {
+		return err
+	}
+
+	f.Println("Restaurant inserted successfully.")
+	return nil
+}
+
+func restaurantBuild(w http.ResponseWriter, r *http.Request) {
+	f.Println("restaurantBuilder is running")
+	restaurantName := r.URL.Query().Get("name")
+
+	// Check if the restaurant name exists in the local database
+	tableExists, err := checkIfTableExists(db, restaurantName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var query string
+
+	f.Println("1    1")
+
+	if tableExists > 0 {
+		query = "SELECT id, name, price, description, rating, category FROM craveFinder.dishes WHERE restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)"
+
+		stmt, err := db.Prepare(query)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt.Close()
+
+		rows, err := stmt.Query(restaurantName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+
+		f.Println("4    4")
+
+		type Dish struct {
+			ID          int
+			Name        string
+			Price       float32
+			Description string
+			Rating      int
+			Category    string
+		}
+
+		var dishes []Dish
+
+		for rows.Next() {
+			var dish Dish
+			if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+				f.Println(err)
+				return
+			}
+			dishes = append(dishes, dish)
+		}
+
+		if err := rows.Err(); err != nil {
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		err = json.NewEncoder(w).Encode(dishes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		return
+
+		//query = f.Sprintf("SELECT * FROM craveFinder.dishes WHERE restaurantID= %s", restaurantName)
+	} else {
+		f.Println("2    2")
+
+		err := insertRestaurant(db, restaurantName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		f.Println("Restaurant name inserted successfully.")
+
+		// No need to execute the SELECT query here
+		return
+	}
+}
+
+func addDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addDishHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	dishName := r.URL.Query().Get("dishname")
+	price := r.URL.Query().Get("price")
+	category := r.URL.Query().Get("category")
+	description := r.URL.Query().Get("description")
+
+	f.Println(restaurantName)
+
+	var insertStatement *sql.Stmt
+
+	insertStatement, err := db.Prepare(`
+		INSERT INTO craveFinder.dishes (name, price, description, rating, category, restaurantID) 
+		VALUES (?, ?, ?, ?, ?, (SELECT id FROM craveFinder.restaurants WHERE name = ?))
+	`)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer insertStatement.Close()
+
+	//var result sql.Result
+	result, err := insertStatement.Exec(dishName, price, description, 0, category, restaurantName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	f.Println("Result:", result)
+
+	newDish := Dish{
+		Name:        dishName,
+		Price:       price,
+		Description: description,
+	}
+
+	response, err := json.Marshal(newDish)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
+}
+
+func removeDishHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("removeDishHandler is running")
+	dishName := r.URL.Query().Get("dishname")
+	/*query := f.Sprintf("SELECT * FROM %s", restaurantName)
+
+	rows, err := db.Query(query)
+	if err != nil {
+		f.Println("hello :()")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()*/
+
+	/*type Dish struct {
+		ID          int
+		Name        string
+		Price       float32
+		Description string
+		Rating      int
+		Category    string
+	}*/
+
+	f.Println("Number 0")
+
+	//var deleteStatement *sql.Stmt
+
+	deleteStatement, err := db.Prepare(`DELETE FROM craveFinder.dishes WHERE name = ?`)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer deleteStatement.Close()
+
+	f.Println("Number 1")
+
+	//var result sql.Result
+
+	result, err := deleteStatement.Exec(dishName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	f.Println("Rows affected:", rowsAffected)
+
+	//f.Println("Result:", result)
+}
+
+func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("addRestaurantHandler is running")
+	restaurantName := r.URL.Query().Get("name")
+	var createStatement *sql.Stmt
+	createStatement, err := db.Prepare(f.Sprintf("CREATE TABLE IF NOT EXISTS craveFinder.`%s` (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var result sql.Result
+	result, err = createStatement.Exec()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println("Result:", result)
 }
