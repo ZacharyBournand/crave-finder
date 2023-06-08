@@ -471,7 +471,6 @@ func ratingHandler(w http.ResponseWriter, r *http.Request) {
 	doc.Find("#menu-box-box").Each(func(i int, s *goquery.Selection) {
 		dishName = s.Find(".dish-name").Text()
 		dishRating = s.Find("#dish-rating").Find("ngb-rating").AttrOr("rate", "0")
-
 	})
 
 	var user User
@@ -486,7 +485,7 @@ func ratingHandler(w http.ResponseWriter, r *http.Request) {
 	username := user.Username
 	rating, err := strconv.Atoi(dishRating)
 
-	// Retrive the id for the given username
+	// Retrive the id from the given username
 	var id int
 	statement := "SELECT id FROM users WHERE username = ?"
 	row := db.QueryRow(statement, username)
@@ -667,32 +666,30 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	rating := r.URL.Query().Get("rating")
 	username := r.URL.Query().Get("username")
 
-	userId, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
-
+	// Get the user ID directly from the database
+	var id int
+	err := db.QueryRow("SELECT id FROM craveFinder.users WHERE username = ?", username).Scan(&id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer userId.Close()
-
-	var id int
-	if userId.Next() {
-		if err := userId.Scan(&id); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
 
 	// Insert rating into database
-	stmt, err := db.Prepare("INSERT INTO ratings (rating, restaurant, food, userId) VALUES (?, ?, ?, ?)")
+	stmt, err := db.Prepare(`
+		INSERT INTO craveFinder.ratings (rating, restaurant, food, userID) 
+		VALUES (?, ?, ?, ?)
+	`)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
+
 	f.Println(rating)
 	f.Println(restaurant)
 	f.Println(food)
 	f.Println(id)
+
 	res, err := stmt.Exec(rating, restaurant, food, id)
 	if err != nil {
 		f.Println("beans")
