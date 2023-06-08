@@ -4,13 +4,12 @@ import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
 import { FormGroup, NgForm } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatDialogModule, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Form } from '@angular/forms';
 import { MenuComponent } from '../menu/menu.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select'
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-rate-menu',
@@ -20,8 +19,12 @@ import { MatSelectModule } from '@angular/material/select'
 export class RateMenuComponent {
   form: FormGroup;
   user: any;
-  constructor(private http: HttpClient, public userService: UserService, 
-    public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+
+  constructor(
+    private http: HttpClient, 
+    public userService: UserService, 
+    public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.form = new FormGroup({})
     console.log(data);
     console.log("Kaeya Balls");
@@ -30,10 +33,10 @@ export class RateMenuComponent {
 
   close(): void {
     this.dialogRef.close();
-    }
+  }
 
   submit(): void {
-    this.userService.getUser.subscribe(usr => this.user = usr)
+    this.userService.getUser.subscribe(usr => (this.user = usr));
 
     if(!this.user)
     {
@@ -47,24 +50,32 @@ export class RateMenuComponent {
     const params = new HttpParams()
       .set('restaurant', this.restaurantName)
       .set('dish', this.selectedDish)
-      .set('rating', this.rating)
+      .set('rating', this.rating.toString())
       .set('username', this.user.username)
 
     this.http.post(url, {}, {headers, params}).subscribe(
       res => {
         console.log('Dish rating stored');
-      },
 
+        // Assign the rating value to dish.Rating after successful submission
+        this.dialogRef.close(this.rating);
+      },
       err => {
         console.error('Error storing dish rating', err);
       }
-
     );
-        this.dialogRef.close();
+    
+    this.dialogRef.close();
   }
 
-    selectedDish: string = "";
-    restaurantName: string = this.data[1];
-    rating: number = 0;
+  ngOnInit() {
+    // Assign the received dish rating value to the dish.Rating property
+    this.dish.Rating = this.data[2];
+  }
 
+  selectedDish: string = "";
+  restaurantName: string = this.data[1];
+  rating: number = 0;
+  // Hold the dish information
+  dish: any = {};
 }

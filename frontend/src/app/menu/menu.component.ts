@@ -4,10 +4,9 @@ import { restaurants, Restaurant, Category, Dish } from '../restaurants';
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { UserService } from '../user.service'
 import { error } from 'cypress/types/jquery';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { NgForm } from '@angular/forms';
-
 
 @Component({
   selector: 'app-menu',
@@ -23,6 +22,7 @@ export class MenuComponent implements OnInit{
   categories: string[] = [];
   categorySizes : any[][] = [[]];
   counter : number = 0;
+  dishRating : number = 0;
   newDish: any;
 
   lessDishes(i: number){
@@ -41,11 +41,16 @@ export class MenuComponent implements OnInit{
     this.counter = 0;
   }
   
-  constructor(private dialog: MatDialog, private route: ActivatedRoute, private http: HttpClient, public userService: UserService, private router: Router) { }
+  constructor(
+    private dialog: MatDialog, 
+    private route: ActivatedRoute, 
+    private http: HttpClient, 
+    public userService: UserService, 
+    private router: Router,
+  ) { }
   
 
   openDialog() {
-
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -53,9 +58,15 @@ export class MenuComponent implements OnInit{
     dialogConfig.width = '300px';
     dialogConfig.height = '200px';
 
-    const mergedConfig = {... dialogConfig, data: [this.menu, this.restaurantName]}
+    const mergedConfig = {... dialogConfig, data: [this.menu, this.restaurantName, this.dishRating]}
 
-    this.dialog.open(RateMenuComponent, mergedConfig);
+    const dialogRef = this.dialog.open(RateMenuComponent, mergedConfig);
+
+    dialogRef.afterClosed().subscribe((result: number) => {
+      if (result) {
+        this.dishRating = result;
+      }
+    });
   }
 
   responseMessage: string = '';
