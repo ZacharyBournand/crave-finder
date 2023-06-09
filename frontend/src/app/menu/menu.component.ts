@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { restaurants, Restaurant, Category, Dish } from '../restaurants';
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -25,9 +25,9 @@ export class MenuComponent implements OnInit{
   dishRating : number = 0;
   newDish: any;
 
-  reloadPage() {
+  /*reloadPage() {
     location.reload();
-  }
+  }*/
 
   lessDishes(i: number){
     this.dishIndex[i] -= 1;
@@ -51,6 +51,7 @@ export class MenuComponent implements OnInit{
     private http: HttpClient, 
     public userService: UserService, 
     private router: Router,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
   
 
@@ -191,9 +192,11 @@ export class MenuComponent implements OnInit{
               description: '',
             };
 
-            // Reload the page
+            // Stay on the same page
+            const currentURL = this.router.url;
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              this.router.navigate(['/restaurant/']);
+              //this.router.navigate(['/restaurant/']);
+              this.router.navigateByUrl(currentURL);
             });
           },
           (err) => {
@@ -214,11 +217,34 @@ export class MenuComponent implements OnInit{
       this.http.post('http://localhost:8080/remove-dish', {}, {headers, params}).subscribe(
         res => {
         console.log('Dish removed');
+
+        // Stay on the same page
+        const currentURL = this.router.url;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          //this.router.navigate(['/restaurant/']);
+          this.router.navigateByUrl(currentURL);
+        });
       },
       err => {
         console.error('Error removing dish', err);
       })
     }
+  }
+
+  onSubmit(event: Event, action: string) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    if (action === 'add') {
+      // Call the dishAdd() method when the "Add Dish" button is clicked
+      this.dishAdd();
+    } else if (action === 'remove') {
+      // Call the dishRemove() method when the "Remove Dish" button is clicked
+      this.dishRemove();
+    }
+
+    // Manually trigger change detection to update the view
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnInit(): void {

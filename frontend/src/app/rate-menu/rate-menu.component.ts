@@ -1,4 +1,5 @@
 import { Component, Inject} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
@@ -22,7 +23,8 @@ export class RateMenuComponent {
 
   constructor(
     private http: HttpClient, 
-    public userService: UserService, 
+    public userService: UserService,
+    private router: Router,
     public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = new FormGroup({})
@@ -74,6 +76,13 @@ export class RateMenuComponent {
 
         // Assign the rating value to dish.Rating after successful submission
         this.dialogRef.close(this.rating);
+
+        // Stay on the same page
+        const currentURL = this.router.url;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          //this.router.navigate(['/restaurant/']);
+          this.router.navigateByUrl(currentURL);
+        });
       },
       err => {
         console.error('Error storing dish rating', err);

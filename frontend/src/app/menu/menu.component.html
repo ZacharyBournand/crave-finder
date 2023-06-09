@@ -1,18 +1,18 @@
 <h2 style="margin-bottom: 0%" class="restaurant-name" (click)="checkIfCreated()">{{restaurantName}}</h2>
 
 <div class="center">
-    <form>
-          Category:
-          <input type="category" name="category"  [(ngModel)]="dish.category">
-          Name:
-          <input type="dishname" name="dishname"  [(ngModel)]="dish.dishname">
-          Price:
-          <input type="price" name="price" [(ngModel)]="dish.price">
-          Description:
-          <input type="description" name="description" [(ngModel)]="dish.description">
+    <form (submit)="onSubmit($event, 'add' || 'remove')">
+        Category:
+        <input type="category" name="category"  [(ngModel)]="dish.category">
+        Name:
+        <input type="dishname" name="dishname"  [(ngModel)]="dish.dishname">
+        Price:
+        <input type="price" name="price" [(ngModel)]="dish.price">
+        Description:
+        <input type="description" name="description" [(ngModel)]="dish.description">
 
-          <button mat-raised-button color="accent"  (click)="dishAdd(); reloadPage()">Add Dish</button>
-          <button mat-raised-button color="accent" (click)="dishRemove(); reloadPage()">Remove Dish</button>
+        <button mat-raised-button color="accent"  (click)="onSubmit($event, 'add')">Add Dish</button>
+        <button mat-raised-button color="accent" (click)="onSubmit($event, 'remove')">Remove Dish</button>
     </form>
 </div>
 
