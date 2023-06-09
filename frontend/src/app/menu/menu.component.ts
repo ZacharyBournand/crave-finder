@@ -25,6 +25,10 @@ export class MenuComponent implements OnInit{
   dishRating : number = 0;
   newDish: any;
 
+  reloadPage() {
+    location.reload();
+  }
+
   lessDishes(i: number){
     this.dishIndex[i] -= 1;
   }
@@ -96,10 +100,6 @@ export class MenuComponent implements OnInit{
 
   filterDishesByCategory(category: number) {
     return this.categorySizes[category].slice(this.dishIndex[category], this.dishIndex[category] + 4);
-  }
-
-  reloadPage() {
-    location.reload();
   }
 
   /*dishAdd() {

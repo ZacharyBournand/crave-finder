@@ -86,7 +86,7 @@
 #dish-rating
 {
     font-size: large;
-    width: 50px;
+    /*width: 50px;*/
 }
 
 #rating-time
@@ -95,6 +95,13 @@
     text-align: center;
     align-items: center;
 }
+
+mat-icon {
+    color: yellow;
+    text-align: center;
+    align-items: center;
+}
+  
 
 .dish-description
 {

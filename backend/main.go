@@ -660,6 +660,8 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func storeUserRating(w http.ResponseWriter, r *http.Request) {
+	f.Println("storeUserRating is running")
+
 	// Parse request parameters
 	restaurant := r.URL.Query().Get("restaurant")
 	food := r.URL.Query().Get("dish")
@@ -667,8 +669,15 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 
 	// Get the user ID directly from the database
-	var id int
-	err := db.QueryRow("SELECT id FROM craveFinder.users WHERE username = ?", username).Scan(&id)
+	var userId int
+	err := db.QueryRow("SELECT id FROM craveFinder.users WHERE username = ?", username).Scan(&userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var restaurantId int
+	err = db.QueryRow("SELECT id FROM craveFinder.restaurants WHERE name = ?", restaurant).Scan(&restaurantId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -676,8 +685,9 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 
 	// Insert rating into database
 	stmt, err := db.Prepare(`
-		INSERT INTO craveFinder.ratings (rating, restaurant, food, userID) 
-		VALUES (?, ?, ?, ?)
+		UPDATE craveFinder.dishes
+		SET rating = ?, userID = ?
+		WHERE name = ? AND restaurantID = ?;
 	`)
 
 	if err != nil {
@@ -686,11 +696,11 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	defer stmt.Close()
 
 	f.Println(rating)
-	f.Println(restaurant)
+	f.Println(userId)
 	f.Println(food)
-	f.Println(id)
+	f.Println(restaurantId)
 
-	res, err := stmt.Exec(rating, restaurant, food, id)
+	res, err := stmt.Exec(rating, userId, food, restaurantId)
 	if err != nil {
 		f.Println("beans")
 		log.Fatal(err)
