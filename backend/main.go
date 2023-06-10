@@ -755,6 +755,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Query the ratings table for ratings matching the user ID
 	rows, err := db.Query("SELECT rating, restaurant, food, userId FROM craveFinder.ratings WHERE userId = ?", id)
+	//query = "SELECT name, rating, restaurantID, userID FROM craveFinder.dishes WHERE restaurantID = (SELECT name FROM craveFinder.restaurants WHERE id = ?)"
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

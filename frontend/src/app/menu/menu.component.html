@@ -11,13 +11,13 @@
         Description:
         <input type="description" name="description" [(ngModel)]="dish.description">
 
-        <button mat-raised-button color="accent"  (click)="onSubmit($event, 'add')">Add Dish</button>
-        <button mat-raised-button color="accent" (click)="onSubmit($event, 'remove')">Remove Dish</button>
+        <button class="add-button" mat-raised-button color="accent"  (click)="onSubmit($event, 'add')">Add Dish</button>
+        <button class="add-button" mat-raised-button color="accent" (click)="onSubmit($event, 'remove')">Remove Dish</button>
     </form>
 </div>
 
 <div class="text-center">
-    <button mat-raised-button color="accent" class="mx-auto" (click)="openDialog()">Create a Rating!</button>
+    <button mat-raised-button color="accent" class="mx-auto" (click)="openDialog()">Rate a Dish!</button>
 </div>
 
 <div *ngFor="let category of categories index as i">

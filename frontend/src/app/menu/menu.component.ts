@@ -103,60 +103,6 @@ export class MenuComponent implements OnInit{
     return this.categorySizes[category].slice(this.dishIndex[category], this.dishIndex[category] + 4);
   }
 
-  /*dishAdd() {
-    const name = this.route.snapshot.paramMap.get('name');
-    if (this.dish.category != '' || this.dish.dishname != '' || this.dish.price != '' || this.dish.description != '')
-    {
-      const headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-      console.log(this.restaurantName);
-      console.log(this.dish.category);
-      const params = new HttpParams()
-      .set('name', this.restaurantName)
-      .set('category', this.dish.category)
-      .set('dishname', this.dish.dishname)
-      .set('price', this.dish.price)
-      .set('description', this.dish.description);
-      this.http.post('http://localhost:8080/add-dish', {}, {headers, params}).subscribe(
-        (res: any) => {
-          /*console.log('Dish added');
-          const categoryIndex = this.categories.findIndex(cat => cat === res.category);
-          
-          if (categoryIndex !== -1) {
-            this.categorySizes[categoryIndex].push(res);
-          }*/
-
-          // Reset the form or clear the input fields
-          /*this.dish = {
-              category: '',
-              dishname: '',
-              price: '',
-              description: '',
-          };*/
-
-          /*console.log('Dish added', res);
-          const categoryIndex = this.categories.findIndex(cat => cat === res.category);
-    
-          if (categoryIndex !== -1) {
-            this.categorySizes[categoryIndex].push(res); // Assuming categorySizes is an array of arrays, each holding dishes of a specific category
-          }
-    
-          // Reset the form or clear the input fields
-          this.dish = {
-            category: '',
-            dishname: '',
-            price: '',
-            description: '',
-          };
-        },
-
-        err => {
-          console.error('Error storing dish', err);
-        }
-      )
-    };
-  }*/
-
   dishAdd() {
     if (
       this.dish.category !== '' ||
