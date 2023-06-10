@@ -25,10 +25,6 @@ export class MenuComponent implements OnInit{
   dishRating : number = 0;
   newDish: any;
 
-  /*reloadPage() {
-    location.reload();
-  }*/
-
   lessDishes(i: number){
     this.dishIndex[i] -= 1;
   }

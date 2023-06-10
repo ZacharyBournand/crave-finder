@@ -683,40 +683,89 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert rating into database
-	stmt, err := db.Prepare(`
-		UPDATE craveFinder.dishes
-		SET rating = ?, userID = ?
-		WHERE name = ? AND restaurantID = ?;
-	`)
-
+	// Check if the row exists
+	/*var exists bool
+	err = db.QueryRow(`
+		SELECT EXISTS (
+			SELECT 1
+			FROM craveFinder.dishes
+			WHERE name = ? AND restaurantID = ? AND userID = ?
+		);
+	`, food, restaurantId, userId).Scan(&exists)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}*/
+
+	query := "SELECT COUNT(*) FROM craveFinder.dishes WHERE name = ? AND restaurantID = ? AND userID = ?"
+
+	// Execute the query
+	var count int
+	err = db.QueryRow(query, food, restaurantId, userId).Scan(&count)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	defer stmt.Close()
 
-	f.Println(rating)
-	f.Println(userId)
-	f.Println(food)
-	f.Println(restaurantId)
+	f.Println("Count:", count)
 
-	res, err := stmt.Exec(rating, userId, food, restaurantId)
+	// Perform action based on row existence
+	if count == 1 {
+		// Update the existing row
+		stmt, err := db.Prepare(`
+			UPDATE craveFinder.dishes
+			SET rating = ?
+			WHERE name = ? AND restaurantID = ? AND userID = ?;
+		`)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(rating, food, restaurantId, userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		// Insert a new row
+		stmt, err := db.Prepare(`
+			INSERT INTO craveFinder.dishes (name, rating, restaurantID, userID)
+			VALUES (?, ?, ?, ?);
+		`)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(food, rating, restaurantId, userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// Retrieve average rating
+	var averageRating float64
+	err = db.QueryRow(`
+		SELECT ROUND(AVG(rating), 1) AS average_rating
+		FROM craveFinder.dishes
+		WHERE name = ? AND restaurantID=(SELECT id FROM craveFinder.restaurants WHERE name = ?);
+	`, food, restaurant).Scan(&averageRating)
 	if err != nil {
-		f.Println("beans")
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	// Return success response
-	rowsAffected, err := res.RowsAffected()
+	/*rowsAffected, err := res.RowsAffected()
 	if err != nil {
 		log.Printf("Error getting rows affected: %v", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
-	}
+	}*/
 
 	response := map[string]interface{}{
-		"message":      "Dish rating stored",
-		"rowsAffected": rowsAffected,
+		"message": "Dish rating stored",
+		//"rowsAffected": rowsAffected,
 	}
 
 	jsonData, err := json.Marshal(response)
@@ -728,7 +777,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
-
 }
 
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
@@ -796,7 +844,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Function to check if a table exists in the database
-func checkIfTableExists(db *sql.DB, tableName string) (int, error) {
+func checkIfRowExists(db *sql.DB, tableName string) (int, error) {
 	// Query to check if the table exists
 	//query := "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'craveFinder' AND table_name = ?"
 	query := "SELECT COUNT(*) FROM craveFinder.restaurants WHERE name = ?"
@@ -838,7 +886,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	restaurantName := r.URL.Query().Get("name")
 
 	// Check if the restaurant name exists in the local database
-	tableExists, err := checkIfTableExists(db, restaurantName)
+	tableExists, err := checkIfRowExists(db, restaurantName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -849,7 +897,22 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	f.Println("1    1")
 
 	if tableExists > 0 {
-		query = "SELECT id, name, price, description, rating, category FROM craveFinder.dishes WHERE restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)"
+		query = `
+			SELECT id, name, price, description, rating, category
+			FROM craveFinder.dishes
+			WHERE restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)
+			AND name IS NOT NULL
+			AND (id, name) IN (
+				SELECT MIN(id), name
+				FROM craveFinder.dishes
+				WHERE name IS NOT NULL
+				AND price IS NOT NULL
+				AND description IS NOT NULL
+				AND rating IS NOT NULL
+				AND category IS NOT NULL
+				GROUP BY name
+			);
+		`
 
 		stmt, err := db.Prepare(query)
 		if err != nil {
