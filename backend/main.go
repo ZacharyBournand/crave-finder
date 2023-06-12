@@ -663,7 +663,7 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	f.Println("storeUserRating is running")
 
 	// Parse request parameters
-	restaurant := r.URL.Query().Get("restaurant")
+	//restaurant := r.URL.Query().Get("restaurant")
 	food := r.URL.Query().Get("dish")
 	rating := r.URL.Query().Get("rating")
 	username := r.URL.Query().Get("username")
@@ -676,8 +676,8 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var restaurantId int
-	err = db.QueryRow("SELECT id FROM craveFinder.restaurants WHERE name = ?", restaurant).Scan(&restaurantId)
+	var dishId int
+	err = db.QueryRow("SELECT id FROM craveFinder.dishes WHERE name = ?", food).Scan(&dishId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -697,11 +697,17 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 
-	query := "SELECT COUNT(*) FROM craveFinder.dishes WHERE name = ? AND restaurantID = ? AND userID = ?"
+	f.Println("HELLO")
+
+	query := `
+		SELECT COUNT(*) 
+		FROM craveFinder.ratings 
+		WHERE userID = ? AND dishID = ?
+	`
 
 	// Execute the query
 	var count int
-	err = db.QueryRow(query, food, restaurantId, userId).Scan(&count)
+	err = db.QueryRow(query, userId, dishId).Scan(&count)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -713,31 +719,31 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	if count == 1 {
 		// Update the existing row
 		stmt, err := db.Prepare(`
-			UPDATE craveFinder.dishes
+			UPDATE craveFinder.ratings
 			SET rating = ?
-			WHERE name = ? AND restaurantID = ? AND userID = ?;
+			WHERE userID = ? AND dishID = ?
 		`)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(rating, food, restaurantId, userId)
+		_, err = stmt.Exec(rating, userId, dishId)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		// Insert a new row
 		stmt, err := db.Prepare(`
-			INSERT INTO craveFinder.dishes (name, rating, restaurantID, userID)
-			VALUES (?, ?, ?, ?);
+			INSERT INTO craveFinder.ratings (rating, userID, dishID)
+			VALUES (?, ?, ?);
 		`)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(food, rating, restaurantId, userId)
+		_, err = stmt.Exec(rating, userId, dishId)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -746,10 +752,10 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	// Retrieve average rating
 	var averageRating float64
 	err = db.QueryRow(`
-		SELECT ROUND(AVG(rating), 1) AS average_rating
-		FROM craveFinder.dishes
-		WHERE name = ? AND restaurantID=(SELECT id FROM craveFinder.restaurants WHERE name = ?);
-	`, food, restaurant).Scan(&averageRating)
+		SELECT rating
+		FROM craveFinder.ratings
+		WHERE userID = ? AND dishID= ?;
+	`, userId, dishId).Scan(&averageRating)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -898,20 +904,10 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 	if tableExists > 0 {
 		query = `
-			SELECT id, name, price, description, rating, category
-			FROM craveFinder.dishes
-			WHERE restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)
-			AND name IS NOT NULL
-			AND (id, name) IN (
-				SELECT MIN(id), name
-				FROM craveFinder.dishes
-				WHERE name IS NOT NULL
-				AND price IS NOT NULL
-				AND description IS NOT NULL
-				AND rating IS NOT NULL
-				AND category IS NOT NULL
-				GROUP BY name
-			);
+			SELECT d.name, d.price, d.description, d.category, COALESCE(r.rating, 0)
+			FROM craveFinder.dishes AS d
+			LEFT JOIN craveFinder.ratings AS r ON d.id = r.dishID
+			WHERE d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?);
 		`
 
 		stmt, err := db.Prepare(query)
@@ -931,19 +927,18 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		f.Println("4    4")
 
 		type Dish struct {
-			ID          int
 			Name        string
 			Price       float32
 			Description string
-			Rating      int
 			Category    string
+			Rating      *float32
 		}
 
 		var dishes []Dish
 
 		for rows.Next() {
 			var dish Dish
-			if err := rows.Scan(&dish.ID, &dish.Name, &dish.Price, &dish.Description, &dish.Rating, &dish.Category); err != nil {
+			if err := rows.Scan(&dish.Name, &dish.Price, &dish.Description, &dish.Category, &dish.Rating); err != nil {
 				f.Println(err)
 				return
 			}
@@ -951,6 +946,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := rows.Err(); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -990,95 +986,116 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 
 	f.Println(restaurantName)
 
-	var insertStatement *sql.Stmt
+	query := "SELECT COUNT(*) FROM craveFinder.dishes WHERE name = ? AND restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)"
 
-	insertStatement, err := db.Prepare(`
-		INSERT INTO craveFinder.dishes (name, price, description, rating, category, restaurantID) 
-		VALUES (?, ?, ?, ?, ?, (SELECT id FROM craveFinder.restaurants WHERE name = ?))
-	`)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer insertStatement.Close()
-
-	//var result sql.Result
-	result, err := insertStatement.Exec(dishName, price, description, 0, category, restaurantName)
+	// Execute the query
+	var count int
+	err := db.QueryRow(query, dishName, restaurantName).Scan(&count)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	f.Println("Result:", result)
+	f.Println("Count:", count)
 
-	newDish := Dish{
-		Name:        dishName,
-		Price:       price,
-		Description: description,
+	// Perform action based on row existence
+	if count == 0 {
+		var insertStatement *sql.Stmt
+
+		insertStatement, err := db.Prepare(`
+			INSERT INTO craveFinder.dishes (name, price, description, category, restaurantID) 
+			VALUES (?, ?, ?, ?, (SELECT id FROM craveFinder.restaurants WHERE name = ?))
+		`)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer insertStatement.Close()
+
+		//var result sql.Result
+		result, err := insertStatement.Exec(dishName, price, description, category, restaurantName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		f.Println("Result:", result)
+
+		newDish := Dish{
+			Name:        dishName,
+			Price:       price,
+			Description: description,
+		}
+
+		response, err := json.Marshal(newDish)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(response)
+	} else {
+		f.Println("Dish already stored")
+
+		// Create a response JSON indicating the dish already exists
+		errorMsg := "Dish already exists"
+		response := struct {
+			Error string `json:"error"`
+		}{
+			Error: errorMsg,
+		}
+
+		f.Println("WINNING-01")
+
+		responseJSON, err := json.Marshal(response)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		f.Println("WINNING-02")
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(responseJSON)
+
+		f.Println("WINNING-03")
 	}
-
-	response, err := json.Marshal(newDish)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(response)
 }
 
 func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("removeDishHandler is running")
 	dishName := r.URL.Query().Get("dishname")
-	/*query := f.Sprintf("SELECT * FROM %s", restaurantName)
-
-	rows, err := db.Query(query)
-	if err != nil {
-		f.Println("hello :()")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer rows.Close()*/
-
-	/*type Dish struct {
-		ID          int
-		Name        string
-		Price       float32
-		Description string
-		Rating      int
-		Category    string
-	}*/
 
 	f.Println("Number 0")
 
-	//var deleteStatement *sql.Stmt
-
-	deleteStatement, err := db.Prepare(`DELETE FROM craveFinder.dishes WHERE name = ?`)
+	deleteRatingsStmt, err := db.Prepare("DELETE FROM craveFinder.ratings WHERE dishID = (SELECT id FROM craveFinder.dishes WHERE name = ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer deleteStatement.Close()
+	defer deleteRatingsStmt.Close()
+
+	_, err = deleteRatingsStmt.Exec(dishName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	deleteDishStmt, err := db.Prepare("DELETE FROM craveFinder.dishes WHERE name = ?")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer deleteDishStmt.Close()
+
+	_, err = deleteDishStmt.Exec(dishName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	f.Println("Number 1")
-
-	//var result sql.Result
-
-	result, err := deleteStatement.Exec(dishName)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	f.Println("Rows affected:", rowsAffected)
-
-	//f.Println("Result:", result)
 }
 
 func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {

@@ -33,6 +33,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { RateMenuComponent } from './rate-menu/rate-menu.component';
+import { PopupMessageComponent } from './popup-message/popup-message.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { RateMenuComponent } from './rate-menu/rate-menu.component';
     UserSettingsComponent,
     NewPasswordComponent,
     ReviewsPageComponent,
-    RateMenuComponent
+    RateMenuComponent,
+    PopupMessageComponent
 
   ],
   imports: [

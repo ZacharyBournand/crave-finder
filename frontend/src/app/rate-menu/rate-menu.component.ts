@@ -95,7 +95,7 @@ export class RateMenuComponent {
   ngOnInit() {
     // Assign the received dish rating value to the dish.Rating property
     this.dish.Rating = this.data[2];
-  }
+  } 
 
   selectedDish: string = "";
   restaurantName: string = this.data[1];

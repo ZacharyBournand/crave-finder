@@ -7,6 +7,7 @@ import { error } from 'cypress/types/jquery';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { NgForm } from '@angular/forms';
+import { PopupMessageComponent } from '../popup-message/popup-message.component';
 
 @Component({
   selector: 'app-menu',
@@ -68,7 +69,7 @@ export class MenuComponent implements OnInit{
         this.dishRating = result;
       }
     });
-  }
+  } 
 
   responseMessage: string = '';
 
@@ -78,6 +79,12 @@ export class MenuComponent implements OnInit{
     price: '',
     description: '',
   };
+
+  openPopupMessage(message: string): void {
+    this.dialog.open(PopupMessageComponent, {
+      data: { message },
+    });
+  }
 
   checkIfCreated()
   {
@@ -114,39 +121,38 @@ export class MenuComponent implements OnInit{
         .set('dishname', this.dish.dishname)
         .set('price', this.dish.price)
         .set('description', this.dish.description);
+
+        console.log("HELLO-0")
   
-      this.http
+        this.http
         .post('http://localhost:8080/add-dish', {}, { headers, params })
         .subscribe(
           (res: any) => {
-            console.log('Dish added', res);
-            const categoryIndex = this.categories.findIndex(cat => cat === res.category);
-  
-            if (categoryIndex !== -1) {
-              this.categorySizes[categoryIndex].push(res); // Assuming categorySizes is an array of arrays, each holding dishes of a specific category
+            console.log("HELLO-1");
+            console.log(res); // Log the response to inspect its structure
+      
+            if (res.error === 'Dish already exists') {
+              console.log("HELLO-2");
+              // Display the pop-up message for dish already exists
+              this.openPopupMessage(res.error);
+            } else {
+              console.log('Dish added', res);
+              
+              // Stay on the same page
+              const currentURL = this.router.url;
+              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                //this.router.navigate(['/restaurant/']);
+                this.router.navigateByUrl(currentURL);
+              });
             }
-  
-            // Reset the form or clear the input fields
-            this.dish = {
-              category: '',
-              dishname: '',
-              price: '',
-              description: '',
-            };
-
-            // Stay on the same page
-            const currentURL = this.router.url;
-            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              //this.router.navigate(['/restaurant/']);
-              this.router.navigateByUrl(currentURL);
-            });
           },
           (err) => {
             console.error('Error storing dish', err);
           }
         );
+      
     }
-  }    
+  }
 
   dishRemove() {
     const name = this.route.snapshot.paramMap.get('name');
@@ -202,7 +208,7 @@ export class MenuComponent implements OnInit{
       this.menu = data;
 
       if (this.menu === null) {
-        console.log('Restaurant name added to the database');
+        console.log('Restaurant name in the database');
       } else {
         for (let i = 0; i < this.menu.length; i++)
         {
