@@ -49,7 +49,7 @@ Back-end (Golang)
     - Open a terminal and type "npm -v" to see if it has been installed
 
 4. Install Angular dependencies
-    - In the terminal, install the Angular CLI globally by running the command: "npm install -g @angular/cli"
+    - In the terminal, install the Angular CLI globally by running the command: ```npm install -g @angular/cli```
     - Open the clone repository and ensure your current directory ends with "crave-finder"
     - Go to "frontend" (type "cd frontend") [Now your directory should end with "\crave-finder\frontend"]
     - Type the following commands in your terminal:
