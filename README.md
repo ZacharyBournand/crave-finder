@@ -40,7 +40,7 @@ Back-end (Golang)
     - Copy the HTTPS link: https://github.com/ZacharyBournand/crave-finder.git
     - Open "Git Bash" (or another terminal application for Git)
     - Navigate to the desired directory where you want to clone the repository
-    - Type the command: "git clone https://github.com/ZacharyBournand/crave-finder.git"
+    - Type the command: ```git clone https://github.com/ZacharyBournand/crave-finder.git```
     - Type "code crave-finder" to open the application in Visual Studio Code (or open it in another code editor)
     
 3. If you do not have npm, go to https://nodejs.org/en/download
@@ -75,8 +75,8 @@ Back-end (Golang)
         ```
             
 7. Run the application:
-     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
-     - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
+     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: ```ng serve --open```
+     - In your "\crave-finder\backend" terminal, type the following command to run the backend: ```go run main.go```
      
     
 **How to Use our Application**
