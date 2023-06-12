@@ -794,8 +794,13 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query the ratings table for ratings matching the user ID
-	rows, err := db.Query("SELECT rating, restaurant, food, userId FROM craveFinder.ratings WHERE userId = ?", id)
-	//query = "SELECT name, rating, restaurantID, userID FROM craveFinder.dishes WHERE restaurantID = (SELECT name FROM craveFinder.restaurants WHERE id = ?)"
+	rows, err := db.Query(`
+		SELECT r.rating, d.name, res.name
+		FROM craveFinder.ratings AS r
+		JOIN craveFinder.dishes AS d ON r.dishID = d.id
+		JOIN craveFinder.restaurants AS res ON d.restaurantID = res.id
+		WHERE r.userID = ?
+	`, id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -810,7 +815,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var rating Rating
 
-		err := rows.Scan(&rating.Rating, &rating.Restaurant, &rating.Food, &rating.UserId)
+		err := rows.Scan(&rating.Rating, &rating.Food, &rating.Restaurant)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

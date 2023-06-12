@@ -10,15 +10,15 @@
     <thead>
       <tr>
         <th>Rating</th>
-        <th>Restaurant</th>
         <th>Food</th>
+        <th>Restaurant</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let rating of ratings">
-        <td>{{ rating.rating }}</td>
-        <td>{{ rating.restaurant }}</td>
+        <td>{{ rating.rating }}/5</td>
         <td>{{ rating.food }}</td>
+        <td>{{ rating.restaurant }}</td>
       </tr>
     </tbody>
 </table>
