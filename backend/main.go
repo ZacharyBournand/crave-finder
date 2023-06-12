@@ -683,20 +683,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the row exists
-	/*var exists bool
-	err = db.QueryRow(`
-		SELECT EXISTS (
-			SELECT 1
-			FROM craveFinder.dishes
-			WHERE name = ? AND restaurantID = ? AND userID = ?
-		);
-	`, food, restaurantId, userId).Scan(&exists)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}*/
-
 	f.Println("HELLO")
 
 	query := `
@@ -749,13 +735,13 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Retrieve average rating
-	var averageRating float64
+	// Retrieve the user's rating
+	var userRating float64
 	err = db.QueryRow(`
 		SELECT rating
 		FROM craveFinder.ratings
 		WHERE userID = ? AND dishID= ?;
-	`, userId, dishId).Scan(&averageRating)
+	`, userId, dishId).Scan(&userRating)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -890,6 +876,7 @@ func insertRestaurant(db *sql.DB, restaurantName string) error {
 func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	f.Println("restaurantBuilder is running")
 	restaurantName := r.URL.Query().Get("name")
+	username := r.URL.Query().Get("username")
 
 	// Check if the restaurant name exists in the local database
 	tableExists, err := checkIfRowExists(db, restaurantName)
@@ -903,10 +890,16 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 	f.Println("1    1")
 
 	if tableExists > 0 {
+		f.Println("1    2")
+
 		query = `
 			SELECT d.name, d.price, d.description, d.category, COALESCE(r.rating, 0)
 			FROM craveFinder.dishes AS d
-			LEFT JOIN craveFinder.ratings AS r ON d.id = r.dishID
+			LEFT JOIN (
+			SELECT dishID, rating
+			FROM craveFinder.ratings
+			WHERE userID = (SELECT id FROM craveFinder.users WHERE username = ?)
+			) AS r ON d.id = r.dishID
 			WHERE d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?);
 		`
 
@@ -917,7 +910,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmt.Close()
 
-		rows, err := stmt.Query(restaurantName)
+		rows, err := stmt.Query(username, restaurantName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -1065,10 +1058,11 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 
 func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("removeDishHandler is running")
+
+	// Get the dish name from the query parameter
 	dishName := r.URL.Query().Get("dishname")
 
-	f.Println("Number 0")
-
+	// Prepare the DELETE statement for removing ratings associated with the dish
 	deleteRatingsStmt, err := db.Prepare("DELETE FROM craveFinder.ratings WHERE dishID = (SELECT id FROM craveFinder.dishes WHERE name = ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1076,12 +1070,14 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer deleteRatingsStmt.Close()
 
+	// Execute the DELETE statement to remove the ratings
 	_, err = deleteRatingsStmt.Exec(dishName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Prepare the DELETE statement for removing the dish itself
 	deleteDishStmt, err := db.Prepare("DELETE FROM craveFinder.dishes WHERE name = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1089,13 +1085,12 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer deleteDishStmt.Close()
 
+	// Execute the DELETE statement to remove the dish
 	_, err = deleteDishStmt.Exec(dishName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	f.Println("Number 1")
 }
 
 func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {

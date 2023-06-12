@@ -17,7 +17,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let restaurant of restaurants">
-        <td> <a [routerLink]="['/restaurant/', restaurant.name]" >{{ restaurant.name }}</a></td>
+        <!--td> <a [routerLink]="['/restaurant/', restaurant.name]" >{{ restaurant.name }}</a></td-->
+
+        <td>
+          <a href="javascript:void(0);" (click)="isLoggedIn(restaurant)"> {{ restaurant.name }}</a>
+        </td>
+
         <td>{{ restaurant.rating }}</td>
       </tr>
     </tbody>

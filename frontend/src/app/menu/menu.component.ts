@@ -15,7 +15,6 @@ import { PopupMessageComponent } from '../popup-message/popup-message.component'
   styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent implements OnInit{
-  
   dishIndex: number[] = [];
   restaurant !: Restaurant;
   restaurantName : string = "";
@@ -25,6 +24,7 @@ export class MenuComponent implements OnInit{
   counter : number = 0;
   dishRating : number = 0;
   newDish: any;
+  user: any;
 
   lessDishes(i: number){
     this.dishIndex[i] -= 1;
@@ -196,12 +196,27 @@ export class MenuComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.userService.getUser.subscribe(usr => (this.user = usr));
+
+    console.log("HELLO-01")
+
+    console.log("User: ", this.user)
+
+    if(!this.user)
+    {
+      console.error('You are not logged in!');
+      return;
+    }
+
     const name = this.route.snapshot.paramMap.get('name');
     if (name) {
       this.restaurantName = name;
     }
 
-    const params = new HttpParams().set('name', this.restaurantName);
+    const params = new HttpParams()
+      .set('name', this.restaurantName)
+      .set('username', this.user.username)
+
     this.http.get('http://localhost:8080/get-restaurant-info', { params }).subscribe({
     next: (data: any) => {
       // Store the restaurants data in a class variable

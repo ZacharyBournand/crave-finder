@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { UserService } from '../user.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PopupMessageComponent } from '../popup-message/popup-message.component';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-search-result',
@@ -11,8 +15,14 @@ export class SearchResultComponent implements OnInit {
   searchTerm = '';
   restaurants: any[] = [];
   tableVisible = false;
+  user: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    public userService: UserService,
+    private router: Router,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit(): void{}
 
@@ -33,5 +43,27 @@ export class SearchResultComponent implements OnInit {
         console.error(error);
       }
     });
+  }
+
+  isLoggedIn(restaurant: any): boolean {
+    this.userService.getUser.subscribe(usr => (this.user = usr));
+
+    console.log("HELLO-01")
+
+    console.log("User: ", this.user)
+
+    if(!this.user)
+    {
+      console.error('You are not logged in!');
+
+      this.dialog.open(PopupMessageComponent, {
+        data: { message: 'You are not logged in' }
+      });
+
+      return false;
+    } else {
+      this.router.navigateByUrl('/restaurant/' + restaurant.name);
+      return true;
+    }
   }
 }
