@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -7,9 +6,9 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UserService {
 
-  private user = new BehaviorSubject(undefined);
+  private user = new BehaviorSubject<any>(null);
   getUser = this.user.asObservable();
-  isLoggedIn = false
+  isLoggedIn = false;
 
   constructor() { }
 
@@ -18,13 +17,7 @@ export class UserService {
     this.isLoggedIn = true;
   }
 
-  getUserId(): string {
-    let userId = '';
-    this.getUser.subscribe(user => {
-      if (user) {
-        //userId = user.username;
-      }
-    });
-    return userId;
+  getUsername(): string {
+    return this.user.value?.username || '';
   }
 }

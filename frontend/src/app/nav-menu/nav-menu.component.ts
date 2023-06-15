@@ -10,10 +10,10 @@ import { UserService } from '../user.service';
 export class NavMenuComponent {
   responseMessage: string = '';
 
-  user = {
+  /*user = {
     username: '',
     password: ''
-  };
+  };*/
 
   @ViewChild('refLogoutLink', { static: false, read: ElementRef }) logoutLink!: ElementRef;
 

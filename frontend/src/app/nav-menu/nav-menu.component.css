@@ -1,0 +1,19 @@
+p {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+.menu-divider {
+    border-top: 1px solid #ccc;
+    margin: 8px 0;
+}
+
+.mat-menu-panel {
+    background-color: lightgray;
+}
+
+a {
+    display: flex;
+    justify-content: center;
+}
