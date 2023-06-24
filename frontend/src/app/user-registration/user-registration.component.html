@@ -1,13 +1,16 @@
 <div>
-<h1>Register</h1>
-<form (ngSubmit)="onSubmit($event)">
+  <h1>Register</h1>
+
+  <form (ngSubmit)="onSubmit($event)">
     <label>
       Username:
       <input type="username" name="username" [(ngModel)]="user.username" required>
     </label>
   
-    <span>Password must contain one uppercase, one lowercase, one number, one special character
-      and be between 5 and 50 characters.</span>
+    <span>
+      Password must contain one uppercase, one lowercase, one number, one special character
+      and be between 5 and 50 characters.
+    </span>
 
     <label>
       Password:
@@ -15,12 +18,13 @@
     </label>
 
     <span class="center">
-    <button type="submit">Register</button>
+      <button type="submit">Register</button>
     </span>
-</form>
+  </form>
 
+  <p>{{ responseMessage }}</p>
 
-<p>{{ responseMessage }}</p>
+  <a class="hyperlink-to-homepage" [routerLink]="['/']">Back to Homepage</a>
 </div>
 
 <div class="bottom"></div>
