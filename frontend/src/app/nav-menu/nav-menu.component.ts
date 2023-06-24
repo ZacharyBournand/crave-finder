@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -10,14 +11,13 @@ import { UserService } from '../user.service';
 export class NavMenuComponent {
   responseMessage: string = '';
 
-  /*user = {
-    username: '',
-    password: ''
-  };*/
-
   @ViewChild('refLogoutLink', { static: false, read: ElementRef }) logoutLink!: ElementRef;
 
-  constructor(private http: HttpClient, public userService: UserService) {}
+  constructor(
+    private http: HttpClient, 
+    public userService: UserService,
+    private router: Router,
+  ) {}
 
   ngAfterViewInit() {
     const logoutLink = document.querySelector('a.logout') as HTMLElement;
@@ -35,7 +35,17 @@ export class NavMenuComponent {
     this.http.post('http://localhost:8080/logout', {}).subscribe((response: any) => {
       console.log(response);
       this.responseMessage = response.message;
+      this.userService.setUser(null);
       this.userService.isLoggedIn = false;
+
+      // Reload the page
+      //location.reload();
+
+      // Clear any user-related data or perform any necessary cleanup
+      //this.userService.clearUserData();
+
+      // Redirect to the login page
+      //this.router.navigate(['/login']);
     });
   }
 }

@@ -1,7 +1,7 @@
 <img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
 <div>
-  <button mat-raised-button color="accent" [routerLink]="['register']">Sign Up</button>
-  <button mat-raised-button color="accent" [routerLink]="['login']">Log In</button>
+  <button mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['register']">Sign Up</button>
+  <button mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['login']">Log In</button>
 
   <p>
     <span>

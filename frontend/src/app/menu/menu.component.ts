@@ -121,9 +121,7 @@ export class MenuComponent implements OnInit{
         .set('dishname', this.dish.dishname)
         .set('price', this.dish.price)
         .set('description', this.dish.description);
-
-        console.log("HELLO-0")
-  
+          
         this.http
         .post('http://localhost:8080/add-dish', {}, { headers, params })
         .subscribe(

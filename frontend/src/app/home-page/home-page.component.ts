@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AppService } from '../app.service';
+import { UserService } from '../user.service'
 
 @Component({
   selector: 'app-home-page',
@@ -8,7 +9,7 @@ import { AppService } from '../app.service';
 })
 export class HomePageComponent {
 
-  constructor(private appService:AppService) {}
+  constructor(private appService:AppService, public userService: UserService) {}
 
   search : any;
   criteria : any;

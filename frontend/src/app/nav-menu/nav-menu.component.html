@@ -1,4 +1,4 @@
-<button mat-raised-button color="accent"  *ngIf="userService.isLoggedIn" [matMenuTriggerFor]="navMenu">Account</button>
+<button mat-raised-button color="accent" *ngIf="userService.isLoggedIn" [matMenuTriggerFor]="navMenu">Account</button>
 
 <mat-menu #navMenu="matMenu" yPosition="below" >
     <p *ngIf="userService.isLoggedIn">{{ userService.getUsername() }}</p>
