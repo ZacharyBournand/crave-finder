@@ -26,7 +26,7 @@
 
 .scroll-button
 {
-    height: 8vw;
+    height: 13vw;
     background-color: #D3D3D3;    
     color: black;
     border-style: solid;
@@ -43,7 +43,7 @@
 {
     display: block;
     width: 20vw;
-    height: 8vw;
+    height: 13vw;
     border-style: solid;
     border-radius: .5vw;
     border-width: .1vw;
@@ -82,6 +82,7 @@
 #dish-rating
 {
     font-size: large;
+    margin-left: 0.5vw;
 }
 
 #rating-time
@@ -139,7 +140,15 @@ form {
     margin-left: 1vw;
 }
 
-/*.edit {
-    margin: 20px;
-    padding: 10px;
-}*/
+.ratings {
+    font-size: 1vw;
+}
+
+.user-ratings {
+    color: #20B0A3;
+}
+
+.user-ratings:hover {
+    color: #034a57;
+    text-decoration: underline;
+}

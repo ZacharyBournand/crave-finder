@@ -27,13 +27,14 @@
         [disabled]="(dishIndex[i] - 1) < 0"
         (click)="lessDishes(i)">
         &lt;</button>
-        <!--div *ngFor="let dish of categorySizes[i].slice(dishIndex[i], dishIndex[i] + 4) index as j"-->
+
         <div *ngFor="let dish of filterDishesByCategory(i) index as j">
             <div id="menu-box">
                 <div id="menu-box-box">
                     <div class="header">
                         <div class="left=side">
                             <a class="dish-name" [title] = "dish.name + ' details'">
+                                {{dish.Id}}
                                 {{dish.Name}}
                             </a>
     
@@ -50,7 +51,17 @@
                 
                 <div style="height: 100%">
                     <div id="dish-rating">
-                        <ngb-rating style="margin: 0; margin-left: 8px" id="rating-time" [max]="5" [rate]="dish.Rating" [readonly]="true"></ngb-rating>
+                        <span class="ratings">
+                            Your Rating:
+                            <ngb-rating style="margin: 0; margin-left: 8px" id="rating-time" [max]="5" [rate]="dish.Rating" [readonly]="true"></ngb-rating>
+                            
+                            <p>Average Rating: {{ dish.AverageRating }}/5</p>
+                            
+                            <a [routerLink]="['/dish-ratings', dish.Id]" class="user-ratings">
+                                {{ dish.CountRating }}
+                                {{ dish.CountRating === 1 ? 'user rating' : 'user ratings' }}
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>

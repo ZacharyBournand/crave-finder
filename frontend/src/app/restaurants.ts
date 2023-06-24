@@ -1,3 +1,10 @@
+export interface Rating {
+    rating: number;
+    restaurant: string;
+    food: string;
+    username: string;
+}
+
 export interface Dish {
     id: number;
     name: string;

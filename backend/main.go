@@ -64,7 +64,7 @@ type Rating struct {
 	Rating     int    `json:"rating"`
 	Restaurant string `json:"restaurant"`
 	Food       string `json:"food"`
-	UserId     string `json:"userId"`
+	Username   string `json:"username"`
 }
 
 // Pass the key in via an environment variable to avoid accidentally commi
@@ -116,6 +116,8 @@ func main() {
 	http.HandleFunc("/add-restaurant", addRestaurantHandler)
 	// Handle rating requests
 	http.HandleFunc("/rating", ratingHandler)
+	// Handle dish ratings request
+	http.HandleFunc("/dish-ratings", dishRatingsHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -890,22 +892,56 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var query string
-
 	f.Println("1    1")
 
 	if tableExists > 0 {
 		f.Println("1    2")
 
-		query = `
-			SELECT d.name, d.price, d.description, d.category, COALESCE(r.rating, 0)
-			FROM craveFinder.dishes AS d
+		query := `
+			SELECT
+				d.id,
+				d.name,
+				d.price,
+				d.description,
+				d.category,
+				COALESCE(r.rating, 0),
+				avg_rating.avg_rating,
+				rating_count.rating_count
+			FROM
+				craveFinder.dishes AS d
 			LEFT JOIN (
-			SELECT dishID, rating
-			FROM craveFinder.ratings
-			WHERE userID = (SELECT id FROM craveFinder.users WHERE username = ?)
+				SELECT
+				dishID,
+				rating
+				FROM
+				craveFinder.ratings
+				WHERE
+				userID = (SELECT id FROM craveFinder.users WHERE username = ?)
 			) AS r ON d.id = r.dishID
-			WHERE d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?);
+			LEFT JOIN (
+				SELECT
+				dishID,
+				AVG(rating) AS avg_rating
+				FROM
+				craveFinder.ratings
+				GROUP BY
+				dishID
+			) AS avg_rating ON d.id = avg_rating.dishID
+			LEFT JOIN (
+				SELECT
+				d.id AS dishID,
+				COUNT(r.rating) AS rating_count
+				FROM
+				craveFinder.dishes AS d
+				LEFT JOIN
+				craveFinder.ratings AS r ON d.id = r.dishID
+				WHERE
+				d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)
+				GROUP BY
+				d.id
+			) AS rating_count ON d.id = rating_count.dishID
+			WHERE
+				d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?);	  
 		`
 
 		stmt, err := db.Prepare(query)
@@ -915,31 +951,58 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		}
 		defer stmt.Close()
 
-		rows, err := stmt.Query(username, restaurantName)
+		rows, err := stmt.Query(username, restaurantName, restaurantName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
 
+		/*query2 := `
+			SELECT AVG(r.rating) AS avg_rating
+			FROM craveFinder.dishes AS d
+			LEFT JOIN craveFinder.ratings AS r ON d.id = r.dishID
+			WHERE d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)
+			GROUP BY d.id;
+		`
+
+		stmt2, err := db.Prepare(query2)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer stmt2.Close()
+
+		rows2, err := stmt2.Query(restaurantName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer rows2.Close()*/
+
 		f.Println("4    4")
 
 		type Dish struct {
-			Name        string
-			Price       float32
-			Description string
-			Category    string
-			Rating      *float32
+			Id            int
+			Name          string
+			Price         float32
+			Description   string
+			Category      string
+			Rating        *float32
+			AverageRating *float32
+			CountRating   *float32
 		}
 
 		var dishes []Dish
 
 		for rows.Next() {
 			var dish Dish
-			if err := rows.Scan(&dish.Name, &dish.Price, &dish.Description, &dish.Category, &dish.Rating); err != nil {
+
+			if err := rows.Scan(&dish.Id, &dish.Name, &dish.Price, &dish.Description, &dish.Category, &dish.Rating, &dish.AverageRating, &dish.CountRating); err != nil {
 				f.Println(err)
 				return
 			}
+
 			dishes = append(dishes, dish)
 		}
 
@@ -956,8 +1019,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		}
 
 		return
-
-		//query = f.Sprintf("SELECT * FROM craveFinder.dishes WHERE restaurantID= %s", restaurantName)
 	} else {
 		f.Println("2    2")
 
@@ -1115,4 +1176,60 @@ func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f.Println("Result:", result)
+}
+
+func dishRatingsHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("dishRatingsHandler is running")
+
+	// Get the user ID from the request query parameters
+	dishId := r.URL.Query().Get("dishId")
+
+	f.Println("Dish ID:", dishId)
+
+	// Query the ratings table for ratings matching the user ID
+	rows, err := db.Query(`
+		SELECT d.name, u.username, r.rating
+		FROM craveFinder.ratings AS r
+		JOIN craveFinder.dishes AS d ON r.dishID = d.id
+		JOIN craveFinder.users AS u ON r.userID = u.id
+		WHERE r.dishID = ?;
+	`, dishId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Create an array to hold the ratings, restaurants, and food items
+	ratings := []Rating{}
+
+	// Iterate over the rows and add each rating to the array
+	for rows.Next() {
+		var rating Rating
+
+		err := rows.Scan(&rating.Food, &rating.Username, &rating.Rating)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		ratings = append(ratings, rating)
+	}
+
+	// Send the ratings as a JSON response to the client
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Print the JSON content in the terminal
+	jsonContent, err := json.Marshal(ratings)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	f.Println(string(jsonContent))
 }

@@ -34,6 +34,7 @@ import { NewPasswordComponent } from './new-password/new-password.component';
 import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { RateMenuComponent } from './rate-menu/rate-menu.component';
 import { PopupMessageComponent } from './popup-message/popup-message.component';
+import { DishRatingsComponent } from './dish-ratings/dish-ratings.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { PopupMessageComponent } from './popup-message/popup-message.component';
     NewPasswordComponent,
     ReviewsPageComponent,
     RateMenuComponent,
-    PopupMessageComponent
+    PopupMessageComponent,
+    DishRatingsComponent
 
   ],
   imports: [

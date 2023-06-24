@@ -41,34 +41,21 @@ export class RateMenuComponent {
   }
 
   submit(): void {
-    console.log("HELLO-0")
-
     this.userService.getUser.subscribe(usr => (this.user = usr));
-
-    console.log("HELLO-01")
-
-    console.log("User: ", this.user)
 
     if(!this.user)
     {
-      console.error('You are not logged in!');
       return;
     }
-
-    console.log("HELLO-1")
     
     const url = 'http://localhost:8080/storeRatingAuth';
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-    console.log("HELLO-2")
 
     const params = new HttpParams()
       .set('restaurant', this.restaurantName)
       .set('dish', this.selectedDish)
       .set('rating', this.rating.toString())
       .set('username', this.user.username)
-
-    console.log("HELLO-3")
 
     this.http.post(url, {}, {headers, params}).subscribe(
       res => {

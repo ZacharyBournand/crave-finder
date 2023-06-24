@@ -127,12 +127,8 @@ export class MenuComponent implements OnInit{
         this.http
         .post('http://localhost:8080/add-dish', {}, { headers, params })
         .subscribe(
-          (res: any) => {
-            console.log("HELLO-1");
-            console.log(res); // Log the response to inspect its structure
-      
+          (res: any) => {      
             if (res.error === 'Dish already exists') {
-              console.log("HELLO-2");
               // Display the pop-up message for dish already exists
               this.openPopupMessage(res.error);
             } else {
@@ -197,10 +193,6 @@ export class MenuComponent implements OnInit{
 
   ngOnInit(): void {
     this.userService.getUser.subscribe(usr => (this.user = usr));
-
-    console.log("HELLO-01")
-
-    console.log("User: ", this.user)
 
     if(!this.user)
     {

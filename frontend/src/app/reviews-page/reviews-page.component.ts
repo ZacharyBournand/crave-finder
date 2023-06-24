@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
-interface Rating {
+import { Rating } from '../restaurants'
+
+/*interface Rating {
   rating: number;
   restaurant: string;
   food: string;
   user_id: string;
-}
+}*/
 
 @Component({
   selector: 'app-reviews-page',

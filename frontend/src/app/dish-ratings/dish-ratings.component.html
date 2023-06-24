@@ -1,0 +1,16 @@
+<h2>Ratings for <span>{{ ratings[0].food }}</span></h2>
+
+<table class="ratings-table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let rating of ratings">
+      <td>{{ rating.username }}</td>
+      <td>{{ rating.rating }}/5</td>
+    </tr>
+  </tbody>
+</table>
