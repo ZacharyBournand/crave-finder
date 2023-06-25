@@ -1,37 +1,37 @@
 /* Styles for header */
 .header {
-  font-size: 32px;
-  margin-bottom: 15px;
-  margin-top: 10px;
+  font-size: 2.2vw;
+  margin: 2vw 0;
   font-weight: lighter;
   text-align: center;
 }
 
 /* Styles for input container */
 .input-container {
-  margin-bottom: 20px;
+  margin-bottom: 2vw;
 }
 
 /* Styles for label */
 .input-container label {
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 1vw;
+  font-size: .95vw;
 }
 
 /* Styles for input */
 .input-container input {
-  padding: 5px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
+  padding: .3vw;
+  font-size: 1.1vw;
+  border-radius: .4vw;
+  border: .1vw solid #ccc;
+  margin-right: .8vw;
 }
 
 /* Styles for button */
 .input-container button {
-  padding: 5px 10px;
-  font-size: 16px;
-  border-radius: 5px;
+  padding: .3vw .8vw;
+  font-size: 1.1vw;
+  border-radius: .4vw;
   background-color: #4CAF50;
   color: #fff;
   border: none;
@@ -45,23 +45,30 @@
 .ratings-table {
   border-collapse: collapse;
   width: 100%;
+  border: .1vw solid #ddd;
 }
 
 /* Styles for table head */
 .ratings-table th {
   text-align: left;
-  padding: 10px;
+  padding: .8vw;
   background-color: #f2f2f2;
 }
 
 /* Styles for table row */
 .ratings-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: .1vw solid #ddd;
+  padding: .8vw;
 }
 
 /* Styles for alternating row colors */
 .ratings-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-  
+
+.no-ratings {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  font-size: medium;
+}

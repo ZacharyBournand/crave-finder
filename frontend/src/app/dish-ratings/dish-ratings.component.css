@@ -2,7 +2,7 @@
 h2 {
     font-size: 24px;
     margin-bottom: 20px;
-    margin: 1vw 0;
+    margin: 2vw 0;
 }
 
 h2 span {
@@ -31,4 +31,16 @@ h2 span {
 /* Styles for alternating row colors */
 .ratings-table tr:nth-child(even) {
     background-color: #f2f2f2;
+}
+
+.back-hyperlink {
+    text-decoration: underline;
+    display: flex;
+    justify-content: center;
+    color: rgba(0, 0, 255, 0.508);
+    margin-top: 3.5vw;
+}
+
+.back-hyperlink:hover {
+    color: darkblue;
 }

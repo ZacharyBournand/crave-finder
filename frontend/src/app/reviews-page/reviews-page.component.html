@@ -6,7 +6,7 @@
     <button (click)="getUserRatings()">Get Ratings</button>
 </div>
   
-<table class="ratings-table">
+<table class="ratings-table" *ngIf="ratings.length > 0">
     <thead>
       <tr>
         <th>Rating</th>
@@ -22,3 +22,5 @@
       </tr>
     </tbody>
 </table>
+
+<p class="no-ratings" *ngIf="noRatings">No ratings from {{username}} yet</p>

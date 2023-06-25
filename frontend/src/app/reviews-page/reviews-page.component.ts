@@ -3,13 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
 import { Rating } from '../restaurants'
 
-/*interface Rating {
-  rating: number;
-  restaurant: string;
-  food: string;
-  user_id: string;
-}*/
-
 @Component({
   selector: 'app-reviews-page',
   templateUrl: './reviews-page.component.html',
@@ -18,6 +11,7 @@ import { Rating } from '../restaurants'
 export class ReviewsPageComponent {
   ratings: Rating[] = [];
   username: string = '';
+  noRatings: boolean = false;
 
   constructor(private http: HttpClient) { }
 
@@ -27,6 +21,9 @@ export class ReviewsPageComponent {
     this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=', {params}).subscribe(
       data => {
         this.ratings = data;
+        
+        // Check if ratings array is empty
+        this.noRatings = this.ratings.length === 0;
       },
       error => {
         console.log(error);
