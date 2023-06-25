@@ -144,6 +144,10 @@ form {
     font-size: 1vw;
 }
 
+.no-user-ratings {
+    color: #20B0A3;
+}
+
 .user-ratings {
     color: #20B0A3;
 }

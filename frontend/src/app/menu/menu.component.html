@@ -56,10 +56,13 @@
                             
                             <p>Average Rating: {{ dish.AverageRating }}/5</p>
                             
-                            <a [routerLink]="['/dish-ratings', dish.Id]" class="user-ratings">
+                            <a [routerLink]="['/dish-ratings', dish.Id]" class="user-ratings" *ngIf="dish.CountRating > 0">
                                 {{ dish.CountRating }}
                                 {{ dish.CountRating === 1 ? 'user rating' : 'user ratings' }}
                             </a>
+                            <p class="no-user-ratings" *ngIf="dish.CountRating == 0">
+                                No ratings yet
+                            </p>
                         </span>
                     </div>
                 </div>

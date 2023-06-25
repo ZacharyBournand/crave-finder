@@ -66,15 +66,3 @@ p {
     background-color:orangered;
     top: 100%;
 }
-
-.hyperlink-to-homepage {
-    text-decoration: underline;
-    display: flex;
-    justify-content: center;
-    color: rgba(0, 0, 255, 0.508);
-    margin-top: 4vw;
-}
-
-.hyperlink-to-homepage:hover {
-    color: darkblue;
-}

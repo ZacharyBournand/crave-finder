@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Rating } from '../restaurants'
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { restaurants, Restaurant, Category, Dish } from '../restaurants';
 
 @Component({
   selector: 'app-dish-ratings',
@@ -12,7 +14,11 @@ export class DishRatingsComponent implements OnInit {
   ratings: Rating[] = [];
   dishId: string = '';
   
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(
+    private http: HttpClient, 
+    private route: ActivatedRoute,
+    private location: Location
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -31,5 +37,9 @@ export class DishRatingsComponent implements OnInit {
         }
       );
     });
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

@@ -3,10 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { restaurants, Restaurant, Category, Dish } from '../restaurants';
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { UserService } from '../user.service'
-import { error } from 'cypress/types/jquery';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
-import { NgForm } from '@angular/forms';
 import { PopupMessageComponent } from '../popup-message/popup-message.component';
 
 @Component({
