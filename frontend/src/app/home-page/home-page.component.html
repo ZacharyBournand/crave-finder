@@ -1,16 +1,19 @@
 <img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
-<div>
-  <button mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['register']">Sign Up</button>
-  <button mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['login']">Log In</button>
 
-  <p>
+<div class="centered">
+  <button class="sign-up" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['register']">Sign Up</button>
+  <button class="log-in" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['login']">Log In</button>
+
+  <p class="background-text">
     <span>
-    Are you craving some food?<br><br>
-    Search for a Restaurant or Food Item in your chosen City
+      Are you craving some food?<br><br>
+      Search for a Restaurant in your chosen City
     </span>
   </p>
 
-  <button mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getSearch()">Search</button>
+  <button class="search-restaurant" mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getSearch()">Search Restaurant</button>
+  
+  <p class="user-reviews">
+    <a class="user-reviews-a" [routerLink]="['/reviews']">User Reviews</a>
+  </p>
 </div>
-
-<div class="bottom"></div>

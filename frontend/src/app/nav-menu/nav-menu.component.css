@@ -9,6 +9,20 @@ p {
     margin: 8px 0;
 }
 
+.div-user-reviews {
+    margin-right: 4vw;
+}
+
+.a-user-reviews {
+    color: whitesmoke;
+    font-weight: bold;
+    font-size: 1.1vw;
+}
+
+.a-user-reviews:hover {
+    color: darkblue;
+}
+
 .mat-menu-panel {
     background-color: lightgray;
 }
