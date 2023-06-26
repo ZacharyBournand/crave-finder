@@ -72,3 +72,10 @@
   font-weight: bold;
   font-size: medium;
 }
+
+.user-not-found {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  font-size: medium;
+}

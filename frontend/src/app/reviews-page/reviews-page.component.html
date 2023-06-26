@@ -1,4 +1,4 @@
-<p class="header">{{username}} Ratings</p>
+<p class="header">{{displayUsername}} Ratings</p>
 
 <div class="input-container">
   <label for="user-id-input">Enter Username:</label>
@@ -23,4 +23,5 @@
     </tbody>
 </table>
 
-<p class="no-ratings" *ngIf="noRatings">No ratings from {{username}} yet</p>
+<p class="no-ratings" *ngIf="noRatings">No ratings from {{displayUsername}}</p>
+<p class="user-not-found" *ngIf="userNotFound">User not found</p>

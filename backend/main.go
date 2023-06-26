@@ -6,12 +6,9 @@ import (
 	f "fmt"
 	"log"
 	"net/http"
-	"os"
-	"strconv"
 	"strings"
 	"unicode"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -114,8 +111,6 @@ func main() {
 	http.HandleFunc("/remove-dish", removeDishHandler)
 	// Handles adding unseen restaurants
 	http.HandleFunc("/add-restaurant", addRestaurantHandler)
-	// Handle rating requests
-	http.HandleFunc("/rating", ratingHandler)
 	// Handle dish ratings request
 	http.HandleFunc("/dish-ratings", dishRatingsHandler)
 
@@ -445,74 +440,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func ratingHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("ratingHandler running")
-
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	file, err := os.Open("menu.component.html")
-	if err != nil {
-		f.Println("Error storing your ratings")
-		return
-	}
-	defer file.Close()
-
-	doc, err := goquery.NewDocumentFromReader(file)
-	if err != nil {
-		f.Println("Error parsing html file", err)
-		return
-	}
-
-	var dishRating, dishName string
-
-	restaurantName := doc.Find(".restaurant-name")
-
-	doc.Find("#menu-box-box").Each(func(i int, s *goquery.Selection) {
-		dishName = s.Find(".dish-name").Text()
-		dishRating = s.Find("#dish-rating").Find("ngb-rating").AttrOr("rate", "0")
-	})
-
-	var user User
-
-	err = json.NewDecoder(r.Body).Decode(&user)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	username := user.Username
-	rating, err := strconv.Atoi(dishRating)
-
-	// Retrive the id from the given username
-	var id int
-	statement := "SELECT id FROM users WHERE username = ?"
-	row := db.QueryRow(statement, username)
-	row.Scan(&id)
-
-	// Allow a SQL statement to be used repeatedly with a custom rating, restaurant, food, and user idd
-	var insertStatement *sql.Stmt
-	insertStatement, err = db.Prepare("INSERT INTO ratings (rating, restaurant, food, userId) VALUES (?, ?, ?, ?);")
-
-	// If an error occurred, display an error message
-	if err != nil {
-		f.Println("Error preparing the statement: ", err)
-
-		response := RegisterResponse{Message: "An issue was encountered storing your rating in our database"}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
-	defer insertStatement.Close()
-
-	// insert food, rating, restaurant, and userId
-	var result sql.Result
-	result, err = insertStatement.Exec(rating, restaurantName, dishName, id)
-	f.Println("result", result)
-}
-
 func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("passwordAuthHandler is running")
 
@@ -665,7 +592,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 	f.Println("storeUserRating is running")
 
 	// Parse request parameters
-	//restaurant := r.URL.Query().Get("restaurant")
 	food := r.URL.Query().Get("dish")
 	rating := r.URL.Query().Get("rating")
 	username := r.URL.Query().Get("username")
@@ -749,17 +675,8 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return success response
-	/*rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		log.Printf("Error getting rows affected: %v", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}*/
-
 	response := map[string]interface{}{
 		"message": "Dish rating stored",
-		//"rowsAffected": rowsAffected,
 	}
 
 	jsonData, err := json.Marshal(response)
@@ -793,6 +710,10 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	} else {
+		// User not found, return a response indicating that
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
 	}
 
 	// Query the ratings table for ratings matching the user ID
@@ -844,8 +765,7 @@ func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 
 // Function to check if a table exists in the database
 func checkIfRowExists(db *sql.DB, tableName string) (int, error) {
-	// Query to check if the table exists
-	//query := "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'craveFinder' AND table_name = ?"
+	// Query to check if the restaurant exists in the table
 	query := "SELECT COUNT(*) FROM craveFinder.restaurants WHERE name = ?"
 
 	// Execute the query
@@ -957,28 +877,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer rows.Close()
-
-		/*query2 := `
-			SELECT AVG(r.rating) AS avg_rating
-			FROM craveFinder.dishes AS d
-			LEFT JOIN craveFinder.ratings AS r ON d.id = r.dishID
-			WHERE d.restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)
-			GROUP BY d.id;
-		`
-
-		stmt2, err := db.Prepare(query2)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer stmt2.Close()
-
-		rows2, err := stmt2.Query(restaurantName)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer rows2.Close()*/
 
 		f.Println("4    4")
 

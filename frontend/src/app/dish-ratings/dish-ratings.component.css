@@ -33,6 +33,7 @@ h2 span {
     background-color: #f2f2f2;
 }
 
+/* Styles for "Back" hyperlink */
 .back-hyperlink {
     text-decoration: underline;
     display: flex;
