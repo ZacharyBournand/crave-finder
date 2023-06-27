@@ -21,11 +21,13 @@
 </div>
 
 <div *ngFor="let category of categories index as i">
+    <!-- Heading for a dish category -->
     <h1 class="category-name">{{category}}</h1>
     <div style="display: flex;">
         <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] - 1) >= 0 ? '1' : '0.5'}" 
         [disabled]="(dishIndex[i] - 1) < 0"
         (click)="lessDishes(i)">
+        <!-- Button to scroll through the dishes -->
         &lt;</button>
 
         <div *ngFor="let dish of filterDishesByCategory(i) index as j">
@@ -34,10 +36,12 @@
                     <div class="header">
                         <div class="left=side">
                             <a class="dish-name" [title] = "dish.name + ' details'">
+                                <!-- Dish name -->
                                 {{dish.Name}}
                             </a>
     
                             <h3 class="dish-price">
+                                <!-- Dish price -->
                                 ${{dish.Price | number:'1.2-2'}}
                             </h3>
                         </div>
@@ -54,8 +58,10 @@
                             Your Rating:
                             <ngb-rating style="margin: 0; margin-left: 8px" id="rating-time" [max]="5" [rate]="dish.Rating" [readonly]="true"></ngb-rating>
                             
+                            <!-- Average dish rating -->
                             <p>Average Rating: {{ dish.AverageRating }}/5</p>
                             
+                            <!-- Link to view a dish's user ratings if available -->
                             <a [routerLink]="['/dish-ratings', dish.Id]" class="user-ratings" *ngIf="dish.CountRating > 0">
                                 {{ dish.CountRating }}
                                 {{ dish.CountRating === 1 ? 'user rating' : 'user ratings' }}
@@ -68,7 +74,8 @@
                 </div>
             </div>
         </div>
-          
+        
+        <!-- Button to scroll through the dishes -->
         <button class= "scroll-button" [ngStyle]="{'opacity': (dishIndex[i] + 4) < categorySizes[i].length ? '1' : '0.5'}" 
         (click)="moreDishes(i)"
         [disabled]="(dishIndex[i] + 4) >= categorySizes[i].length">

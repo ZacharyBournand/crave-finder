@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { restaurants, Restaurant, Category, Dish } from '../restaurants';
-import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Restaurant } from '../restaurants';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { UserService } from '../user.service'
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { PopupMessageComponent } from '../popup-message/popup-message.component';
 
@@ -13,11 +13,16 @@ import { PopupMessageComponent } from '../popup-message/popup-message.component'
   styleUrls: ['./menu.component.css'],
 })
 export class MenuComponent implements OnInit{
+  // Array to store the current index of each category's displayed dishes
   dishIndex: number[] = [];
+   // Variable to store restaurant information
   restaurant !: Restaurant;
   restaurantName : string = "";
+  // Array to store food items
   menu: any[] = [];
+  // Array to store unique dish categories
   categories: string[] = [];
+  // Array to store the dishes in each category
   categorySizes : any[][] = [[]];
   counter : number = 0;
   dishRating : number = 0;
@@ -32,10 +37,12 @@ export class MenuComponent implements OnInit{
     this.dishIndex[i] += 1;
   }
 
+  // Increase the counter variable
   countUp(){
     this.counter++;
   }
 
+  // Reset the counter variable
   resetCount(){
     this.counter = 0;
   }
@@ -51,19 +58,24 @@ export class MenuComponent implements OnInit{
   
 
   openDialog() {
+    // Create a configuration object
     const dialogConfig = new MatDialogConfig();
 
+    // Configure settings
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = '300px';
     dialogConfig.height = '200px';
 
+    // Merge additional data (menu, restaurantName, dishRating) with the dialog configuration
     const mergedConfig = {... dialogConfig, data: [this.menu, this.restaurantName, this.dishRating]}
 
+    // Open the dialog with the merged configuration
     const dialogRef = this.dialog.open(RateMenuComponent, mergedConfig);
 
     dialogRef.afterClosed().subscribe((result: number) => {
       if (result) {
+        // Set the dishRating variable to the result of the dialog
         this.dishRating = result;
       }
     });
@@ -78,6 +90,7 @@ export class MenuComponent implements OnInit{
     description: '',
   };
 
+  // Popup message that appears if the dish already exists
   openPopupMessage(message: string): void {
     this.dialog.open(PopupMessageComponent, {
       data: { message },
@@ -100,10 +113,12 @@ export class MenuComponent implements OnInit{
       })
   }
 
+  // Filter the dishes by their category
   filterDishesByCategory(category: number) {
     return this.categorySizes[category].slice(this.dishIndex[category], this.dishIndex[category] + 4);
   }
 
+  // Add a dish to a restaurant's menu
   dishAdd() {
     if (
       this.dish.category !== '' ||
@@ -133,7 +148,6 @@ export class MenuComponent implements OnInit{
               // Stay on the same page
               const currentURL = this.router.url;
               this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                //this.router.navigate(['/restaurant/']);
                 this.router.navigateByUrl(currentURL);
               });
             }
@@ -146,14 +160,21 @@ export class MenuComponent implements OnInit{
     }
   }
 
+  // Remove a dish from a restaurant's menu
   dishRemove() {
     const name = this.route.snapshot.paramMap.get('name');
+
+    // Check if the dishname is not empty
     if (this.dish.dishname != '')
     {
       const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+      // Create parameters for the HTTP request
       const params = new HttpParams()
-      .set('name', this.restaurantName)
-      .set('dishname', this.dish.dishname)
+        .set('name', this.restaurantName)
+        .set('dishname', this.dish.dishname)
+      
+      // Send a POST request to remove the dish from a restaurant's menu
       this.http.post('http://localhost:8080/remove-dish', {}, {headers, params}).subscribe(
         res => {
         console.log('Dish removed');
@@ -161,7 +182,6 @@ export class MenuComponent implements OnInit{
         // Stay on the same page
         const currentURL = this.router.url;
         this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          //this.router.navigate(['/restaurant/']);
           this.router.navigateByUrl(currentURL);
         });
       },
@@ -188,23 +208,29 @@ export class MenuComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    // Get the user data
     this.userService.getUser.subscribe(usr => (this.user = usr));
 
+    // Check if the user is not logged in
     if(!this.user)
     {
       console.error('You are not logged in!');
       return;
     }
 
+    // Get the 'name' parameter from the current route snapshot and assign it to the 'name' variable
     const name = this.route.snapshot.paramMap.get('name');
+    // Set the 'restaurantName' property to the value of the 'name' parameter
     if (name) {
       this.restaurantName = name;
     }
 
+    // Create parameters for the HTTP request
     const params = new HttpParams()
       .set('name', this.restaurantName)
       .set('username', this.user.username)
 
+    // Send a GET request to retrieve restaurant information
     this.http.get('http://localhost:8080/get-restaurant-info', { params }).subscribe({
     next: (data: any) => {
       // Store the restaurants data in a class variable
@@ -213,18 +239,23 @@ export class MenuComponent implements OnInit{
       if (this.menu === null) {
         console.log('Restaurant name in the database');
       } else {
+        // Extract unique dish categories from the menu data
         for (let i = 0; i < this.menu.length; i++)
         {
           this.categories.push(this.menu[i].Category);
         }
         this.categories = [... new Set(this.categories)];
         
+        // Initialize the 'dishIndex' array with the length of 'categories' and set each element to 0
         this.dishIndex = new Array(this.categories.length).fill(0);
+
+        // Initialize the 'categorySizes' array with empty arrays for each category
         for (let i = 0; i < this.categories.length; i++) {
           this.categorySizes[i] = [];
         }
         console.log(this.categorySizes);
 
+        // Group food items into their respective categories
         for (let i = 0; i < this.categories.length; i++)
         {
           for (let j = 0; j < this.menu.length; j++)
@@ -237,6 +268,8 @@ export class MenuComponent implements OnInit{
           }
         }
         console.log(this.categorySizes)
+
+        // Reset the 'dishIndex' array to start displaying dishes from the beginning of each category
         this.dishIndex = new Array(this.categories.length).fill(0);
       }
     },

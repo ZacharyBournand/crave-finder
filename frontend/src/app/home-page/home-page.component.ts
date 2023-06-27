@@ -14,15 +14,8 @@ export class HomePageComponent {
   search : any;
   criteria : any;
 
+  // Function to handle restaurant search button click
   getSearch() {
-    console.log(this.search); // For testing/demonstration purpose
     this.appService.setSearch(this.search);
   }
-  getCriteria(type: string) {
-    this.criteria = type;
-    this.appService.setCriteria(this.criteria);
-  }
-
-  ngOnInit() {}    
-  
 }

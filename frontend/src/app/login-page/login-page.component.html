@@ -1,6 +1,7 @@
 <div>
   <h1>Log In</h1>
 
+  <!-- Form to submit the username and password -->
   <form (ngSubmit)="onSubmit($event)">
     <label>
       Username:
@@ -17,6 +18,7 @@
     </span>
   </form>
 
+  <!-- Response message on whether the login was successful or not -->
   <p>{{ responseMessage }}</p>
 </div>
 

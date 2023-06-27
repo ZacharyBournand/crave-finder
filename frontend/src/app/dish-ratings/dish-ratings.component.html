@@ -1,5 +1,7 @@
+<!-- Gives the name of the dish for which the ratings are being displayed-->
 <h2>Ratings for <span>{{ ratings.length > 0 ? ratings[0].food : '' }}</span></h2>
 
+<!-- Table that gives the usernames that rated the dish and their rating-->
 <table class="ratings-table">
   <thead>
     <tr>
@@ -15,4 +17,5 @@
   </tbody>
 </table>
 
+<!-- "Back" hyperlink to go back to the previous page -->
 <a class="back-hyperlink" (click)="goBack()">Back</a>

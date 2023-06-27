@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -25,11 +25,12 @@ export class LoginPageComponent{
   ) {}
 
   onSubmit(form: NgForm) {
+    // Send a POST request to the server with user credentials
     this.http.post('http://localhost:8080/loginauth', this.user).subscribe((response: any) => {
-      console.log(response),
       this.responseMessage = response.message;
 
       if (this.responseMessage == "Logged in") {
+        // Set the logged-in user in the UserService
         this.UserService.setUser(this.user);
 
         // Navigate to the homepage

@@ -1,3 +1,4 @@
+/* Styling for the restaurant name */
 .restaurant-name
 {
     margin-top: 1.5vw;
@@ -7,23 +8,7 @@
     margin-bottom: 2vw;
 }
 
-#restaurant-reviews
-{
-    display: flex;
-    justify-content: center;
-}
-
-
-/*.restaurant-rating-overall
-{
-    margin-top: 5px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    font-size: 30px;
-}*/
-
-
+/* Styling for the scroll buttons */
 .scroll-button
 {
     height: 13vw;
@@ -32,11 +17,6 @@
     border-style: solid;
     border-radius: .5vw;
     border-width: .1vw;
-}
-
-#custom-container
-{
-    display: flex;
 }
 
 #menu-box
@@ -52,6 +32,7 @@
     margin-right: .5vw;
 }
 
+/* Styling for the menu box content */
 #menu-box-box
 {
     margin: .5vw;
@@ -78,26 +59,20 @@
     margin-left: 1vw;
 }
 
-/* Adjust bottom margin using dish-rating only!!!! */
+/* Adjust bottom margin using dish-rating only! */
 #dish-rating
 {
     font-size: large;
     margin-left: 0.5vw;
 }
 
+/* Styling for the rating stars */
 #rating-time
 {
     color: yellow;
     text-align: center;
     align-items: center;
-}
-
-mat-icon {
-    color: yellow;
-    text-align: center;
-    align-items: center;
-}
-  
+} 
 
 .dish-description
 {
@@ -108,21 +83,7 @@ mat-icon {
     margin-left: .5vw;
 }
 
-i {
-    font-size: 1.5rem;
-    padding-right: 0.1rem;
-    color: #b0c4de;
-}
-.filled {
-    color: #1e90ff;
-}
-.low {
-    color: #deb0b0;
-}
-.filled.low {
-    color: #ff1e1e;
-}
-
+/* Div containing the form to add/remove a dish */
 .center {
     display: flex;
     justify-content: center;
@@ -130,6 +91,7 @@ i {
     margin: 1vw 0;
 }
 
+/* Form to add/remove a dish */
 form {
     padding: 1vw;
     background-color: #f5f5f5;
@@ -140,14 +102,17 @@ form {
     margin-left: 1vw;
 }
 
+/* Span containing a dish's ratings */
 .ratings {
     font-size: 1vw;
 }
 
+/* <p> tag within ".ratings" when a dish has no ratings */
 .no-user-ratings {
     color: #20B0A3;
 }
 
+/* Hyperlink to view every user rating of a dish */
 .user-ratings {
     color: #20B0A3;
 }
