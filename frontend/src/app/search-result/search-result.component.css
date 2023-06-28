@@ -1,85 +1,95 @@
-div {
-    font-size: 24pt;
-}
-
-ul {
-    list-style: none;
-}
-
+/* Div containing the Location & Search Term inputted by the user */
 .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
-    color: #f5f5f5;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5vw;
+  color: #f5f5f5;
+  padding: .8vw;
+  background-color: #f5f5f5;
+  border-radius: .1vw;
 }
 
 label {
-    font-size: 18px;
-    margin: 10px;
-    }
+  font-size: 1.2vw;
+  margin: .7vw;
+}
 
 input {
-    width: 300px;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px;
-    font-size: 16px;
+  width: 20vw;
+  padding: .8vw;
+  border-radius: .1vw;
+  margin: .8vw;
+  font-size: 1vw;
 }
 
+/* Button that triggers the restaurant search */
 button {
-    background-color: #2196f3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    margin-bottom: 30px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: .1vw;
+  font-size: 1.1vw;
+  padding: .8vw;
+  margin: .7vw;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 1.3vw;
 }
 
+/* Button when you mouse over it */
 button:hover {
-    background-color: lightblue;
-    transform: scale(1.1);
+  background-color: lightblue;
+  transform: scale(1.1);
 }
 
+/* Button when you click on it */
 button:active {
-    transform: scale(0.9);
+  transform: scale(0.9);
 }
 
+/* Table that lists the retrieved restaurants and their ratings */
 .show-table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 4vw;
 }
-  
+
+/* Table headers and data */
 .show-table th,
 .show-table td {
-  padding: 8px;
+  padding: .5vw;
   text-align: left;
-  border-bottom: 1px solid #ddd;
-  border-right: 1px solid #ddd;
+  border-bottom: .1vw solid #ddd;
+  border-right: .1vw solid #ddd;
 }
 
 .show-table th {
   background-color: #f2f2f2;
   font-weight: bold;
   color: #333;
-  border-right: 1px solid #ddd;
+  border-right: .1vw solid #ddd;
 }
 
+/* Table rows when you mouse over them */
 .show-table tr:hover {
   background-color: #f5f5f5;
 }
 
+/* Last table cell within the last row in the table body of the table */
 .show-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* Last table cell within each row within the table body of the table */
 .show-table tbody tr td:last-child {
   border-right: none;
+}
+
+/* "No restaurants found" message */
+.restaurants-not-found {
+  text-align: center;
+  color: red;
+  font-size: 1.3vw;
+  margin-top: 2vw;
 }

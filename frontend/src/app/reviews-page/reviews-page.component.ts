@@ -9,16 +9,20 @@ import { Rating } from '../restaurants'
   styleUrls: ['./reviews-page.component.css']
 })
 export class ReviewsPageComponent {
+  // Array to store the user's ratings
   ratings: Rating[] = [];
+  // User input for the username
   username: string = '';
+  // Boolean to indicate if there are no ratings
   noRatings: boolean = false;
+  // Boolean to indicate if the user is not found
   userNotFound: boolean = false;
+  // Username searched for to display in the header
   displayUsername: string = '';
 
   constructor(private http: HttpClient) { }
 
   getUserRatings() {
-    console.log(this.username);
     // Set displayUsername when the button is clicked
     this.displayUsername = this.username;
     const params = new HttpParams().set('username', this.username);
@@ -45,9 +49,4 @@ export class ReviewsPageComponent {
     // Reset noRatings immediately when calling the API
     this.noRatings = false;
   }
-
-  /*onUsernameChange() {
-    // Reset noRatings when the username changes
-    this.noRatings = false;
-  }*/
 }

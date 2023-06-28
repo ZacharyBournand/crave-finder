@@ -1,16 +1,9 @@
 import { Component, Inject} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
-import { FormGroup, NgForm } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { MatDialogModule, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Form } from '@angular/forms';
-import { MenuComponent } from '../menu/menu.component';
-import { FormControl } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
+import { FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-rate-menu',
@@ -20,6 +13,11 @@ import { MatSelectModule } from '@angular/material/select';
 export class RateMenuComponent {
   form: FormGroup;
   user: any;
+  selectedDish: string = "";
+  restaurantName: string = this.data[1];
+  rating: number = 0;
+  // Hold the dish information
+  dish: any = {};
 
   constructor(
     private http: HttpClient, 
@@ -28,35 +26,36 @@ export class RateMenuComponent {
     public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = new FormGroup({})
-    console.log(data);
-    console.log("Kaeya Balls");
   }
 
-  reloadPage() {
-    location.reload();
-  }
-
+  // Close the rating popup menu
   close(): void {
     this.dialogRef.close();
   }
 
+  // Submit a rating
   submit(): void {
+    // Get the user from UserService
     this.userService.getUser.subscribe(usr => (this.user = usr));
 
+    // If the user is not logged in, return
     if(!this.user)
     {
       return;
     }
     
+    // Set the URL to store the rating
     const url = 'http://localhost:8080/storeRatingAuth';
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
+    // Set the parameters for the HTTP request
     const params = new HttpParams()
       .set('restaurant', this.restaurantName)
       .set('dish', this.selectedDish)
       .set('rating', this.rating.toString())
       .set('username', this.user.username)
 
+    // Send the HTTP post request to store the rating
     this.http.post(url, {}, {headers, params}).subscribe(
       res => {
         console.log('Dish rating stored');
@@ -83,10 +82,4 @@ export class RateMenuComponent {
     // Assign the received dish rating value to the dish.Rating property
     this.dish.Rating = this.data[2];
   } 
-
-  selectedDish: string = "";
-  restaurantName: string = this.data[1];
-  rating: number = 0;
-  // Hold the dish information
-  dish: any = {};
 }

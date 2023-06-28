@@ -10,10 +10,12 @@ import { UserService } from '../user.service';
 })
 
 export class UserSettingsComponent {
+  // Response message displayed in the template
   responseMessage: string = '';
-  buttonVisible = false;
+  // Visibility state of the new password button
   showNewPasswordButton = false;
 
+  // User object containing username and password
   user = {
     username: '',
     password: '',
@@ -21,15 +23,19 @@ export class UserSettingsComponent {
 
   constructor(private http: HttpClient, private UserService: UserService) {}
 
+  // Function triggered when the form is submitted
   onSubmit(form: NgForm) {
+    // Send a POST request to the server to authenticate the username and password entered
     this.http.post('http://localhost:8080/passwordauth', {
       username: this.user.username,
       password: this.user.password,
     }).subscribe((response: any) => {
-      console.log(response),
+      // Set the response message
       this.responseMessage = response.message
+      // Set the user in the UserService
       this.UserService.setUser(this.user);
 
+      // Display the new password button if the account credentials were confirmed
       if (this.responseMessage == "Account credentials confirmed! Please click on the button below to change your password.") {
         this.showNewPasswordButton = true;
       }

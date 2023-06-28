@@ -1,12 +1,14 @@
 <div>
   <h1>Register</h1>
 
+  <!-- Form to submit the username and password -->
   <form (ngSubmit)="onSubmit($event)">
     <label>
       Username:
       <input type="username" name="username" [(ngModel)]="user.username" required>
     </label>
   
+    <!-- Password requirements -->
     <span>
       Password must contain one uppercase, one lowercase, one number, one special character
       and be between 5 and 50 characters.
@@ -22,6 +24,7 @@
     </span>
   </form>
 
+  <!-- Response message on whether the account was successfully created or not -->
   <p>{{ responseMessage }}</p>
 </div>
 

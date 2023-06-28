@@ -1,3 +1,4 @@
+/* Div containing the header, form, response message for account credentials authentication, and new password button */
 div {
     position: absolute;
     top: 50%;
@@ -6,86 +7,105 @@ div {
     text-align: left;
 }
 
+/* Header in the form */
 h1 {
     text-align: center;
+    font-weight: 500;
+    margin-bottom: 1vw;
 }
 
+/* Account credentials authentication form */
 form {
-    width: 400px;
-    padding: 20px;
+    width: 28vw;
+    padding: 1.3vw;
     background-color: #f5f5f5;
-    border-radius: 5px;
+    border-radius: .3vw;
 }
   
+/* Label for the corresponding input field */
 label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: .8vw;
+    font-size: .9vw;
 }
-  
+ 
+/* Input fields */
 input[type="username"],
 input[type="password"] {
     width: 100%;
-    padding: 10px;
+    padding: .6vw;
     border: none;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    border-radius: .3vw;
+    margin-top: .3vw;
+    margin-bottom: 1.2vw;
     box-sizing: border-box;
+    font-size: .9vw;
 }
   
+/* Form submission button */
 button[type="submit"] {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
+    padding: .4vw .9w;
     border: none;
-    border-radius: 5px;
+    border-radius: .4vw;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.2vw;
 }
-  
+ 
+/* When your mouse hovers over the submission button */
 button[type="submit"]:hover {
     background-color: #3e8e41;
 }
   
+/* Response message */
 p {
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 1.3vw;
+    font-size: 1vw;
     color: #666;
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+/* New password button */
 .newPasswordButton {
     background-color: #4CAF50;
     color: white;
-    margin-top: 60px;
-    padding: 10px 20px;
+    margin-top: 5vw;
+    padding: .4vw .9vw;
     border: none;
-    border-radius: 5px;
+    border-radius: .4vw;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.2vw;
     
 }
 
+/* When your mouse hovers over the new password button */
 .newPasswordButton:hover {
     background-color: #3e8e41;
 }
 
+/* Span containing the Submit button & <p> tag containing the new password button */
 .center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+/* Span containing the <p> tag that contains the new password button */
 .center2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top:70px;
+    margin-top: 5vw;
 }
 
+/* Footer div */
 .bottom {
     width: 100%;
-    height: 128px;
+    height: 17%;
     position: fixed;
     bottom: 0;
     background-color:orangered;

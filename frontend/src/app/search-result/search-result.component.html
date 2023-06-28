@@ -1,27 +1,36 @@
 <div class="form">
-    <label for="location">Location</label>
-    <input type="text" id="location" [(ngModel)]="location" />
-  
-    <label for="term">Search Term</label>
-    <input type="text" id="term" [(ngModel)]="searchTerm" />
-  
-    <button mat-raised-button color="accent" (click)="filterRestaurants()">Search</button>
-  </div>
-  
-  <table class="show-table" *ngIf="tableVisible">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Rating ( /5)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let restaurant of restaurants">
-        <td>
-          <a href="javascript:void(0);" (click)="isLoggedIn(restaurant)"> {{ restaurant.name }}</a>
-        </td>
+  <!-- Search for a city -->
+  <label for="location">Location</label>
+  <input type="text" id="location" [(ngModel)]="location" />
 
-        <td>{{ restaurant.rating }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Search for a restaurant by giving a restaurant name or food item -->
+  <label for="term">Search Term</label>
+  <input type="text" id="term" [(ngModel)]="searchTerm" />
+
+  <!-- Button to trigger restaurant search -->
+  <button mat-raised-button color="accent" (click)="filterRestaurants()">Search</button>
+</div>
+
+<table class="show-table" *ngIf="tableVisible && !noRestaurantsFound">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Rating ( /5)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Iterate over the restaurants array to display each restaurant -->
+    <tr *ngFor="let restaurant of restaurants">
+      <td>
+        <!-- Display a restaurant name with a click event handler -->
+        <a href="javascript:void(0);" (click)="isLoggedIn(restaurant)"> {{ restaurant.name }}</a>
+      </td>
+
+      <!-- Display a restaurant's rating -->
+      <td>{{ restaurant.rating }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Message to notify the user that their search resulted in no restaurant being found -->
+<p class="restaurants-not-found" *ngIf="noRestaurantsFound">No restaurants found</p>

@@ -1,4 +1,4 @@
-/* Styles for header */
+/* Displays the username */
 .header {
   font-size: 2.2vw;
   margin: 2vw 0;
@@ -6,19 +6,18 @@
   text-align: center;
 }
 
-/* Styles for input container */
 .input-container {
   margin-bottom: 2vw;
 }
 
-/* Styles for label */
+/* Label for the input field */
 .input-container label {
   display: inline-block;
   margin-right: 1vw;
   font-size: .95vw;
 }
 
-/* Styles for input */
+/* Input field */
 .input-container input {
   padding: .3vw;
   font-size: 1.1vw;
@@ -27,7 +26,7 @@
   margin-right: .8vw;
 }
 
-/* Styles for button */
+/* Button to get a user's ratings */
 .input-container button {
   padding: .3vw .8vw;
   font-size: 1.1vw;
@@ -37,35 +36,38 @@
   border: none;
   cursor: pointer;
 }
+
+/* When your mouse hovers over the button */
 .input-container button:hover {
   background-color: #3e8e41;
 }
 
-/* Styles for table */
+/* Table listing a user's ratings */
 .ratings-table {
   border-collapse: collapse;
   width: 100%;
   border: .1vw solid #ddd;
 }
 
-/* Styles for table head */
+/* Table head */
 .ratings-table th {
   text-align: left;
   padding: .8vw;
   background-color: #f2f2f2;
 }
 
-/* Styles for table row */
+/* Table data */
 .ratings-table td {
   border: .1vw solid #ddd;
   padding: .8vw;
 }
 
-/* Styles for alternating row colors */
+/* Rows of even number */
 .ratings-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
+/* Message notifying that the username searched for does not have ratings */
 .no-ratings {
   text-align: center;
   color: red;
@@ -73,6 +75,7 @@
   font-size: medium;
 }
 
+/* Message notifying that the username searched for does not exist */
 .user-not-found {
   text-align: center;
   color: red;

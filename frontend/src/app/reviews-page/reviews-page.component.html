@@ -1,11 +1,14 @@
+<!-- Display the username searched for -->
 <p class="header">{{displayUsername}} Ratings</p>
 
+<!-- Enables the user to give the username to get their ratings -->
 <div class="input-container">
   <label for="user-id-input">Enter Username:</label>
   <input id="user-id-input" type="text" [(ngModel)]="username">
-    <button (click)="getUserRatings()">Get Ratings</button>
+  <button (click)="getUserRatings()">Get Ratings</button>
 </div>
-  
+
+<!-- Table that gives the username's food item ratings (if they have ratings) -->
 <table class="ratings-table" *ngIf="ratings.length > 0">
     <thead>
       <tr>
@@ -23,5 +26,7 @@
     </tbody>
 </table>
 
+<!-- Message to notify the user that this username searched for does not have ratings -->
 <p class="no-ratings" *ngIf="noRatings">No ratings from {{displayUsername}}</p>
+<!-- Message to notify the user that this username searched for does not exist -->
 <p class="user-not-found" *ngIf="userNotFound">User not found</p>

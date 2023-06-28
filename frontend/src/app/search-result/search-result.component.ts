@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../user.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { PopupMessageComponent } from '../popup-message/popup-message.component';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-search-result',
@@ -11,11 +11,19 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angu
   styleUrls: ['./search-result.component.css']
 })
 export class SearchResultComponent implements OnInit {
+  // Holds the location entered by the user
   location = '';
+  // Holds the search term entered by the user (restaurant name or food item)
   searchTerm = '';
+  // Array to store the retrieved restaurants
   restaurants: any[] = [];
+  // Controls the visibility of the table that lists the retrieved restaurants and their ratings
   tableVisible = false;
+  // Holds the user information
   user: any;
+  // Indicates if no restaurants were found
+  noRestaurantsFound = false;
+
 
   constructor(
     private http: HttpClient,
@@ -38,6 +46,8 @@ export class SearchResultComponent implements OnInit {
         // Store the restaurants data in a class variable
         this.restaurants = data;
         this.tableVisible = true;
+        // Check if no restaurants were found
+        this.noRestaurantsFound = this.restaurants.length === 0;
       },
       error: (error: any) => {
         console.error(error);
@@ -46,12 +56,10 @@ export class SearchResultComponent implements OnInit {
   }
 
   isLoggedIn(restaurant: any): boolean {
+    // Get the user from UserService
     this.userService.getUser.subscribe(usr => (this.user = usr));
 
-    console.log("HELLO-01")
-
-    console.log("User: ", this.user)
-
+    // If the user is not logged in, a message pops up to notify them
     if(!this.user)
     {
       console.error('You are not logged in!');
@@ -62,6 +70,7 @@ export class SearchResultComponent implements OnInit {
 
       return false;
     } else {
+      // Navigate to the restaurant's details page
       this.router.navigateByUrl('/restaurant/' + restaurant.name);
       return true;
     }

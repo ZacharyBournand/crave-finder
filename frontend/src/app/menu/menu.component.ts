@@ -253,7 +253,6 @@ export class MenuComponent implements OnInit{
         for (let i = 0; i < this.categories.length; i++) {
           this.categorySizes[i] = [];
         }
-        console.log(this.categorySizes);
 
         // Group food items into their respective categories
         for (let i = 0; i < this.categories.length; i++)
@@ -262,12 +261,10 @@ export class MenuComponent implements OnInit{
           {
             if (this.menu[j].Category == this.categories[i])
             {
-              console.log(this.menu[j]);
               this.categorySizes[i].push(this.menu[j]);
             }
           }
         }
-        console.log(this.categorySizes)
 
         // Reset the 'dishIndex' array to start displaying dishes from the beginning of each category
         this.dishIndex = new Array(this.categories.length).fill(0);

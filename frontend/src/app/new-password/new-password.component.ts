@@ -10,24 +10,27 @@ import { UserService } from '../user.service';
   providers: [HttpClient],
 })
 export class NewPasswordComponent {
+  // Response message displayed in the template
   responseMessage: string = '';
-  buttonVisible = false;
 
+  // User object containing username and password
   user = {
     username: '',
     password: '',
   };
-  //user: any
 
   constructor(private http: HttpClient, private UserService: UserService) {}
 
+  // Function triggered when the form is submitted
   onSubmit(form: NgForm) {
+    // Send a POST request to the server to change the user's password
     this.http.post('http://localhost:8080/passwordchange', {
       username: this.user.username,
       password: this.user.password,
     }).subscribe((response: any) => {
-      console.log(response),
+      // Set the response message
       this.responseMessage = response.message
+      // Set the user in the UserService
       this.UserService.setUser(this.user);
     });
   }

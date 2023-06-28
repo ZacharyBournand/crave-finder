@@ -1,32 +1,18 @@
+/* Username of the logged-in user */
 p {
     text-align: center;
     font-weight: bold;
     font-size: large;
+    margin-top: .5vw;
 }
 
+/* Divider line */
 .menu-divider {
-    border-top: 1px solid #ccc;
-    margin: 8px 0;
+    border-top: .1vw solid #ccc;
+    margin-bottom: .6vw;
 }
 
-.div-user-reviews {
-    margin-right: 4vw;
-}
-
-.a-user-reviews {
-    color: whitesmoke;
-    font-weight: bold;
-    font-size: 1.1vw;
-}
-
-.a-user-reviews:hover {
-    color: darkblue;
-}
-
-.mat-menu-panel {
-    background-color: lightgray;
-}
-
+/* "Change Password" & "Logout" hyperlinks */
 a {
     display: flex;
     justify-content: center;

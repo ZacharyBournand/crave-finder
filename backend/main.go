@@ -234,8 +234,6 @@ func searchRestaurantsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Write the response body
 	w.Write(responseJSON)
-
-	f.Println(restaurants)
 }
 
 // Create new user in database

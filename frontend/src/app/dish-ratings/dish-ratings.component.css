@@ -1,7 +1,6 @@
-/* Styles for h2 */
+/* Name of the dish */
 h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 1.8vw;
     margin: 2vw 0;
 }
 
@@ -9,31 +8,31 @@ h2 span {
     font-weight: bold;
 }
 
-/* Styles for table */
+/* Table with a list of usernames and their ratings */
 .ratings-table {
     border-collapse: collapse;
     width: 100%;
 }
 
-/* Styles for table head */
+/* Table head */
 .ratings-table th {
     text-align: left;
-    padding: 10px;
+    padding: .8vw;
     background-color: #f2f2f2;
 }
 
-/* Styles for table row */
+/* Table data */
 .ratings-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    border: .1vw solid #ddd;
+    padding: .8vw;
 }
 
-/* Styles for alternating row colors */
+/* Rows of even number */
 .ratings-table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-/* Styles for "Back" hyperlink */
+/* "Back" hyperlink */
 .back-hyperlink {
     text-decoration: underline;
     display: flex;

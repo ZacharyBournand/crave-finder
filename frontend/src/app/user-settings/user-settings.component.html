@@ -1,26 +1,36 @@
 <div>
-<h1>Change Password</h1>
-<form (ngSubmit)="onSubmit($event)">
-    <label>
-        Username:
-        <input type="username" name="username" [(ngModel)]="user.username" required>
-    </label>
+    <!-- Heading for the change password form -->
+    <h1>Change Password</h1>
     
-    <label>
-        Current Password:
-        <input type="password" name="password" [(ngModel)]="user.password" required>
-    </label>
-    
-    <span class="center">
-    <button type="submit">Submit</button>
-    </span>
-</form>
+    <form (ngSubmit)="onSubmit($event)">
+        <!-- Input field for username -->
+        <label>
+            Username:
+            <input type="username" name="username" [(ngModel)]="user.username" required>
+        </label>
+        
+        <!-- Input field for current password -->
+        <label>
+            Current Password:
+            <input type="password" name="password" [(ngModel)]="user.password" required>
+        </label>
+        
+        <!-- Centered submit button -->
+        <span class="center">
+            <button type="submit">Submit</button>
+        </span>
+    </form>
 
-<p>{{ responseMessage }}</p>
-<span class="center2">
-<p class="center"> <button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button> </p>
-</span>
+    <!-- Display response message -->
+    <p>{{ responseMessage }}</p>
+    
+    <span class="center2">
+        <p class="center">
+            <!-- Button to enter a new password (only visible if a correct username and password was entered in the form upon clicking on the Submit button) -->
+            <button class="newPasswordButton" *ngIf="showNewPasswordButton" [routerLink]="['/new-password']">Enter new password</button> 
+        </p>
+    </span>
 </div>
 
-
+<!-- Footer div -->
 <div class="bottom"></div>
