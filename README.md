@@ -11,7 +11,7 @@ Once the user decides on a restaurant, they will be able to view their menu dire
 User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
 
 ## Functionalities:
-- Search for restaurants by menu items<br>
+- Search for restaurants by name or menu item<br>
 <img src="./app-screenshots/search-restaurants.PNG" alt="App screenshot 1" width="601.14vw" height="300vw"><br><br>
 - Add & remove food items<br>
 <img src="./app-screenshots/add-remove-item.PNG" alt="App screenshot 2" width="601.14vw" height="300vw"><br><br>
@@ -33,27 +33,30 @@ Back-end (Golang)
 
 ## How to Run and Use our Application
 **How to Run our Application**
-1. Go to: https://github.com/ZacharyBournand/crave-finder
+1. Go to the repository: Visit the URL https://github.com/ZacharyBournand/crave-finder in your web browser.
 
 2. Clone the repository
     - Click on the green "Code" button 
     - Copy the HTTPS link: https://github.com/ZacharyBournand/crave-finder.git
-    - Open "Git Bash" (or another application to clone the repository)
-    - Paste the copied HTTPS link
+    - Open "Git Bash" (or another terminal application for Git)
+    - Navigate to the desired directory where you want to clone the repository
+    - Type the command: ```git clone https://github.com/ZacharyBournand/crave-finder.git```
     - Type "code crave-finder" to open the application in Visual Studio Code (or open it in another code editor)
     
 3. If you do not have npm, go to https://nodejs.org/en/download
     - Download the version that fits your operating system 
-    - Restart Visual Studio Code
+    - Restart your code editor (e.g., Visual Studio Code) to ensure the environment variables are updated
     - Open a terminal and type "npm -v" to see if it has been installed
-    - Then, go to the "frontend" directory (your path should end with "crave-finder\frontend"). Then, type the command: "npm install -g @angular/cli"
 
-4. Once in a code editor, open a new terminal (the end of your directory should be "\crave-finder")
-    - Go to "frontend" (type "cd frontend) [Now your directory should end with "\crave-finder\frontend"]
+4. Install Angular dependencies
+    - In the terminal, install the Angular CLI globally by running the command: ```npm install -g @angular/cli```
+    - Open the clone repository and ensure your current directory ends with "crave-finder"
+    - Go to "frontend" (type "cd frontend") [Now your directory should end with "\crave-finder\frontend"]
     - Type the following commands in your terminal:
         ```
-        npm install angular
+        npm install
         ng add @ng-bootstrap/ng-bootstrap --force
+        ng add @angular/material
         ```
 
 5. If you do not have Golang installed, you can download it at https://go.dev/dl/
@@ -61,7 +64,7 @@ Back-end (Golang)
     - If Go is not available, it will give you the option at the bottom right to get it
 
 6. Open a new terminal (the end of your directory should also be "\crave-finder")
-    - Go to "backend" (type "cd backend) [Now your directory should end with "\crave-finder\backend"]
+    - Go to "backend" (type "cd backend") [Now your directory should end with "\crave-finder\backend"]
     - Type the following commands in your terminal:
         ```
         go get -u github.com/go-sql-driver/mysql
@@ -72,8 +75,8 @@ Back-end (Golang)
         ```
             
 7. Run the application:
-     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: "ng serve --open"
-     - In your "\crave-finder\backend" terminal, type the following command to run the backend: "go run main.go"
+     - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: ```ng serve --open```
+     - In your "\crave-finder\backend" terminal, type the following command to run the backend: ```go run main.go```
      
     
 **How to Use our Application**
