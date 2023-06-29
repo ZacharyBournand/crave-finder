@@ -1,3 +1,8 @@
+/* Header that acts as a hyperlink to return to the homepage */
+h1 {
+    font-size: 2vw;
+}
+
 /* Places the "nav-menu" component to the right side of the page */
 app-nav-menu {
     text-align: right;

@@ -1,14 +1,14 @@
 <div class="form">
   <!-- Search for a city -->
-  <label for="location">Location</label>
+  <label for="location">City</label>
   <input type="text" id="location" [(ngModel)]="location" />
 
   <!-- Search for a restaurant by giving a restaurant name or food item -->
-  <label for="term">Search Term</label>
+  <label for="term">Restaurant <span>or</span> Food Item</label>
   <input type="text" id="term" [(ngModel)]="searchTerm" />
 
   <!-- Button to trigger restaurant search -->
-  <button mat-raised-button color="accent" (click)="filterRestaurants()">Search</button>
+  <button mat-raised-button color="accent" (click)="filterRestaurants()">Search Restaurant</button>
 </div>
 
 <table class="show-table" *ngIf="tableVisible && !noRestaurantsFound">

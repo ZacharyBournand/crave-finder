@@ -21,10 +21,14 @@ form {
     border-radius: .3vw;
 }
 
-/* Password requirements text */
-span {
-    padding: .8vw;
+/* Username & password requirements text */
+.requirements {
     display: block;
+    margin: .7vw;
+    padding: .3vw;
+    border-radius: 1vw;
+    font-style: italic;
+    background-color: rgba(255, 253, 253, 0.584);
 }
  
 /* Label for the corresponding input field */
@@ -41,8 +45,15 @@ input[type="password"] {
     padding: .6vw;
     border: none;
     border-radius: .3vw;
-    margin-bottom: 1.2vw;
     box-sizing: border-box;
+}
+
+input[type="username"] {
+    margin-bottom: 2.5vw;
+}
+
+input[type="password"] {
+    margin-bottom: 1vw;
 }
 
 /* Span containing the submit button */

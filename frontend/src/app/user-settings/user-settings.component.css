@@ -60,13 +60,17 @@ button[type="submit"]:hover {
   
 /* Response message */
 p {
-    margin-top: 1.3vw;
+    /*margin-top: 1.3vw;
     font-size: 1vw;
-    color: #666;
+    color: #666;*/
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    margin-top: 1.5vw;
+    font-size: 1.2vw;
+    color: red;
 }
 
 /* New password button */

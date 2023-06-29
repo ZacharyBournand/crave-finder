@@ -3,15 +3,20 @@
 
   <!-- Form to submit the username and password -->
   <form (ngSubmit)="onSubmit($event)">
+    <!-- Username requirements -->
+    <span class="requirements">
+      Only Letters & Numbers (between 5 & 50 Characters)
+    </span>
+
     <label>
       Username:
       <input type="username" name="username" [(ngModel)]="user.username" required>
     </label>
   
     <!-- Password requirements -->
-    <span>
-      Password must contain one uppercase, one lowercase, one number, one special character
-      and be between 5 and 50 characters.
+    <span class="requirements">
+      Minimum of 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character
+      (between 5 & 50 Characters)
     </span>
 
     <label>

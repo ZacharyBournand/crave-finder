@@ -298,8 +298,43 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 		passwordLength = true
 	}
 
-	f.Println("alphanumericName: ", alphanumericName, "\nnameLength: ", nameLength, "\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
-	if !alphanumericName || !nameLength || !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
+	// If no username and password was entered upon clicking on the "Register" button, send a JSON response to the front-end
+	if len(username) == 0 && len(password) == 0 {
+		response := RegisterResponse{Message: "Empty username and password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If no username was entered upon clicking on the "Register" button, send a JSON response to the front-end
+	if len(username) == 0 {
+		response := RegisterResponse{Message: "Empty username"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If no password was entered upon clicking on the "Register" button, send a JSON response to the front-end
+	if len(password) == 0 {
+		response := RegisterResponse{Message: "Empty password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If both the username and password entered are invalid, send a JSON response to the front-end
+	if (!alphanumericName || !nameLength) && (!passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces) {
+		response := RegisterResponse{Message: "Invalid username and password"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If the username entered is invalid, send a JSON response to the front-end
+	if !alphanumericName || !nameLength {
+		response := RegisterResponse{Message: "Invalid username"}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	// If the password entered is invalid, send a JSON response to the front-end
+	if !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
 		response := RegisterResponse{Message: "Invalid password"}
 		json.NewEncoder(w).Encode(response)
 		return
@@ -479,7 +514,7 @@ func passwordAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Display a successful message if there are no errors
 	if err == nil {
-		response := RegisterResponse{Message: "Account credentials confirmed! Please click on the button below to change your password."}
+		response := RegisterResponse{Message: "Account credentials confirmed!<br>Click on the button below to change your password."}
 		json.NewEncoder(w).Encode(response)
 		return
 	}

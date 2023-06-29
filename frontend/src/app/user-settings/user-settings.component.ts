@@ -36,7 +36,7 @@ export class UserSettingsComponent {
       this.UserService.setUser(this.user);
 
       // Display the new password button if the account credentials were confirmed
-      if (this.responseMessage == "Account credentials confirmed! Please click on the button below to change your password.") {
+      if (this.responseMessage == "Account credentials confirmed!<br>Click on the button below to change your password.") {
         this.showNewPasswordButton = true;
       }
     });

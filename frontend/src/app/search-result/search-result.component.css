@@ -10,16 +10,25 @@
   border-radius: .1vw;
 }
 
+/* Labels for their corresponding input field */
 label {
   font-size: 1.2vw;
-  margin: .7vw;
+  margin-top: .7vw;
+  margin-bottom: .1vw;
 }
 
+/* "or" word in the "Restaurant or Food Item" label */
+label span {
+  text-transform: lowercase;
+}
+
+/* Input fields */
 input {
   width: 20vw;
   padding: .8vw;
   border-radius: .1vw;
   margin: .8vw;
+  margin-bottom: 2vw;
   font-size: 1vw;
 }
 
@@ -31,7 +40,7 @@ button {
   border-radius: .1vw;
   font-size: 1.1vw;
   padding: .8vw;
-  margin: .7vw;
+  margin: .5vw;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   margin-bottom: 1.3vw;
