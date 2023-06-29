@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -109,8 +111,6 @@ func main() {
 	http.HandleFunc("/add-dish", addDishHandler)
 	// Handles removing dishes to restaurant
 	http.HandleFunc("/remove-dish", removeDishHandler)
-	// Handles adding unseen restaurants
-	http.HandleFunc("/add-restaurant", addRestaurantHandler)
 	// Handle dish ratings request
 	http.HandleFunc("/dish-ratings", dishRatingsHandler)
 
@@ -385,9 +385,7 @@ func registerAuthHandler(w http.ResponseWriter, r *http.Request) {
 	defer insertStatement.Close()
 
 	// Insert the new username and its password hashed into the database
-	var result sql.Result
-	result, err = insertStatement.Exec(username, hash)
-	f.Println("Result:", result)
+	_, err = insertStatement.Exec(username, hash)
 
 	// If an error occurred, let the user know
 	if err != nil {
@@ -571,8 +569,6 @@ func newPasswordHandler(w http.ResponseWriter, r *http.Request) {
 		passwordLength = true
 	}
 
-	f.Println("\npasswordLength: ", passwordLength, "\npasswordLowerCase: ", passwordLowerCase, "\npasswordUpperCase: ", passwordUpperCase, "\npasswordNumber: ", passwordNumber, "\npasswordSpecial: ", passwordSpecial, "\npasswordLength: ", passwordLength, "\npasswordNoSpaces: ", passwordNoSpaces)
-
 	// If the password doesn't meet the requirements, return an error response
 	if !passwordLowerCase || !passwordUpperCase || !passwordNumber || !passwordSpecial || !passwordLength || !passwordNoSpaces {
 		response := RegisterResponse{Message: "Invalid password"}
@@ -644,8 +640,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	f.Println("HELLO")
-
 	query := `
 		SELECT COUNT(*) 
 		FROM craveFinder.ratings 
@@ -659,8 +653,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	f.Println("Count:", count)
 
 	// Perform action based on row existence
 	if count == 1 {
@@ -726,8 +718,6 @@ func storeUserRating(w http.ResponseWriter, r *http.Request) {
 func getUserRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the user ID from the request query parameters
 	username := r.URL.Query().Get("username")
-
-	f.Println("Username:", username)
 
 	userID, err := db.Query("SELECT id FROM craveFinder.users WHERE username = ?", username)
 
@@ -808,8 +798,6 @@ func checkIfRowExists(db *sql.DB, tableName string) (int, error) {
 		return count, err
 	}
 
-	f.Println("Count:", count)
-
 	// Return true if the count is greater than or equal to 0
 	return count, nil
 }
@@ -845,11 +833,7 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	f.Println("1    1")
-
 	if tableExists > 0 {
-		f.Println("1    2")
-
 		query := `
 			SELECT
 				d.id,
@@ -911,8 +895,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 		}
 		defer rows.Close()
 
-		f.Println("4    4")
-
 		type Dish struct {
 			Id            int
 			Name          string
@@ -951,8 +933,6 @@ func restaurantBuild(w http.ResponseWriter, r *http.Request) {
 
 		return
 	} else {
-		f.Println("2    2")
-
 		err := insertRestaurant(db, restaurantName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -974,7 +954,13 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 	category := r.URL.Query().Get("category")
 	description := r.URL.Query().Get("description")
 
-	f.Println(restaurantName)
+	// Create a Title case converter using the default language (English)
+	converter := cases.Title(language.English)
+
+	// Convert dishName to title case
+	dishName = converter.String(dishName)
+	// Convert category to title case
+	category = converter.String(category)
 
 	query := "SELECT COUNT(*) FROM craveFinder.dishes WHERE name = ? AND restaurantID = (SELECT id FROM craveFinder.restaurants WHERE name = ?)"
 
@@ -985,8 +971,6 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	f.Println("Count:", count)
 
 	// Perform action based on row existence
 	if count == 0 {
@@ -1036,20 +1020,14 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 			Error: errorMsg,
 		}
 
-		f.Println("WINNING-01")
-
 		responseJSON, err := json.Marshal(response)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		f.Println("WINNING-02")
-
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(responseJSON)
-
-		f.Println("WINNING-03")
 	}
 }
 
@@ -1090,32 +1068,11 @@ func removeDishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addRestaurantHandler(w http.ResponseWriter, r *http.Request) {
-	f.Println("addRestaurantHandler is running")
-	restaurantName := r.URL.Query().Get("name")
-	var createStatement *sql.Stmt
-	createStatement, err := db.Prepare(f.Sprintf("CREATE TABLE IF NOT EXISTS craveFinder.`%s` (DishID int, DishName varchar(45), DishPrice float, DishDescription varchar(150), DishRating float, DishCategory varchar(45));", restaurantName))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var result sql.Result
-	result, err = createStatement.Exec()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	f.Println("Result:", result)
-}
-
 func dishRatingsHandler(w http.ResponseWriter, r *http.Request) {
 	f.Println("dishRatingsHandler is running")
 
 	// Get the user ID from the request query parameters
 	dishId := r.URL.Query().Get("dishId")
-
-	f.Println("Dish ID:", dishId)
 
 	// Query the ratings table for ratings matching the user ID
 	rows, err := db.Query(`

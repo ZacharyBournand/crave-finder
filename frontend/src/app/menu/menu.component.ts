@@ -97,22 +97,6 @@ export class MenuComponent implements OnInit{
     });
   }
 
-  checkIfCreated()
-  {
-    const name = this.route.snapshot.paramMap.get('name');
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const params = new HttpParams()
-    .set('name', this.restaurantName);
-    this.http.post('http://localhost:8080/add-restaurant', {}, {headers, params} ).subscribe(
-      res => {
-        console.log('Restaurant created');
-      },
-
-      err => {
-        console.error('Error creating restaurant', err);
-      })
-  }
-
   // Filter the dishes by their category
   filterDishesByCategory(category: number) {
     return this.categorySizes[category].slice(this.dishIndex[category], this.dishIndex[category] + 4);
