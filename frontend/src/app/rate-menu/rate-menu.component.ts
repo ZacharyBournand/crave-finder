@@ -20,7 +20,7 @@ export class RateMenuComponent {
   dish: any = {};
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     public userService: UserService,
     private router: Router,
     public dialogRef: MatDialogRef<RateMenuComponent>, @Inject(MAT_DIALOG_DATA) public data: any
@@ -29,12 +29,12 @@ export class RateMenuComponent {
   }
 
   // Close the rating popup menu
-  close(): void {
+  close() {
     this.dialogRef.close();
   }
 
   // Submit a rating
-  submit(): void {
+  submit() {
     // Get the user from UserService
     this.userService.getUser.subscribe(usr => (this.user = usr));
 
@@ -45,7 +45,7 @@ export class RateMenuComponent {
     }
     
     // Set the URL to store the rating
-    const url = 'http://localhost:8080/storeRatingAuth';
+    const url = 'http://localhost:8080/store-rating-auth';
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     // Set the parameters for the HTTP request

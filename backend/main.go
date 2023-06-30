@@ -104,7 +104,7 @@ func main() {
 	// Handle getting an individual user's ratings request
 	http.HandleFunc("/get-user-ratings", getUserRatingsHandler)
 	// Handle storing a individual user's ratings request
-	http.HandleFunc("/storeRatingAuth", storeUserRating)
+	http.HandleFunc("/store-rating-auth", storeUserRating)
 	// Handle page build requests
 	http.HandleFunc("/get-restaurant-info", restaurantBuild)
 	// Handles adding dishes to restaurant
@@ -113,6 +113,8 @@ func main() {
 	http.HandleFunc("/remove-dish", removeDishHandler)
 	// Handle dish ratings request
 	http.HandleFunc("/dish-ratings", dishRatingsHandler)
+	// Handler account deletion request
+	http.HandleFunc("/delete-account", deleteAccountHandler)
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
 	http.ListenAndServe(":8080", handlers.CORS(
@@ -1120,4 +1122,51 @@ func dishRatingsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f.Println(string(jsonContent))
+}
+
+func deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
+	f.Println("deleteAccountHandler is running")
+
+	// Parse request parameter
+	username := r.URL.Query().Get("username")
+
+	f.Println("Username:", username)
+
+	// Get the user ID directly from the database
+	var userId int
+	err := db.QueryRow("SELECT id FROM craveFinder.users WHERE username = ?", username).Scan(&userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare the DELETE statement for removing ratings associated with the dish
+	deleteUserRatingsStmt, err := db.Prepare("DELETE FROM craveFinder.ratings WHERE userID = ?;")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer deleteUserRatingsStmt.Close()
+
+	// Execute the DELETE statement to remove a user's ratings
+	_, err = deleteUserRatingsStmt.Exec(userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare the DELETE statement for removing ratings associated with the dish
+	deleteUserStmt, err := db.Prepare("DELETE FROM craveFinder.users WHERE id = ?;")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer deleteUserStmt.Close()
+
+	// Execute the DELETE statement to remove a user
+	_, err = deleteUserStmt.Exec(userId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

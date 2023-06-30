@@ -35,6 +35,8 @@ import { ReviewsPageComponent } from './reviews-page/reviews-page.component';
 import { RateMenuComponent } from './rate-menu/rate-menu.component';
 import { PopupMessageComponent } from './popup-message/popup-message.component';
 import { DishRatingsComponent } from './dish-ratings/dish-ratings.component';
+import { ConfirmationPopupMessageComponent } from './confirmation-popup-message/confirmation-popup-message.component';
+import { DecimalLimitPipe } from './decimal-limit.pipe';
 
 
 @NgModule({
@@ -52,8 +54,9 @@ import { DishRatingsComponent } from './dish-ratings/dish-ratings.component';
     ReviewsPageComponent,
     RateMenuComponent,
     PopupMessageComponent,
-    DishRatingsComponent
-
+    DishRatingsComponent,
+    ConfirmationPopupMessageComponent,
+    DecimalLimitPipe,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,6 @@ import { DishRatingsComponent } from './dish-ratings/dish-ratings.component';
     MatFormFieldModule,
     MatToolbarModule,
     MatIconModule
-
   ],
   providers: [RestaurantService],
   bootstrap: [AppComponent],

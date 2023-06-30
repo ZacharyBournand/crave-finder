@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationPopupMessageComponent } from '../confirmation-popup-message/confirmation-popup-message.component';
 
 @Component({
   selector: 'app-nav-menu',
@@ -16,6 +18,7 @@ export class NavMenuComponent {
   constructor(
     private http: HttpClient, 
     public userService: UserService,
+    private dialog: MatDialog
   ) {}
 
   // After the view has been initialized
@@ -33,7 +36,7 @@ export class NavMenuComponent {
   }
 
   // Method to handle user logout
-  logout(): void {
+  logout() {
     // Send a POST request to the server to log the user out
     this.http.post('http://localhost:8080/logout', {}).subscribe((response: any) => {
       // Store the response message
@@ -42,6 +45,13 @@ export class NavMenuComponent {
       this.userService.setUser(null);
       // Set isLoggedIn to false
       this.userService.isLoggedIn = false;
+    });
+  }
+
+  // Method to handle account deletion
+  deleteAccount() {
+    this.dialog.open(ConfirmationPopupMessageComponent, {
+      data: { message: 'Confirm Account Deletion' }
     });
   }
 }

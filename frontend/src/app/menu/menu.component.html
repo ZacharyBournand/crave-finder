@@ -58,8 +58,8 @@
                             Your Rating:
                             <ngb-rating style="margin: 0; margin-left: 8px" id="rating-time" [max]="5" [rate]="dish.Rating" [readonly]="true"></ngb-rating>
                             
-                            <!-- Average dish rating -->
-                            <p>Average Rating: {{ dish.AverageRating }}/5</p>
+                            <!-- Displays the average dish rating as a whole number or with 1 decimal place if it is not a whole number -->
+                            <p>Average Rating: {{ dish.AverageRating | decimalLimit }}/5</p>
                             
                             <!-- Link to view a dish's user ratings if available -->
                             <a [routerLink]="['/dish-ratings', dish.Id]" class="user-ratings" *ngIf="dish.CountRating > 0">

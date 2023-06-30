@@ -9,5 +9,7 @@
     <!-- Hyperlink to change the password -->
     <a [routerLink]="['/password']" mat-menu-item>Change Password</a>
     <!-- Hyperlink to log out -->
-    <a #refLogoutLink (click)="logout()" mat-menu-item class="logout" [routerLink]="['/']">Logout</a>
+    <a #refLogoutLink (click)="logout()" mat-menu-item [routerLink]="['/']">Logout</a>
+    <!-- Hyperlink to delete account -->
+    <a #refLogoutLink (click)="deleteAccount()" mat-menu-item>Delete Account</a>
 </mat-menu>

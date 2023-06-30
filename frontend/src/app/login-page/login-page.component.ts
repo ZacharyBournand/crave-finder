@@ -20,7 +20,7 @@ export class LoginPageComponent{
 
   constructor(
     private http:HttpClient, 
-    private UserService:UserService,
+    private userService:UserService,
     private router: Router
   ) {}
 
@@ -31,7 +31,7 @@ export class LoginPageComponent{
 
       if (this.responseMessage == "Logged in") {
         // Set the logged-in user in the UserService
-        this.UserService.setUser(this.user);
+        this.userService.setUser(this.user);
 
         // Navigate to the homepage
         this.router.navigate(['/']);

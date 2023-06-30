@@ -8,12 +8,14 @@
     </mat-form-field>
 </div>
 
-<!-- Star rating component for rating the dish -->
-<ngb-rating  style="font-size: xx-large; margin-left: 26%;" [max]="5" [(rate)]="rating" [readonly]="false"></ngb-rating>
+<div class="rating-container">
+    <!-- Star rating component for rating the dish -->
+    <ngb-rating style="font-size: xx-large;" [max]="5" [(rate)]="rating" [readonly]="false"></ngb-rating>
+</div>
 
 <!-- Submit and Close buttons -->
-<mat-dialog-actions style="margin-left: 19%;">
-    <button class="mat-raised-button"(click)="submit()">Submit</button>
-    <div style="width: 10px;"></div>
-    <button class="mat-raised-button"(click)="close()">Close</button>
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="submit()">Submit</button>
+    <div style="width: .8vw;"></div>
+    <button class="mat-raised-button" (click)="close()">Close</button>
 </mat-dialog-actions>

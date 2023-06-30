@@ -1,0 +1,11 @@
+<!-- Message passed through the 'data' object -->
+<mat-dialog-content>
+    <h2>{{ data.message }}</h2>
+</mat-dialog-content>
+
+<!-- Delete and Cancel buttons -->
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="deleteAccount()">Delete</button>
+    <div style="width: .8vw;"></div>
+    <button class="mat-raised-button" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>
