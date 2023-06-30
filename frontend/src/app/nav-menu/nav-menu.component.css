@@ -3,12 +3,27 @@ button {
     font-size: 1.1vw;
 }
 
+/* Sign Up button */
+.sign-up {
+    margin-right: 2vw;
+}
+
+/* Log In button */
+.log-in {
+    margin-right: .5vw;
+}
+
 /* Username of the logged-in user */
 p {
     text-align: center;
     font-weight: bold;
     font-size: large;
     margin-top: .5vw;
+}
+
+/* User Reviews button */
+.user-reviews {
+    margin-right: 2vw;
 }
 
 /* Divider line */

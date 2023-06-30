@@ -1,24 +1,14 @@
 <img src="../assets/foodslide.jpg" height="700" width="9982" class="slider-ltr">
 
 <div class="centered">
-  <!-- Sign Up button -->
-  <button class="sign-up" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['register']">Sign Up</button>
-  <!-- Log In button -->
-  <button class="log-in" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['login']">Log In</button>
-
   <!-- Homepage message -->
   <p class="homepage-message">
     <span>
-      Are you craving some food?<br><br>
-      Search for a Restaurant in your chosen City
+      Are you craving some food?<br>
+      <span class="message-explanation">Search for a Restaurant in your chosen City</span>
     </span>
   </p>
 
   <!-- Search Restaurant button -->
   <button class="search-restaurant" mat-raised-button color="accent" [routerLink]="['search-results']" (click)="getSearch()">Search Restaurant</button>
-  
-  <!-- User Reviews link -->
-  <p class="user-reviews">
-    <a class="user-reviews-a" [routerLink]="['/reviews']">User Reviews</a>
-  </p>
 </div>

@@ -5,26 +5,18 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    width: 28%;
-}
-
-/* Sign Up button */
-.sign-up {
-    margin-right: .3vw;
-    color: rgba(0, 0, 0, 0.689);
-}
-
-/* Log In button */
-.log-in {
-    margin-left: .3vw;
-    color: rgba(0, 0, 0, 0.689);
+    width: 65%;
 }
 
 /* <p> tag containing the homepage message */
 .homepage-message {
-    background-color: rgba(255, 255, 255, .9);
-    padding: 2% 1%;
-    font-size: 1.3vw;
+    /*background-color: rgba(255, 255, 255, .9);
+    */padding: 2% 1%;
+    font-size: 4vw;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1); /* Example shadow with offset and blur */
+    text-transform: uppercase;
     border-radius: .8vw;
     text-align: center;
     margin: 2vw 0;
@@ -33,7 +25,12 @@
 
 /* Homepage message */
 .homepage-message span {
-    color: black;
+    color: white;
+}
+
+.message-explanation {
+    font-size: 2.6vw;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 /* Background image */
@@ -50,29 +47,14 @@
 
 /* General button styles */
 button {
-    width: 40%;
-    font-size: 1.2vw;
+    width: 15%;
+    font-size: 1.5vw;
 }
 
 /* Restaurant search button */
 .search-restaurant {
-    width: 50%;
-    color: rgba(0, 0, 0, 0.689);
-}
-
-/* <p> tag containing the User Reviews hyperlink */
-.user-reviews {
-    margin-top: 2.3vw;
-}
-
-/* User Reviews hyperlink */
-.user-reviews-a {
-    background-color: rgb(235, 235, 235);
-    padding: .5vw;
-    border-radius: 1vw;
-    color: rgba(0, 0, 0, 0.689);
-    font-size: 1.1vw;
-    font-weight: bold;
+    width: 27%;
+    padding: 2.1% 0;
 }
 
 /* Background image animation speed and direction */

@@ -1,3 +1,11 @@
+<!-- User Reviews button -->
+<button class="user-reviews" mat-raised-button color="accent" *ngIf="userService.isLoggedIn" [routerLink]="['/reviews']">User Reviews</button>
+
+<!-- Sign Up button -->
+<button class="sign-up" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['register']">Sign Up</button>
+<!-- Log In button -->
+<button class="log-in" mat-raised-button color="accent" *ngIf="!userService.isLoggedIn" [routerLink]="['login']">Log In</button>
+
 <!-- Button to trigger the account menu, visible only when the user is logged in -->
 <button mat-raised-button color="accent" *ngIf="userService.isLoggedIn" [matMenuTriggerFor]="navMenu">Account</button>
 
