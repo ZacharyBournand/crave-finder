@@ -1,2 +1,6 @@
 # Go runtime version
 runtime: go120
+handlers:
+- url: /(.*)
+  static_files: www/\1
+  upload: www/(.*)
