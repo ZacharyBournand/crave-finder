@@ -120,8 +120,7 @@ func main() {
 	http.ListenAndServe(":8080", handlers.CORS(
 		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-		handlers.AllowedOrigins([]string{"http://localhost:4200"}),
-		handlers.AllowedOrigins([]string{"https://crave-finder.netlify.app"}),
+		handlers.AllowedOrigins([]string{"*"}),
 		handlers.AllowCredentials(),
 	)(http.DefaultServeMux))
 }
