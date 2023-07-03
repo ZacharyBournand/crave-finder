@@ -118,8 +118,9 @@ func main() {
 	http.HandleFunc("/delete-account", deleteAccountHandler)
 
 	port := os.Getenv("PORT")
+	// Default to port 8080 if the PORT environment variable is not set
 	if port == "" {
-		port = "8080" // Default to port 8080 if the PORT environment variable is not set
+		port = "8080"
 	}
 
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur

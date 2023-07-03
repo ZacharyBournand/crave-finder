@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationPopupMessageComponent } from '../confirmation-popup-message/confirmation-popup-message.component';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-nav-menu',
@@ -37,8 +38,13 @@ export class NavMenuComponent {
 
   // Method to handle user logout
   logout() {
+    // Get the logout URL for local environment
+    const logoutUrl = environment.logoutUrl;
+    // Get the logout URL for prod environment
+    const logoutProdUrl = environment.logoutProdUrl;
+
     // Send a POST request to the server to log the user out
-    this.http.post('http://localhost:8080/logout', {}).subscribe((response: any) => {
+    this.http.post(logoutProdUrl, {}).subscribe((response: any) => {
       // Store the response message
       this.responseMessage = response.message;
       // Clear the user information in the UserService

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Rating } from '../restaurants'
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-dish-ratings',
@@ -26,8 +27,13 @@ export class DishRatingsComponent implements OnInit {
       // Get the dish ID from the route parameters
       const dishId = params['id'];
 
-      // Construct the URL for fetching ratings based on the dish ID
-      const url = `http://localhost:8080/dish-ratings?dishId=${dishId}`;
+      // Get the dish ratings URL for local environment
+      const dishRatingsUrl = environment.dishRatingsUrl;
+      // Get the dish ratings URL for prod environment
+      const dishRatingsProdUrl = environment.dishRatingsProdUrl;
+
+      // Construct the URL using the prod environment URL to fetch ratings based on the dish ID
+      const url = `${dishRatingsProdUrl}?dishId=${dishId}`;
 
       this.http.get<Rating[]>(url).subscribe(
         data => {

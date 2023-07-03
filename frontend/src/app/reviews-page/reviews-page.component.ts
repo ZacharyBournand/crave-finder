@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
-import { Rating } from '../restaurants'
+import { Rating } from '../restaurants';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-reviews-page',
@@ -25,8 +26,15 @@ export class ReviewsPageComponent {
   getUserRatings() {
     // Set displayUsername when the button is clicked
     this.displayUsername = this.username;
+
     const params = new HttpParams().set('username', this.username);
-    this.http.get<Rating[]>('http://localhost:8080/get-user-ratings?user_id=', {params}).subscribe(
+    
+    // Get the restaurant search URL for local environment
+    const userRatingsUrl = environment.userRatingsUrl;
+    // Get the restaurant search URL for prod environment
+    const userRatingsProdUrl = environment.userRatingsProdUrl;
+
+    this.http.get<Rating[]>(`${userRatingsProdUrl}?user_id=`, {params}).subscribe(
       data => {
         this.ratings = data;
         // Check if ratings array is empty

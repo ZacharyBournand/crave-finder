@@ -6,6 +6,7 @@ import { UserService } from '../user.service'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RateMenuComponent } from '../rate-menu/rate-menu.component';
 import { PopupMessageComponent } from '../popup-message/popup-message.component';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-menu',
@@ -118,29 +119,32 @@ export class MenuComponent implements OnInit{
         .set('dishname', this.dish.dishname)
         .set('price', this.dish.price)
         .set('description', this.dish.description);
+
+      // Get the add dish URL for local environment
+      const addDishUrl = environment.addDishUrl;
+      // Get the add dish URL for prod environment
+      const addDishProdUrl = environment.addDishProdUrl;
           
-        this.http
-        .post('http://localhost:8080/add-dish', {}, { headers, params })
-        .subscribe(
-          (res: any) => {      
-            if (res.error === 'Dish already exists') {
-              // Display the pop-up message for dish already exists
-              this.openPopupMessage(res.error);
-            } else {
-              console.log('Dish added', res);
-              
-              // Stay on the same page
-              const currentURL = this.router.url;
-              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigateByUrl(currentURL);
-              });
-            }
-          },
-          (err) => {
-            console.error('Error storing dish', err);
+      // Make an HTTP POST request using the prod environment URL
+      this.http.post(addDishProdUrl, {}, { headers, params }).subscribe(
+        (res: any) => {      
+          if (res.error === 'Dish already exists') {
+            // Display the pop-up message for dish already exists
+            this.openPopupMessage(res.error);
+          } else {
+            console.log('Dish added', res);
+            
+            // Stay on the same page
+            const currentURL = this.router.url;
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigateByUrl(currentURL);
+            });
           }
-        );
-      
+        },
+        (err) => {
+          console.error('Error storing dish', err);
+        }
+      );
     }
   }
 
@@ -157,9 +161,14 @@ export class MenuComponent implements OnInit{
       const params = new HttpParams()
         .set('name', this.restaurantName)
         .set('dishname', this.dish.dishname)
+
+      // Get the remove dish URL for local environment
+      const removeDishUrl = environment.removeDishUrl;
+      // Get the remove dish URL for prod environment
+      const removeDishProdUrl = environment.removeDishProdUrl;
       
-      // Send a POST request to remove the dish from a restaurant's menu
-      this.http.post('http://localhost:8080/remove-dish', {}, {headers, params}).subscribe(
+      // Send a POST request to remove the dish from a restaurant's menu using the prod environment URL
+      this.http.post(removeDishProdUrl, {}, {headers, params}).subscribe(
         res => {
         console.log('Dish removed');
 
@@ -214,8 +223,13 @@ export class MenuComponent implements OnInit{
       .set('name', this.restaurantName)
       .set('username', this.user.username)
 
-    // Send a GET request to retrieve restaurant information
-    this.http.get('http://localhost:8080/get-restaurant-info', { params }).subscribe({
+    // Get the restaurant information retrieval URL for local environment
+    const restaurantInfoUrl = environment.restaurantInfoUrl;
+    // Get the restaurant information retrieval URL for prod environment
+    const restaurantInfoProdUrl = environment.restaurantInfoProdUrl;
+
+    // Send a GET request to retrieve restaurant information using the prod environment URL
+    this.http.get(restaurantInfoProdUrl, { params }).subscribe({
     next: (data: any) => {
       // Store the restaurants data in a class variable
       this.menu = data;

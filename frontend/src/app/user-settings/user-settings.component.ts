@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-user-settings',
@@ -25,13 +26,18 @@ export class UserSettingsComponent {
 
   // Function triggered when the form is submitted
   onSubmit(form: NgForm) {
-    // Send a POST request to the server to authenticate the username and password entered
-    this.http.post('http://localhost:8080/passwordauth', {
+    // Get authentication URL for local environment
+    const passwordAuthUrl = environment.passwordAuthUrl;
+    // Get authentication URL for prod environment
+    const passwordAuthProdUrl = environment.passwordAuthProdUrl;
+
+    // Send a POST request to the server to authenticate the username and password entered using the prod environment URL
+    this.http.post(passwordAuthProdUrl, {
       username: this.user.username,
       password: this.user.password,
     }).subscribe((response: any) => {
       // Set the response message
-      this.responseMessage = response.message
+      this.responseMessage = response.message;
       // Set the user in the UserService
       this.UserService.setUser(this.user);
 

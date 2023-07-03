@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
+import { environment } from 'src/environment';
 
 @Component({
   selector: 'app-new-password',
@@ -23,8 +24,13 @@ export class NewPasswordComponent {
 
   // Function triggered when the form is submitted
   onSubmit(form: NgForm) {
-    // Send a POST request to the server to change the user's password
-    this.http.post('http://localhost:8080/passwordchange', {
+    // Get the password change URL for local environment
+    const passwordChangeUrl = environment.passwordChangeUrl;
+    // Get the password change URL for prod environment
+    const passwordChangeProdUrl = environment.passwordChangeProdUrl;
+
+    // Send a POST request to the server to change the user's password using the prod environment URL
+    this.http.post(passwordChangeProdUrl, {
       username: this.user.username,
       password: this.user.password,
     }).subscribe((response: any) => {

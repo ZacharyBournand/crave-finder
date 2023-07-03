@@ -4,6 +4,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { UserService } from '../user.service';
 import { FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { environment } from 'src/environment';
 
 @Component({
   selector: 'app-rate-menu',
@@ -43,9 +44,14 @@ export class RateMenuComponent {
     {
       return;
     }
+
+    // Get the restaurant search URL for local environment
+    const storeRatingUrl = environment.storeRatingUrl;
+    // Get the restaurant search URL for prod environment
+    const storeRatingProdUrl = environment.storeRatingProdUrl;
     
     // Set the URL to store the rating
-    const url = 'http://localhost:8080/store-rating-auth';
+    const url = storeRatingProdUrl;
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     // Set the parameters for the HTTP request
@@ -55,7 +61,7 @@ export class RateMenuComponent {
       .set('rating', this.rating.toString())
       .set('username', this.user.username)
 
-    // Send the HTTP post request to store the rating
+    // Send the HTTP post request to store the rating using the prod environment URL
     this.http.post(url, {}, {headers, params}).subscribe(
       res => {
         console.log('Dish rating stored');
