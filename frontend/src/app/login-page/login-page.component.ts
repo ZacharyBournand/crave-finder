@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login-page',
@@ -25,8 +26,11 @@ export class LoginPageComponent{
   ) {}
 
   onSubmit(form: NgForm) {
+    // Get the search URL based on the environment
+    const loginAuthUrl = environment.restaurantSearchUrl;
+
     // Send a POST request to the server with user credentials
-    this.http.post('http://localhost:8080/loginauth', this.user).subscribe((response: any) => {
+    this.http.post(loginAuthUrl, this.user).subscribe((response: any) => {
       this.responseMessage = response.message;
 
       if (this.responseMessage == "Logged in") {
