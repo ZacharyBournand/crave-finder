@@ -4,6 +4,7 @@ import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { PopupMessageComponent } from '../popup-message/popup-message.component';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-search-result',
@@ -40,8 +41,11 @@ export class SearchResultComponent implements OnInit {
       .set('location', this.location)
       .set('term', this.searchTerm);
 
+    // Get the search URL based on the environment
+    const restaurantSearchUrl = environment.restaurantSearchUrl;
+
     // Make an HTTP GET request to the searchRestaurantsHandler endpoint
-    this.http.get('http://localhost:8080/restaurants/search', { params }).subscribe({
+    this.http.get(restaurantSearchUrl, { params }).subscribe({
       next: (data: any) => {
         // Store the restaurants data in a class variable
         this.restaurants = data;

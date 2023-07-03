@@ -6,6 +6,7 @@ import (
 	f "fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"unicode"
 
@@ -116,8 +117,13 @@ func main() {
 	// Handler account deletion request
 	http.HandleFunc("/delete-account", deleteAccountHandler)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default to port 8080 if the PORT environment variable is not set
+	}
+
 	// Wrap your handler with context.ClearHandler to make sure a memory leak does not occur
-	http.ListenAndServe(":8080", handlers.CORS(
+	http.ListenAndServe(":"+port, handlers.CORS(
 		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
 		handlers.AllowedOrigins([]string{"*"}),
