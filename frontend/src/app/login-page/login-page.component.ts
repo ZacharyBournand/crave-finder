@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { environment } from '../../environment';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login-page',
@@ -20,9 +21,10 @@ export class LoginPageComponent{
   };
 
   constructor(
-    private http:HttpClient, 
-    private userService:UserService,
-    private router: Router
+    private http: HttpClient, 
+    private userService: UserService,
+    private router: Router,
+    private cookieService: CookieService,
   ) {}
 
   onSubmit(form: NgForm) {

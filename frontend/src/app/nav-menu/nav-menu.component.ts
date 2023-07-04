@@ -47,10 +47,8 @@ export class NavMenuComponent {
     this.http.post(logoutProdUrl, {}).subscribe((response: any) => {
       // Store the response message
       this.responseMessage = response.message;
-      // Clear the user information in the UserService
-      this.userService.setUser(null);
-      // Set isLoggedIn to false
-      this.userService.isLoggedIn = false;
+      // Call the logout() method from UserService
+      this.userService.logout();
     });
   }
 

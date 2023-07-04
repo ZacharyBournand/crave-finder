@@ -1,5 +1,2 @@
 # Go runtime version
 runtime: go120
-handlers:
-- url: /.*
-  script: auto

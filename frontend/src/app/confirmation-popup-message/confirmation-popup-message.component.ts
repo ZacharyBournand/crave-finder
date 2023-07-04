@@ -48,7 +48,7 @@ export class ConfirmationPopupMessageComponent {
     this.http.post(url, {}, {headers, params}).subscribe(
       res => {
         // Clear the user information in the UserService
-        this.userService.setUser(null);
+        this.userService.setUser(false);
         // Set isLoggedIn to false
         this.userService.isLoggedIn = false;
       
