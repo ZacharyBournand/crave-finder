@@ -105,82 +105,111 @@ export class MenuComponent implements OnInit{
 
   // Add a dish to a restaurant's menu
   dishAdd() {
-    if (
-      this.dish.category !== '' ||
-      this.dish.dishname !== '' ||
-      this.dish.price !== '' ||
-      this.dish.description !== ''
-    ) {
-      const headers = new HttpHeaders().set('Content-Type', 'application/json');
-  
-      const params = new HttpParams()
-        .set('name', this.restaurantName)
-        .set('category', this.dish.category)
-        .set('dishname', this.dish.dishname)
-        .set('price', this.dish.price)
-        .set('description', this.dish.description);
+    // Get the user from UserService
+    this.userService.getUser.subscribe(usr => (this.user = usr));
 
-      // Get the add dish URL for local environment
-      const addDishUrl = environment.addDishUrl;
-      // Get the add dish URL for prod environment
-      const addDishProdUrl = environment.addDishProdUrl;
-          
-      // Make an HTTP POST request using the prod environment URL
-      this.http.post(addDishProdUrl, {}, { headers, params }).subscribe(
-        (res: any) => {      
-          if (res.error === 'Dish already exists') {
-            // Display the pop-up message for dish already exists
-            this.openPopupMessage(res.error);
-          } else {
-            console.log('Dish added', res);
+    // If the user is not logged in, a message pops up to notify them
+    if(!this.user)
+    {
+      console.error('You are not logged in!');
+
+      this.dialog.open(PopupMessageComponent, {
+        data: { message: 'You are not logged in' }
+      });
+
+      return;
+    } else {
+      if (
+        this.dish.category !== '' ||
+        this.dish.dishname !== '' ||
+        this.dish.price !== '' ||
+        this.dish.description !== ''
+      ) {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    
+        const params = new HttpParams()
+          .set('name', this.restaurantName)
+          .set('category', this.dish.category)
+          .set('dishname', this.dish.dishname)
+          .set('price', this.dish.price)
+          .set('description', this.dish.description);
+  
+        // Get the add dish URL for local environment
+        const addDishUrl = environment.addDishUrl;
+        // Get the add dish URL for prod environment
+        const addDishProdUrl = environment.addDishProdUrl;
             
-            // Stay on the same page
-            const currentURL = this.router.url;
-            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              this.router.navigateByUrl(currentURL);
-            });
+        // Make an HTTP POST request using the prod environment URL
+        this.http.post(addDishProdUrl, {}, { headers, params }).subscribe(
+          (res: any) => {      
+            if (res.error === 'Dish already exists') {
+              // Display the pop-up message for dish already exists
+              this.openPopupMessage(res.error);
+            } else {
+              console.log('Dish added', res);
+              
+              // Stay on the same page
+              const currentURL = this.router.url;
+              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+                this.router.navigateByUrl(currentURL);
+              });
+            }
+          },
+          (err) => {
+            console.error('Error storing dish', err);
           }
-        },
-        (err) => {
-          console.error('Error storing dish', err);
-        }
-      );
+        );
+      }
     }
   }
 
   // Remove a dish from a restaurant's menu
   dishRemove() {
     const name = this.route.snapshot.paramMap.get('name');
+    // Get the user from UserService
+    this.userService.getUser.subscribe(usr => (this.user = usr));
 
-    // Check if the dishname is not empty
-    if (this.dish.dishname != '')
+    // If the user is not logged in, a message pops up to notify them
+    if(!this.user)
     {
-      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      console.error('You are not logged in!');
 
-      // Create parameters for the HTTP request
-      const params = new HttpParams()
-        .set('name', this.restaurantName)
-        .set('dishname', this.dish.dishname)
+      this.dialog.open(PopupMessageComponent, {
+        data: { message: 'You are not logged in' }
+      });
 
-      // Get the remove dish URL for local environment
-      const removeDishUrl = environment.removeDishUrl;
-      // Get the remove dish URL for prod environment
-      const removeDishProdUrl = environment.removeDishProdUrl;
-      
-      // Send a POST request to remove the dish from a restaurant's menu using the prod environment URL
-      this.http.post(removeDishProdUrl, {}, {headers, params}).subscribe(
-        res => {
-        console.log('Dish removed');
+      return;
+    } else {
+      // Check if the dishname is not empty
+      if (this.dish.dishname != '')
+      {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        // Stay on the same page
-        const currentURL = this.router.url;
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          this.router.navigateByUrl(currentURL);
-        });
-      },
-      err => {
-        console.error('Error removing dish', err);
-      })
+        // Create parameters for the HTTP request
+        const params = new HttpParams()
+          .set('name', this.restaurantName)
+          .set('dishname', this.dish.dishname)
+
+        // Get the remove dish URL for local environment
+        const removeDishUrl = environment.removeDishUrl;
+        // Get the remove dish URL for prod environment
+        const removeDishProdUrl = environment.removeDishProdUrl;
+        
+        // Send a POST request to remove the dish from a restaurant's menu using the prod environment URL
+        this.http.post(removeDishProdUrl, {}, {headers, params}).subscribe(
+          res => {
+          console.log('Dish removed');
+
+          // Stay on the same page
+          const currentURL = this.router.url;
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigateByUrl(currentURL);
+          });
+        },
+        err => {
+          console.error('Error removing dish', err);
+        })
+      }
     }
   }
 

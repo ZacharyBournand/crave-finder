@@ -72,7 +72,6 @@ export class RateMenuComponent {
         // Stay on the same page
         const currentURL = this.router.url;
         this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-          //this.router.navigate(['/restaurant/']);
           this.router.navigateByUrl(currentURL);
         });
       },
