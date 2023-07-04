@@ -109,7 +109,7 @@ export class MenuComponent implements OnInit{
     this.userService.getUser.subscribe(usr => (this.user = usr));
 
     // If the user is not logged in, a message pops up to notify them
-    if(!this.user)
+    if (!this.user)
     {
       console.error('You are not logged in!');
 
@@ -118,48 +118,65 @@ export class MenuComponent implements OnInit{
       });
 
       return;
-    } else {
-      if (
-        this.dish.category !== '' ||
-        this.dish.dishname !== '' ||
-        this.dish.price !== '' ||
-        this.dish.description !== ''
-      ) {
-        const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    
-        const params = new HttpParams()
-          .set('name', this.restaurantName)
-          .set('category', this.dish.category)
-          .set('dishname', this.dish.dishname)
-          .set('price', this.dish.price)
-          .set('description', this.dish.description);
-  
-        // Get the add dish URL for local environment
-        const addDishUrl = environment.addDishUrl;
-        // Get the add dish URL for prod environment
-        const addDishProdUrl = environment.addDishProdUrl;
-            
-        // Make an HTTP POST request using the prod environment URL
-        this.http.post(addDishProdUrl, {}, { headers, params }).subscribe(
-          (res: any) => {      
-            if (res.error === 'Dish already exists') {
-              // Display the pop-up message for dish already exists
-              this.openPopupMessage(res.error);
-            } else {
-              console.log('Dish added', res);
-              
-              // Stay on the same page
-              const currentURL = this.router.url;
-              this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-                this.router.navigateByUrl(currentURL);
-              });
-            }
-          },
-          (err) => {
-            console.error('Error storing dish', err);
-          }
-        );
+    // If every field contains an input, check if the 'Price' field input is a number
+    // If 'Price' field input is a number, add the dish
+    } else if (
+      this.dish.category !== '' &&
+      this.dish.dishname !== '' &&
+      this.dish.price !== '' &&
+      this.dish.description !== ''
+    ) {
+      const headers = new HttpHeaders().set('Content-Type', 'application/json');
+      
+      // Convert price to a number
+      const price = parseFloat(this.dish.price);
+      
+      // If price input is not a number, pop up an error message
+      if (isNaN(price)) {
+        this.dialog.open(PopupMessageComponent, {
+          data: { message: "Enter a number in the 'Price' field." }
+        });
+
+        return
       }
+
+      const params = new HttpParams()
+        .set('name', this.restaurantName)
+        .set('category', this.dish.category)
+        .set('dishname', this.dish.dishname)
+        .set('price', this.dish.price)
+        .set('description', this.dish.description);
+
+      // Get the add dish URL for local environment
+      const addDishUrl = environment.addDishUrl;
+      // Get the add dish URL for prod environment
+      const addDishProdUrl = environment.addDishProdUrl;
+          
+      // Make an HTTP POST request using the prod environment URL
+      this.http.post(addDishProdUrl, {}, { headers, params }).subscribe(
+        (res: any) => {      
+          if (res.error === 'Dish already exists') {
+            // Display the pop-up message for dish already exists
+            this.openPopupMessage(res.error);
+          } else {
+            console.log('Dish added', res);
+            
+            // Stay on the same page
+            const currentURL = this.router.url;
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigateByUrl(currentURL);
+            });
+          }
+        },
+        (err) => {
+          console.error('Error storing dish', err);
+        }
+      );
+    // If a field is empty, pop up an error message
+    } else {
+      this.dialog.open(PopupMessageComponent, {
+        data: { message: 'Fill in every field.' }
+      });
     }
   }
 
