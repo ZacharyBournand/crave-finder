@@ -114,7 +114,7 @@ export class MenuComponent implements OnInit{
       console.error('You are not logged in!');
 
       this.dialog.open(PopupMessageComponent, {
-        data: { message: 'You are not logged in' }
+        data: { message: 'You are not logged in.' }
       });
 
       return;
@@ -192,7 +192,7 @@ export class MenuComponent implements OnInit{
       console.error('You are not logged in!');
 
       this.dialog.open(PopupMessageComponent, {
-        data: { message: 'You are not logged in' }
+        data: { message: 'You are not logged in.' }
       });
 
       return;
