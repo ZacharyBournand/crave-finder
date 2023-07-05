@@ -1023,7 +1023,7 @@ func addDishHandler(w http.ResponseWriter, r *http.Request) {
 		f.Println("Dish already stored")
 
 		// Create a response JSON indicating the dish already exists
-		errorMsg := "Dish already exists"
+		errorMsg := "Dish already exists."
 		response := struct {
 			Error string `json:"error"`
 		}{
