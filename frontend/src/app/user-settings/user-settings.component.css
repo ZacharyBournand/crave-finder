@@ -60,13 +60,6 @@ button[type="submit"]:hover {
   
 /* Response message */
 p {
-    /*margin-top: 1.3vw;
-    font-size: 1vw;
-    color: #666;*/
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     text-align: center;
     margin-top: 1.5vw;
     font-size: 1.2vw;
@@ -77,7 +70,6 @@ p {
 .newPasswordButton {
     background-color: #4CAF50;
     color: white;
-    margin-top: 5vw;
     padding: .4vw .9vw;
     border: none;
     border-radius: .4vw;
@@ -103,7 +95,6 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 5vw;
 }
 
 /* Footer div */

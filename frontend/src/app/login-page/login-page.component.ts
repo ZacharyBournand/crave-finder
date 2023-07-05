@@ -24,7 +24,6 @@ export class LoginPageComponent{
     private http: HttpClient, 
     private userService: UserService,
     private router: Router,
-    private cookieService: CookieService,
   ) {}
 
   onSubmit(form: NgForm) {

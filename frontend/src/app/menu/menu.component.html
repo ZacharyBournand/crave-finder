@@ -3,13 +3,13 @@
 <div class="center">
     <form (submit)="onSubmit($event, 'add' || 'remove')">
         Category:
-        <input type="category" name="category"  [(ngModel)]="dish.category">
+        <input name="category"  [(ngModel)]="dish.category">
         Name:
-        <input type="dishname" name="dishname"  [(ngModel)]="dish.dishname">
+        <input name="dishname"  [(ngModel)]="dish.dishname">
         Price:
-        <input type="price" name="price" [(ngModel)]="dish.price">
+        <input name="price" [(ngModel)]="dish.price">
         Description:
-        <input type="description" name="description" [(ngModel)]="dish.description">
+        <input name="description" [(ngModel)]="dish.description">
 
         <button class="add-button" mat-raised-button color="accent"  (click)="onSubmit($event, 'add')">Add Dish</button>
         <button class="add-button" mat-raised-button color="accent" (click)="onSubmit($event, 'remove')">Remove Dish</button>

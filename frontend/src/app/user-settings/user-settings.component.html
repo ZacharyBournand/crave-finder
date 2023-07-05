@@ -2,17 +2,11 @@
     <!-- Heading for the change password form -->
     <h1>Change Password</h1>
     
-    <form (ngSubmit)="onSubmit($event)">
-        <!-- Input field for username -->
-        <label>
-            Username:
-            <input type="username" name="username" [(ngModel)]="user.username" required>
-        </label>
-        
+    <form (ngSubmit)="onSubmit($event)">        
         <!-- Input field for current password -->
         <label>
             Current Password:
-            <input type="password" name="password" [(ngModel)]="user.password" required>
+            <input type="password" name="password" [(ngModel)]="password" required>
         </label>
         
         <!-- Centered submit button -->
@@ -22,7 +16,6 @@
     </form>
 
     <!-- Display response message -->
-    <!--p>{{ responseMessage }}</p-->
     <p [innerHTML]="responseMessage"></p>
     
     <span class="center2">
