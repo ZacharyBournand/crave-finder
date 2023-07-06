@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/sessions"
+	"github.com/joho/godotenv"
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/cases"
@@ -74,9 +75,20 @@ var store = sessions.NewCookieStore([]byte("super-secret"))
 func main() {
 	var err error
 
-	// Open the database
-	db, err = sql.Open("mysql", "bunny:forestLeaf35!@tcp(141.148.45.99:3306)/craveFinder")
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
+	dbUsername := os.Getenv("DB_USERNAME")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	dataSourceName := f.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUsername, dbPassword, dbHost, dbPort, dbName)
+
+	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		f.Println("error validating sql.Open arguments")
 		panic(err.Error())
@@ -89,7 +101,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	f.Println("Successful connection to the user database")
+	log.Println("Successful connection to the user database")
 
 	// Handle restaurant search requests
 	http.HandleFunc("/restaurants/search", searchRestaurantsHandler)
