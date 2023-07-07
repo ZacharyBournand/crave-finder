@@ -84,12 +84,15 @@ Back-end (Golang)
      - Sign Up
      - Log In
      - Search for a Restaurant or Food Item in your chosen City
-2. If you Log In, you get access to the "Account" button at the top right corner that gives 3 options:
-     - "Reviews": you can look up an individual user's ratings
-     - "Change Password": you can change you account's password
-     - "Logout": you can log out
+       
+2. If you Log In, you get access to 2 buttons at the top right corner:
+   - **User Reviews** button:  
+     You can look up an individual user's ratings.
 
-  You also get access to the "User Reviews" button at the top right corner to view a given user's ratings
+   - **Account** button:  
+     - **Change Password**: You can change your account's password.
+     - **Logout**: You can log out.
+     - **Delete Account**: You can delete your account.
   
 3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
      - Now, you can Add a restaurant's Dish to the Database
