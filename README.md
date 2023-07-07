@@ -6,21 +6,19 @@ Our web applicaton seeks to make finding new flavors at local restaurants a piec
 
 On our web app, the user would be able to search for local restaurants that have a particular menu item they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
 
-Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. A restaurant will have ratings for cleanliness, customer service, wait times, an overall rating, and most importantly: a restaurant's menu will have each item rated individually.
+Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. In addition to this, a restaurant's menu will also have each item rated individually.
 
 User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
 
 ## Functionalities:
-- Search for restaurants by name or menu item<br>
-<img src="./app-screenshots/search-restaurants.PNG" alt="App screenshot 1" width="601.14vw" height="300vw"><br><br>
-- Add & remove food items<br>
-<img src="./app-screenshots/add-remove-item.PNG" alt="App screenshot 2" width="601.14vw" height="300vw"><br><br>
-- Rate menu items<br>
-<img src="./app-screenshots/rate-item.PNG" alt="App screenshot 3" width="601.14vw" height="300vw"><br><br>
-- View a user's ratings<br>
-<img src="./app-screenshots/view-user-ratings.PNG" alt="App screenshot 4" width="601.14vw" height="300vw"><br><br>
-- Change your password<br>
-<img src="./app-screenshots/change-password.PNG" alt="App screenshot 5" width="601.14vw" height="300vw"><br>
+- Sign up, Log in & Log out
+- Change your password
+- Delete your account
+- Search for restaurants and their ratings by entering a restaurant name or menu item and city
+- Add & remove menu items
+- Rate menu items
+- View each menu item's name, price, description, and ratings
+- View a user's ratings
 
 ## Members
 Front-end (Angular/Typescript)
@@ -55,6 +53,7 @@ Back-end (Golang)
     - Type the following commands in your terminal:
         ```
         npm install
+        npm install ngx-cookie-service
         ng add @ng-bootstrap/ng-bootstrap --force
         ng add @angular/material
         ```
@@ -72,6 +71,7 @@ Back-end (Golang)
         go get github.com/gorilla/context
         go get github.com/gorilla/sessions
         go get github.com/gorilla/handlers
+        go get github.com/joho/godotenv
         ```
             
 7. Run the application:
@@ -87,8 +87,12 @@ Back-end (Golang)
 2. If you Log In, you get access to the "Account" button at the top right corner that gives 3 options:
      - "Reviews": you can look up an individual user's ratings
      - "Change Password": you can change you account's password
-     - "Logout": you can log out 
+     - "Logout": you can log out
+
+  You also get access to the "User Reviews" button at the top right corner to view a given user's ratings
+  
 3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
      - Now, you can Add a restaurant's Dish to the Database
      - You can also Remove a restaurant's Dish from the Database
-     - And you can Create a Dish Rating that gets stored in the Database
+     - You can Create a Dish Rating that gets stored in the Database
+     - And you can Click on the a Dish's ratings hyperlink to see Each User's Rating of the Dish
