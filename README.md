@@ -24,7 +24,7 @@ User ratings will be stored on their profile allowing other users to compare tas
 - [Jon Dela Cruz](https://github.com/jondlc02)
 - [Renee Kaynor](https://github.com/mkaynor)
 - [Dylan Bickram](https://github.com/DylanBickram)
-- [ZacharyBournand](https://github.com/ZacharyBournand)
+- [Zachary Bournand](https://github.com/ZacharyBournand)
 
 ## How to Run and Use our Application
 **How to Run our Application**
