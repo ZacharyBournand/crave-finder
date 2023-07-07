@@ -87,7 +87,7 @@ Back-end (Golang)
        
 2. If you Log In, you get access to 2 buttons at the top right corner:
    - **User Reviews** button:  
-     You can look up an individual user's ratings.
+     - You can look up an individual user's ratings.
 
    - **Account** button:  
      - **Change Password**: You can change your account's password.
