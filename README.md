@@ -31,9 +31,29 @@ View our project on https://crave-finder.netlify.app/
 - Log in:
   - username: tester
   - password: Delicious!00
+ 
+## How to Use our Application
+1. On the Home Page, you can either:
+     - Sign Up
+     - Log In
+     - Search for a Restaurant or Food Item in your chosen City
+       
+2. If you Log In, you get access to 2 buttons at the top right corner:
+   - **User Reviews** button:  
+     - You can look up an individual user's ratings.
 
-## How to Run and Use our Application
-**How to Run our Application**
+   - **Account** button:  
+     - **Change Password**: You can change your account's password.
+     - **Logout**: You can log out.
+     - **Delete Account**: You can delete your account.
+  
+3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
+     - Now, you can Add a restaurant's Dish to the Database
+     - You can also Remove a restaurant's Dish from the Database
+     - You can Create a Dish Rating that gets stored in the Database
+     - And you can Click on the a Dish's ratings hyperlink to see Each User's Rating of the Dish
+
+## How to Clone our Repository and Run it
 1. Go to the repository: Visit the URL https://github.com/ZacharyBournand/crave-finder in your web browser.
 
 2. Clone the repository
@@ -79,25 +99,3 @@ View our project on https://crave-finder.netlify.app/
 7. Run the application:
      - In your "\crave-finder\frontend" terminal, type the following command to run the frontend: ```ng serve --open```
      - In your "\crave-finder\backend" terminal, type the following command to run the backend: ```go run main.go```
-     
-    
-**How to Use our Application**
-1. On the Home Page, you can either:
-     - Sign Up
-     - Log In
-     - Search for a Restaurant or Food Item in your chosen City
-       
-2. If you Log In, you get access to 2 buttons at the top right corner:
-   - **User Reviews** button:  
-     - You can look up an individual user's ratings.
-
-   - **Account** button:  
-     - **Change Password**: You can change your account's password.
-     - **Logout**: You can log out.
-     - **Delete Account**: You can delete your account.
-  
-3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
-     - Now, you can Add a restaurant's Dish to the Database
-     - You can also Remove a restaurant's Dish from the Database
-     - You can Create a Dish Rating that gets stored in the Database
-     - And you can Click on the a Dish's ratings hyperlink to see Each User's Rating of the Dish
