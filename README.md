@@ -53,7 +53,6 @@ Back-end (Golang)
     - Type the following commands in your terminal:
         ```
         npm install
-        npm install ngx-cookie-service
         ng add @ng-bootstrap/ng-bootstrap --force
         ng add @angular/material
         ```
