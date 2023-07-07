@@ -2,13 +2,13 @@
 Crave Finder
 
 ## Project description
-Our web applicaton seeks to make finding new flavors at local restaurants a piece of cake!
+Our web application seeks to make finding new flavors at local restaurants a piece of cake!
 
 On our web app, the user would be able to search for local restaurants that have a particular menu item they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
 
 Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. In addition to this, a restaurant's menu will also have each item rated individually.
 
-User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restuarants that people with similar tastes have rated highly.
+User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restaurants that people with similar tastes have rated highly.
 
 ## Functionalities:
 - Sign up, Log in & Log out
@@ -51,7 +51,7 @@ View our project on https://crave-finder.netlify.app/
      - Now, you can Add a restaurant's Dish to the Database
      - You can also Remove a restaurant's Dish from the Database
      - You can Create a Dish Rating that gets stored in the Database
-     - And you can Click on the a Dish's ratings hyperlink to see Each User's Rating of the Dish
+     - And you can Click on a Dish's ratings hyperlink to see Each User's Rating of the Dish
 
 ## How to Clone our Repository and Run it
 1. Go to the repository: Visit the URL https://github.com/ZacharyBournand/crave-finder in your web browser.
@@ -71,7 +71,7 @@ View our project on https://crave-finder.netlify.app/
 
 4. Install Angular dependencies
     - In the terminal, install the Angular CLI globally by running the command: ```npm install -g @angular/cli```
-    - Open the clone repository and ensure your current directory ends with "crave-finder"
+    - Open the cloned repository and ensure your current directory ends with "crave-finder"
     - Go to "frontend" (type "cd frontend") [Now your directory should end with "\crave-finder\frontend"]
     - Type the following commands in your terminal:
         ```
