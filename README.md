@@ -20,14 +20,11 @@ User ratings will be stored on their profile allowing other users to compare tas
 - View each menu item's name, price, description, and ratings
 - View a user's ratings
 
-## Members
-Front-end (Angular/Typescript)
-- Jon Dela Cruz
-- Renee Kaynor
-
-Back-end (Golang)
-- Zachary Bournand
-- Dylan Bickram
+## Contributors
+- [Jon Dela Cruz](https://github.com/jondlc02)
+- [Renee Kaynor](https://github.com/mkaynor)
+- [Dylan Bickram](https://github.com/DylanBickram)
+- [ZacharyBournand](https://github.com/ZacharyBournand)
 
 ## How to Run and Use our Application
 **How to Run our Application**
