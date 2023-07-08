@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Rating } from '../restaurants'
+import { Rating } from '../restaurants';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { environment } from '../../environment';
