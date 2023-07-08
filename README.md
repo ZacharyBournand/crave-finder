@@ -4,9 +4,9 @@ Crave Finder
 ## Project description
 Our web application seeks to make finding new flavors at local restaurants a piece of cake!
 
-On our web app, the user would be able to search for local restaurants that have a particular menu item they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
+On our web app, the user would be able to search for local restaurants that have a particular dish they're craving. Want to go and get crab rangoons? No problem. Heard of something that sounded good, but don't know what the name of the restaurant is called? No big deal.
 
-Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. In addition to this, a restaurant's menu will also have each item rated individually.
+Once the user decides on a restaurant, they will be able to view their menu directly from the web app. In addition to this, each restaurant on our app will have a collection of ratings. In addition, a restaurant's menu will have each item rated individually.
 
 User ratings will be stored on their profile allowing other users to compare tastes and possibly explore dishes and restaurants that people with similar tastes have rated highly.
 
@@ -14,10 +14,10 @@ User ratings will be stored on their profile allowing other users to compare tas
 - Sign up, Log in & Log out
 - Change your password
 - Delete your account
-- Search for restaurants and their ratings by entering a restaurant name or menu item and city
-- Add & remove menu items
-- Rate menu items
-- View each menu item's name, price, description, and ratings
+- Search for restaurants and their ratings by entering a restaurant name or dish and city
+- Add & remove dishes
+- Rate dishes
+- View each dish's name, price, description, and ratings
 - View a user's ratings
 
 ## Contributors
@@ -36,7 +36,7 @@ View our project on https://crave-finder.netlify.app/
 1. On the Home Page, you can either:
      - Sign Up
      - Log In
-     - Search for a Restaurant or Food Item in your chosen City
+     - Search for a Restaurant or Dish in your chosen City
        
 2. If you Log In, you get access to 2 buttons at the top right corner:
    - **User Reviews** button:  
@@ -47,7 +47,7 @@ View our project on https://crave-finder.netlify.app/
      - **Logout**: You can log out.
      - **Delete Account**: You can delete your account.
   
-3. If you Search for a Restaurant or Food Item in your chosen City, you can Click on a Restaurant that appeared in your search result
+3. If you Search for a Restaurant or Dish in your chosen City, you can Click on a Restaurant that appeared in your search result
      - Now, you can Add a restaurant's Dish to the Database
      - You can also Remove a restaurant's Dish from the Database
      - You can Create a Dish Rating that gets stored in the Database
