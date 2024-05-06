@@ -27,7 +27,7 @@ User ratings will be stored on their profile allowing other users to compare tas
 - [Zachary Bournand](https://github.com/ZacharyBournand)
 
 ## Test Crave Finder
-View our project on https://crave-finder.netlify.app/
+View our project on https://crave-finder.netlify.app/ (Tip: Ctrl + click on the link to open it in a new tab)
 - Log in:
   - username: tester
   - password: Delicious!00
